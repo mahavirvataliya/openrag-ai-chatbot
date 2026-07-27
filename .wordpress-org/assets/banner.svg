@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- WP OpenRag plugin banner source (772x250 logical). Rasterized to banner-772x250.png and banner-1544x500.png. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="772" height="250" viewBox="0 0 772 250" role="img" aria-label="WP OpenRag">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="60%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.06"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="772" height="250" fill="url(#bg)"/>
+
+  <!-- Decorative chat window on the right -->
+  <g transform="translate(500,40)">
+    <rect width="240" height="170" rx="16" fill="url(#card)" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1"/>
+    <rect width="240" height="34" rx="16" fill="#ffffff" fill-opacity="0.15"/>
+    <circle cx="22" cy="17" r="7" fill="#fde68a"/>
+    <rect x="38" y="11" width="80" height="12" rx="4" fill="#ffffff" fill-opacity="0.5"/>
+
+    <!-- User bubble -->
+    <rect x="120" y="52" width="100" height="22" rx="11" fill="#60a5fa"/>
+    <!-- Bot bubble with dots -->
+    <rect x="20" y="86" width="150" height="40" rx="12" fill="#ffffff" fill-opacity="0.92"/>
+    <circle cx="48" cy="106" r="5" fill="#1d4ed8"/>
+    <circle cx="68" cy="106" r="5" fill="#1d4ed8"/>
+    <circle cx="88" cy="106" r="5" fill="#1d4ed8"/>
+    <!-- Input -->
+    <rect x="20" y="136" width="200" height="22" rx="11" fill="#ffffff" fill-opacity="0.18"/>
+  </g>
+
+  <!-- Wordmark on the left -->
+  <g transform="translate(48,92)">
+    <text x="0" y="0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">WP OpenRag</text>
+    <text x="2" y="34" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#dbeafe" fill-opacity="0.95">Self-hosted RAG chatbot · embeddings · vector search · MCP</text>
+  </g>
+</svg>

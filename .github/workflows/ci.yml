@@ -1,0 +1,86 @@
+name: CI
+
+# Lints every PHP file and verifies the autoloader on each push / pull request.
+# Keeps the release pipeline green and prevents accidental syntax regressions.
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: PHP lint & autoload check
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.0', '8.1', '8.2', '8.3', '8.4' ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          ini-values: error_reporting=E_ALL, display_errors=On
+
+      - name: Validate composer.json
+        run: composer validate --strict --no-check-publish
+
+      - name: Lint all PHP files
+        run: |
+          set -e
+          fail=0
+          while IFS= read -r -d '' file; do
+            if ! php -l "$file" >/dev/null 2>&1; then
+              php -l "$file" || true
+              fail=1
+            fi
+          done < <(find . -name "*.php" -not -path "./vendor/*" -print0)
+          exit "$fail"
+
+      - name: Install dependencies (for autoload check)
+        run: composer install --no-dev --prefer-dist --no-interaction
+
+      - name: Autoload smoke test
+        env:
+          WP_OPENRAG_VERSION: '1.0.0'
+          WP_OPENRAG_FILE: 'wp-openrag.php'
+        run: |
+          php -r '
+          define("ABSPATH", "/tmp/");
+          define("WP_OPENRAG_VERSION", "1.0.0");
+          define("WP_OPENRAG_FILE", __FILE__);
+          define("WP_OPENRAG_DIR", getcwd() . "/");
+          define("WP_OPENRAG_URL", "");
+          define("WP_OPENRAG_BASENAME", "wp-openrag/wp-openrag.php");
+          define("WP_OPENRAG_DB_VERSION", "1.0.0");
+          define("WP_OPENRAG_REST_NAMESPACE", "wporag/v1");
+          define("WP_OPENRAG_OPTION_PREFIX", "wporag_");
+          require WP_OPENRAG_DIR . "includes/class-autoloader.php";
+          WPOpenRag\Autoloader::register();
+          $classes = [
+            "WPOpenRag\\Plugin","WPOpenRag\\Activator","WPOpenRag\\Settings",
+            "WPOpenRag\\Database\\Schema",
+            "WPOpenRag\\Embeddings\\Embedding_Manager","WPOpenRag\\Embeddings\\OpenAI_Embedding",
+            "WPOpenRag\\LLM\\LLM_Manager","WPOpenRag\\LLM\\OpenAI_LLM","WPOpenRag\\LLM\\Anthropic_LLM",
+            "WPOpenRag\\VectorStores\\MySQL_Store","WPOpenRag\\VectorStores\\Cloudflare_Vectorize",
+            "WPOpenRag\\Ingestion\\Ingestion_Pipeline","WPOpenRag\\Queue\\Background_Processor",
+            "WPOpenRag\\Chat\\Chat_Controller","WPOpenRag\\MCP\\MCP_Manager",
+            "WPOpenRag\\Admin\\Admin_Menu","WPOpenRag\\Admin\\Settings_Page",
+          ];
+          $missing = [];
+          foreach ($classes as $c) {
+            if (!class_exists($c) && !interface_exists($c)) $missing[] = $c;
+          }
+          if ($missing) { echo "MISSING:\n - " . implode("\n - ", $missing) . "\n"; exit(1); }
+          echo "OK: loaded " . count($classes) . " core classes\n";
+          '

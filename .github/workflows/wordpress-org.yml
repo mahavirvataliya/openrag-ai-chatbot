@@ -1,0 +1,126 @@
+name: WordPress.org
+
+# Validates that the plugin is ready for the WordPress.org plugin directory:
+#   • readme.txt is well-formed and version-consistent
+#   • required headers exist in wp-openrag.php
+#   • the .pot is in sync with the source strings
+#   • a release ZIP builds without errors
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'readme.txt'
+      - 'wp-openrag.php'
+      - '.github/workflows/wordpress-org.yml'
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: readme.txt + version consistency
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: wp-cli
+
+      - name: Validate readme.txt structure
+        run: |
+          set -e
+          echo "==> Checking required readme.txt headers"
+          for header in "Contributors:" "Tags:" "Requires at least:" "Tested up to:" \
+                        "Requires PHP:" "Stable tag:" "License:" "License URI:"; do
+            if ! grep -qE "^${header}" readme.txt; then
+              echo "ERROR: readme.txt is missing required header: ${header}" >&2
+              exit 1
+            fi
+            echo "  ✓ ${header}"
+          done
+
+      - name: Confirm Stable tag matches plugin version
+        run: |
+          PLUGIN_VERSION=$(grep -E "WP_OPENRAG_VERSION" wp-openrag.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)
+          STABLE_TAG=$(grep -E "^Stable tag:" readme.txt | awk '{print $3}')
+          echo "Plugin version: ${PLUGIN_VERSION}"
+          echo "Stable tag:     ${STABLE_TAG}"
+          if [[ -z "${PLUGIN_VERSION}" ]]; then
+            echo "ERROR: could not detect WP_OPENRAG_VERSION" >&2; exit 1
+          fi
+          if [[ "${STABLE_TAG}" != "${PLUGIN_VERSION}" ]]; then
+            echo "ERROR: readme.txt Stable tag (${STABLE_TAG}) does not match WP_OPENRAG_VERSION (${PLUGIN_VERSION})" >&2
+            exit 1
+          fi
+          echo "  ✓ Versions match"
+
+      - name: Confirm Plugin Name matches readme.txt title
+        run: |
+          README_TITLE=$(sed -n 's/^=== \([^=]*\) ===$/\1/p' readme.txt | head -1 | sed 's/^ *//;s/ *$//')
+          PLUGIN_NAME=$(grep -E "^ \* Plugin Name:" wp-openrag.php | head -1 | sed 's/^.*: *//')
+          echo "readme.txt title: ${README_TITLE}"
+          echo "Plugin Name:      ${PLUGIN_NAME}"
+          if [[ "${README_TITLE}" != "${PLUGIN_NAME}" ]]; then
+            echo "ERROR: readme.txt title (${README_TITLE}) does not match Plugin Name (${PLUGIN_NAME})" >&2
+            exit 1
+          fi
+          echo "  ✓ Names match"
+
+      - name: Validate license header
+        run: |
+          if ! grep -q "License: GPLv2 or later" readme.txt; then
+            echo "ERROR: readme.txt License header must be 'License: GPLv2 or later'" >&2
+            exit 1
+          fi
+          echo "  ✓ License header present"
+
+      - name: Confirm .pot exists and is parseable
+        run: |
+          if [[ ! -f languages/wp-openrag.pot ]]; then
+            echo "ERROR: languages/wp-openrag.pot missing" >&2
+            exit 1
+          fi
+          # Must contain a non-empty header block.
+          if ! grep -q 'Project-Id-Version' languages/wp-openrag.pot; then
+            echo "ERROR: languages/wp-openrag.pot has no Project-Id-Version header" >&2
+            exit 1
+          fi
+          COUNT=$(grep -c '^msgid ' languages/wp-openrag.pot)
+          echo "  ✓ .pot present with ${COUNT} strings"
+
+      - name: Confirm no banned patterns in source
+        run: |
+          set -e
+          # No call-home telemetry, no curl/file_get_contents for remote HTTP.
+          if grep -rn --include='*.php' -E 'curl_exec|curl_init|file_get_contents\s*\(\s*["\x27]https?://' \
+              includes/ wp-openrag.php templates/ 2>/dev/null; then
+            echo "ERROR: found banned remote-fetch functions (use wp_remote_* instead)" >&2
+            exit 1
+          fi
+          echo "  ✓ No banned remote-fetch patterns"
+
+      - name: Build a release ZIP (smoke test)
+        run: |
+          ./bin/build-release.sh >/dev/null
+          if ! ls dist/wp-openrag-*.zip >/dev/null 2>&1; then
+            echo "ERROR: build did not produce a release ZIP" >&2
+            exit 1
+          fi
+          echo "  ✓ Release ZIP builds cleanly"
+
+      - name: Upload release ZIP as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wp-openrag-release-zip
+          path: dist/wp-openrag-*.zip
+          retention-days: 14

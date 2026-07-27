@@ -1,0 +1,85 @@
+name: Release
+
+# Builds a distributable plugin ZIP and attaches it to a GitHub Release
+# whenever a tag matching `v*` is pushed.
+#
+# Usage:
+#   git tag v1.0.0
+#   git push --tags
+#
+# The resulting release will contain wp-openrag-<version>.zip with vendor/
+# pre-built, ready for end users to upload via Plugins → Add New → Upload Plugin.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (without leading v) — leave blank to read from source'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          extensions: mbstring, zip
+          tools: composer:v2
+
+      - name: Determine version
+        id: ver
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            V="${{ github.event.inputs.version }}"
+          else
+            REF="${GITHUB_REF##*/}"
+            V="${REF#v}"
+          fi
+          echo "version=${V}" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: ${V}"
+
+      - name: Build the release ZIP
+        run: |
+          ./bin/build-release.sh "${{ steps.ver.outputs.version }}"
+          ls -la dist/
+
+      - name: Verify archive contents
+        run: |
+          unzip -l "dist/wp-openrag-${{ steps.ver.outputs.version }}.zip" | head -40
+          test -f dist/wp-openrag-${{ steps.ver.outputs.version }}.zip
+
+      - name: Create or update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: WP OpenRag ${{ steps.ver.outputs.version }}
+          tag_name: ${{ github.ref_name || format('v{0}', steps.ver.outputs.version) }}
+          generate_release_notes: true
+          files: |
+            dist/wp-openrag-${{ steps.ver.outputs.version }}.zip
+          body: |
+            ## Installation
+
+            1. Download `wp-openrag-${{ steps.ver.outputs.version }}.zip`.
+            2. In WordPress: **Plugins → Add New → Upload Plugin** → choose the ZIP → **Install Now**.
+            3. Activate **WP OpenRag**.
+            4. Visit **OpenRag → Settings** to configure an LLM provider and an embedding provider.
+
+            See the [README](https://github.com/${{ github.repository }}/blob/main/README.md#-installation) for full setup instructions
+            and the [CHANGELOG](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for what changed.
+
+            **Requirements:** WordPress 6.0+, PHP 8.0+, MySQL 5.7+ (MySQL 9 unlocks native VECTOR search).

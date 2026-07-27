@@ -1,0 +1,28 @@
+# Dependencies (composer) — bundled in release ZIPs but excluded from git.
+# Re-run `composer install --no-dev` after cloning to regenerate.
+/vendor/
+
+# Build artifacts
+/dist/
+*.zip
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Node (for any future build tooling)
+node_modules/
+
+# Logs / caches
+*.log
+cache/
+.error_log
+
+# Local environment overrides
+.env
+.env.local
+.zcode
