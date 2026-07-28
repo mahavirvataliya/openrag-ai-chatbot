@@ -4,7 +4,7 @@ Tags: chatbot, ai, rag, knowledge-base, openai
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,14 @@ The JSON fallback loads up to 5,000 chunks per query and scores them in PHP. For
 
 == Changelog ==
 
+= 1.0.1 =
+* WordPress.org Plugin Check: resolved all remaining warnings (input sanitization, output escaping, prepared SQL, i18n translators comments, prefixed globals).
+* Fixed screenshots for publishing — renamed to the `screenshot-N.png` convention and added captions.
+* Hardened release build scripts to strip all hidden files (.DS_Store, editor swaps, VCS metadata) from ZIPs and SVN deployments.
+* Removed the discouraged `load_plugin_textdomain()` call (auto-loaded since WP 4.6).
+* Removed the invalid `Network: false` plugin header.
+* Trimmed readme tags to 5 and shortened the short description to fit the 150-character limit.
+
 = 1.0.0 =
 * Initial public release.
 * Knowledge base ingestion: URLs, PDF, DOCX, TXT, MD, and WordPress posts/pages.
@@ -146,6 +154,9 @@ The JSON fallback loads up to 5,000 chunks per query and scores them in PHP. For
 * Background processing via Action Scheduler, plus on-request mode.
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Maintenance release — Plugin Check compliance, screenshot publishing fixes, and build hardening. No database changes.
 
 = 1.0.0 =
 Initial release.

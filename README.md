@@ -6,7 +6,7 @@
 > questions with **citations, reasoning, live streaming and MCP tool integration** — all from
 > a customizable, conflict-free chat widget.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](./CHANGELOG.md)
 [![License: GPL v2+](https://img.shields.io/badge/license-GPL_v2+-brightgreen.svg)](./LICENSE)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.0-777bb4.svg)](https://www.php.net/)
 [![WordPress](https://img.shields.io/badge/WordPress-%3E%3D%206.0-21759b.svg)](https://wordpress.org/)

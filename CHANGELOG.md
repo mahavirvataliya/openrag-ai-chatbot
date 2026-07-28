@@ -11,6 +11,25 @@ _Nothing yet._
 
 ---
 
+## [1.0.1] — 2026-07-28
+
+Maintenance release focused on WordPress.org Plugin Check compliance, screenshot publishing, and release build hardening.
+
+### Changed
+- **WordPress.org Plugin Check** — resolved all remaining warnings across the codebase:
+  - Input sanitization: `$_SERVER`/`$_REQUEST` access now uses `wp_unslash()` + a sanitization function with fixed string keys.
+  - Output escaping: exception messages and SSE output marked correctly; `render_css_vars()` trusted as escaped.
+  - Prepared SQL: co-located `phpcs:ignore` comments on every interpolated table-name line; intermediate `$sql` variables inlined into `$wpdb->prepare()`.
+  - i18n: added missing `/* translators: ... */` comments.
+- **Removed the discouraged `load_plugin_textdomain()` call** — translations are auto-loaded for WordPress.org-hosted plugins since WP 4.6.
+- **Removed the invalid `Network: false` plugin header** — the field only accepts `true`.
+- **Screenshots** — renamed the 14 captures to the `screenshot-N.png` convention so WordPress.org auto-pairs them with `readme.txt` captions; refreshed the caption list.
+- **Readme** — trimmed tags to 5 (limit) and shortened the short description to ≤150 characters.
+- **Release builds** — `build-release.sh` and `deploy-wordpress-org.sh` now strip all hidden files (`.DS_Store`, editor swaps, VCS metadata, vendored dotfiles) via unanchored excludes, a pre-package `find` assertion, and a `zip -x` guard; the GitHub Actions `release.yml` fails the workflow if the ZIP contains any hidden file.
+- `composer.lock` content-hash re-synced with `composer.json`.
+
+---
+
 ## [1.0.0] — 2026-07-27
 
 The first stable, public release.
@@ -138,5 +157,6 @@ The first stable, public release.
 - WordPress 6.0 – 6.8
 - MySQL 5.7 / 8.x / 9.x, MariaDB 10.x
 
-[Unreleased]: https://github.com/mahavirvataliya/openrag-ai-chatbot/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/mahavirvataliya/openrag-ai-chatbot/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.1
 [1.0.0]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.0

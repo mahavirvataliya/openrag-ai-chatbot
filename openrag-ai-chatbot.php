@@ -3,7 +3,7 @@
  * Plugin Name:       OpenRag AI Chatbot
  * Plugin URI:        https://github.com/mahavirvataliya/openrag-ai-chatbot
  * Description:       RAG-powered chatbot for WordPress — ingest PDFs, DOCX, URLs & your own posts/pages, embed them with OpenAI/Cloudflare/Ollama, retrieve via MySQL 9 native VECTOR or Cloudflare Vectorize, and answer questions with citations, reasoning, streaming & MCP tool integration.
- * Version:           1.0.0
+ * Version:           1.0.5
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Mahavir Vataliya
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // No direct access.
 }
 
-define( 'OPENRAG_VERSION', '1.0.0' );
+define( 'OPENRAG_VERSION', '1.0.5' );
 define( 'OPENRAG_FILE', __FILE__ );
 define( 'OPENRAG_DIR', plugin_dir_path( __FILE__ ) );
 define( 'OPENRAG_URL', plugin_dir_url( __FILE__ ) );
