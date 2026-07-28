@@ -43,18 +43,21 @@ class Rate_Limiter {
 	 * @return string
 	 */
 	public function client_ip() {
-		$headers = array( 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR' );
-		foreach ( $headers as $h ) {
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			if ( ! empty( $_SERVER[ $h ] ) ) {
-				// Copy to a fixed-key local so the input sniffs can validate it, then unslash.
-				$raw = isset( $_SERVER[ $h ] ) ? (string) wp_unslash( $_SERVER[ $h ] ) : '';
-				$raw = trim( explode( ',', $raw )[0] );
-				// filter_var() validates the result is a real IP address.
-				$ip = filter_var( $raw, FILTER_VALIDATE_IP );
-				if ( false !== $ip ) {
-					return $ip;
-				}
+		// Read each header with a fixed string key so the input sniffs can verify
+		// unslash + sanitization. filter_var() below then validates a real IP.
+		$candidates = array(
+			isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) : '',
+			isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : '',
+			isset( $_SERVER['HTTP_X_REAL_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ) ) : '',
+			isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '',
+		);
+		foreach ( $candidates as $raw ) {
+			if ( '' === $raw ) {
+				continue;
+			}
+			$ip = filter_var( trim( explode( ',', $raw )[0] ), FILTER_VALIDATE_IP );
+			if ( false !== $ip ) {
+				return $ip;
 			}
 		}
 		return '0.0.0.0';

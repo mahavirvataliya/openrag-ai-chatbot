@@ -90,8 +90,7 @@ class MySQL_Store implements Vector_Store {
 			$vec_str = '[' . implode( ',', array_map( 'floatval', $vector ) ) . ']';
 			// MySQL 9: DISTANCE() with COSINE returns cosine distance (1 - cosine_sim). similarity = 1 - distance.
 			// phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
-			$sql  = $wpdb->prepare( "SELECT c.id AS chunk_id, c.content, c.source_url, c.source_title, (1 - DISTANCE(c.embedding, STRING_TO_VECTOR(%s), 'COSINE')) AS score FROM `{$table}` c WHERE c.embedding IS NOT NULL HAVING score >= %f ORDER BY score DESC LIMIT %d", $vec_str, $min_score, $top_k );
-			$rows = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB
+			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT c.id AS chunk_id, c.content, c.source_url, c.source_title, (1 - DISTANCE(c.embedding, STRING_TO_VECTOR(%s), 'COSINE')) AS score FROM `{$table}` c WHERE c.embedding IS NOT NULL HAVING score >= %f ORDER BY score DESC LIMIT %d", $vec_str, $min_score, $top_k ) );
 		} else {
 			// Fallback: load chunks and score in PHP. Pre-filter by recent docs to bound work.
 			// phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
