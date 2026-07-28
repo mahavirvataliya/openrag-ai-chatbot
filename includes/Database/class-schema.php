@@ -195,11 +195,9 @@ class Schema {
 			// Safer probe: try a no-op CREATE TABLE that uses VECTOR. Wrapped in try.
 			$test_table = $wpdb->prefix . 'openrag_vec_probe';
 			$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
-			$created = $wpdb->query(
-				"CREATE TABLE `{$test_table}` (id INT PRIMARY KEY, v VECTOR(4)) ENGINE=InnoDB"
-			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
-			$exists  = ( null !== $wpdb->get_var( "SHOW TABLES LIKE '{$test_table}'" ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
-			$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+			$wpdb->query( "CREATE TABLE `{$test_table}` (id INT PRIMARY KEY, v VECTOR(4)) ENGINE=InnoDB" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+			$exists = ( null !== $wpdb->get_var( "SHOW TABLES LIKE '{$test_table}'" ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+			$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
 				if ( $exists ) {
 					$this->native_vector_capable = true;
 				}

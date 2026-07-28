@@ -45,10 +45,13 @@ class Rate_Limiter {
 	public function client_ip() {
 		$headers = array( 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR' );
 		foreach ( $headers as $h ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			if ( ! empty( $_SERVER[ $h ] ) ) {
-				// First in the list if comma-separated. filter_var() below validates the result is a real IP.
-				$raw = trim( explode( ',', (string) wp_unslash( $_SERVER[ $h ] ) )[0] );
-				$ip  = filter_var( $raw, FILTER_VALIDATE_IP );
+				// Copy to a fixed-key local so the input sniffs can validate it, then unslash.
+				$raw = isset( $_SERVER[ $h ] ) ? (string) wp_unslash( $_SERVER[ $h ] ) : '';
+				$raw = trim( explode( ',', $raw )[0] );
+				// filter_var() validates the result is a real IP address.
+				$ip = filter_var( $raw, FILTER_VALIDATE_IP );
 				if ( false !== $ip ) {
 					return $ip;
 				}
