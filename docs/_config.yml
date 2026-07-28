@@ -1,0 +1,88 @@
+# OpenRag AI Chatbot — documentation site
+# Built by GitHub Pages' native Jekyll (Deploy from a branch → main / /docs).
+# Theme: just-the-docs (loaded via remote_theme, supported on classic GitHub Pages).
+
+title: OpenRag AI Chatbot
+description: >-
+  A complete, self-hosted RAG chatbot for WordPress. Ingest your own documents,
+  links and posts, embed them, retrieve with native MySQL 9 vector search or
+  Cloudflare Vectorize, and answer visitor questions with citations, reasoning,
+  streaming and MCP tool integration.
+
+# Project-page URLs: baseurl is the subpath, url is the host.
+url: "https://mahavirvataliya.github.io"
+baseurl: "/openrag-ai-chatbot"
+
+# Repository links (used for "Edit this page" and the header link).
+repository: "mahavirvataliya/openrag-ai-chatbot"
+
+# Theme — just-the-docs via remote_theme (whitelisted on GitHub Pages).
+remote_theme: just-the-docs/just-the-docs
+permalink: pretty
+
+# Branding / chrome.
+logo: "/openrag-ai-chatbot/assets/icon.svg"
+favicon_ico: "/openrag-ai-chatbot/assets/icon.svg"
+
+# Search, navigation and readability.
+search_enabled: true
+search:
+  heading_level: 3
+  previews: 2
+  preview_words_before: 3
+  preview_words_after: 3
+  tokenizer_separator: /[\s/]+/
+  rel_url: true
+  button: false
+
+heading_anchors: true
+back_to_top: true
+back_to_top_text: "Back to top"
+
+# Default theme; visitors can switch to dark via the built-in toggle.
+color_scheme: light
+
+# Top-right header links.
+aux_links:
+  "View on GitHub":
+    - "https://github.com/mahavirvataliya/openrag-ai-chatbot"
+
+# "Edit this page" → opens the source markdown on the main branch.
+aux_links_new_tab: true
+
+gh_edit_link: true
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/mahavirvataliya/openrag-ai-chatbot"
+gh_edit_branch: "main"
+gh_edit_view_mode: "tree"
+gh_edit_source: "docs"
+
+# Page footer.
+footer_content: 'Copyright &copy; 2026 Mahavir Vataliya. Distributed under the <a href="https://www.gnu.org/licenses/gpl-2.0.html">GPL-2.0-or-later</a> license. Not affiliated with or endorsed by WordPress, OpenAI, Anthropic, Cloudflare, Groq, or Automattic.'
+
+# Jekyll collections: only process the docs/ markdown.
+include:
+  - "*.md"
+  - "*.html"
+
+exclude:
+  - "PUBLISHING.md.tmp"
+  - "Gemfile"
+  - "Gemfile.lock"
+  - "node_modules"
+  - "vendor/bundle/"
+  - ".sass-cache/"
+  - ".jekyll-cache/"
+  - "README.md"
+
+# Plugin settings (GitHub Pages runs in safe mode with a fixed whitelist).
+just_the_docs:
+  collections:
+    docs:
+      name: Pages  # unused; pages use nav_order for the sidebar.
+
+# Markdown rendering.
+markdown: kramdown
+kramdown:
+  parse_block_html: true
+  syntax_highlighter: rouge

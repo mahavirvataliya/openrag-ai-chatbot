@@ -1,4 +1,10 @@
-# Publishing Guide
+---
+title: Publishing guide
+nav_order: 14
+description: How maintainers publish releases to GitHub and WordPress.org.
+---
+
+# Publishing guide
 
 This document covers the **two release channels** for OpenRag AI Chatbot, end-to-end:
 

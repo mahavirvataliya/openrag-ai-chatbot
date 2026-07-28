@@ -11,6 +11,11 @@
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.0-777bb4.svg)](https://www.php.net/)
 [![WordPress](https://img.shields.io/badge/WordPress-%3E%3D%206.0-21759b.svg)](https://wordpress.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-5.7+%20(%E2%9C%A8%209+%20native%20VECTOR)-4479a1.svg)](https://www.mysql.com/)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blueviolet.svg)](https://mahavirvataliya.github.io/openrag-ai-chatbot/)
+
+---
+
+> 📚 **Full documentation:** <https://mahavirvataliya.github.io/openrag-ai-chatbot/>
 
 ---
 
