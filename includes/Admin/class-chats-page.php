@@ -53,7 +53,7 @@ class Chats_Page {
 
 		// Count.
 		$count_sql = 'SELECT COUNT(*) FROM `' . $schema->table( 'chats' ) . '` ' . $where;
-		// phpcs:ignore WordPress.DB.PreparedSQL
+		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		$total = (int) ( $params ? $wpdb->get_var( $wpdb->prepare( $count_sql, $params ) ) : $wpdb->get_var( $count_sql ) );
 
 		// Rows (user turns + their assistant replies joined).
@@ -68,7 +68,7 @@ class Chats_Page {
 				LIMIT %d OFFSET %d';
 		$params[] = $per_page;
 		$params[] = $offset;
-		// phpcs:ignore WordPress.DB.PreparedSQL
+		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ) );
 
 		$pages      = max( 1, (int) ceil( $total / $per_page ) );
@@ -167,7 +167,7 @@ class Chats_Page {
 		$out = fopen( 'php://output', 'w' );
 		fputcsv( $out, array( 'id', 'created_at', 'session_id', 'ip', 'device', 'user_message', 'reply', 'model', 'response_ms', 'feedback', 'feedback_comment' ) );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL
+		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		foreach ( $wpdb->get_results( $sql ) as $row ) {
 			fputcsv(
 				$out,

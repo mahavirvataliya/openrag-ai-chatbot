@@ -55,17 +55,7 @@ class Plugin {
 	 * Private constructor.
 	 */
 	private function __construct() {
-		// Load textdomain.
-		add_action( 'init', array( $this, 'load_textdomain' ) );
-	}
-
-	/**
-	 * Load translations.
-	 *
-	 * @return void
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain( 'openrag-ai-chatbot', false, dirname( OPENRAG_BASENAME ) . '/languages' );
+		// Translations are auto-loaded by WordPress.org for the plugin slug since WP 4.6.
 	}
 
 	/**

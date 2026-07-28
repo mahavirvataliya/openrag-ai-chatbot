@@ -67,7 +67,7 @@ class MySQL_Store implements Vector_Store {
 			// Use STRING_TO_VECTOR for MySQL 9.
 			$wpdb->query(
 				$wpdb->prepare(
-					"UPDATE `{$table}` SET `embedding` = STRING_TO_VECTOR(%s) WHERE `id` = %d", // phpcs:ignore WordPress.DB
+					"UPDATE `{$table}` SET `embedding` = STRING_TO_VECTOR(%s) WHERE `id` = %d", // phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
 					$vector_str,
 					$chunk_id
 				)
@@ -96,28 +96,28 @@ class MySQL_Store implements Vector_Store {
 			// MySQL 9: DISTANCE() with COSINE returns cosine distance (1 - cosine_sim).
 			// similarity = 1 - distance.
 			$sql = $wpdb->prepare(
-				"SELECT c.id AS chunk_id, c.content, c.source_url, c.source_title,
-				        (1 - DISTANCE(c.embedding, STRING_TO_VECTOR(%s), 'COSINE')) AS score
-				 FROM `{$table}` c
-				 WHERE c.embedding IS NOT NULL
-				 HAVING score >= %f
-				 ORDER BY score DESC
-				 LIMIT %d",
-				$vec_str,
-				$min_score,
-				$top_k
-			);
-			// phpcs:ignore WordPress.DB
-			$rows = $wpdb->get_results( $sql );
-		} else {
-			// Fallback: load chunks and score in PHP. Pre-filter by recent docs to bound work.
-			$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB
-				"SELECT c.id AS chunk_id, c.content, c.source_url, c.source_title, c.embedding
-				 FROM `{$table}` c
-				 WHERE c.embedding IS NOT NULL AND c.embedding != ''
-				 ORDER BY c.id DESC
-				 LIMIT 5000"
-			);
+					"SELECT c.id AS chunk_id, c.content, c.source_url, c.source_title,
+					        (1 - DISTANCE(c.embedding, STRING_TO_VECTOR(%s), 'COSINE')) AS score
+					 FROM `{$table}` c
+					 WHERE c.embedding IS NOT NULL
+					 HAVING score >= %f
+					 ORDER BY score DESC
+					 LIMIT %d", // phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+					$vec_str,
+					$min_score,
+					$top_k
+				);
+				// phpcs:ignore WordPress.DB
+				$rows = $wpdb->get_results( $sql );
+			} else {
+				// Fallback: load chunks and score in PHP. Pre-filter by recent docs to bound work.
+				$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+					"SELECT c.id AS chunk_id, c.content, c.source_url, c.source_title, c.embedding
+					 FROM `{$table}` c
+					 WHERE c.embedding IS NOT NULL AND c.embedding != ''
+					 ORDER BY c.id DESC
+					 LIMIT 5000"
+				);
 			$scored = array();
 			foreach ( $rows as $row ) {
 				$vec = json_decode( $row->embedding, true );

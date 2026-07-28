@@ -227,7 +227,7 @@ class Cloudflare_Vectorize implements Vector_Store {
 
 		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 		$table        = $this->chunks_table();
-		// phpcs:ignore WordPress.DB.PreparedSQL
+		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT id, content, source_url, source_title FROM `{$table}` WHERE id IN ($placeholders)",
@@ -258,7 +258,7 @@ class Cloudflare_Vectorize implements Vector_Store {
 		// Collect vector ids for this document's chunks.
 		$namespace = 'doc_' . (int) $document_id;
 		$table     = $this->chunks_table();
-		// phpcs:ignore WordPress.DB
+		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT vector_id FROM `{$table}` WHERE document_id = %d AND vector_id IS NOT NULL AND vector_id != ''",
@@ -275,7 +275,7 @@ class Cloudflare_Vectorize implements Vector_Store {
 		global $wpdb;
 
 		$table = $this->chunks_table();
-		$vid   = $wpdb->get_var( $wpdb->prepare( "SELECT vector_id FROM `{$table}` WHERE id = %d", $chunk_id ) ); // phpcs:ignore WordPress.DB
+		$vid   = $wpdb->get_var( $wpdb->prepare( "SELECT vector_id FROM `{$table}` WHERE id = %d", $chunk_id ) ); // phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
 		if ( $vid ) {
 			$this->delete_ids( array( $vid ) );
 		}

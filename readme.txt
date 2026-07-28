@@ -1,6 +1,6 @@
 === OpenRag AI Chatbot ===
 Contributors: mahavirvataliya
-Tags: chatbot, ai, artificial-intelligence, rag, embeddings, vector-search, openai, anthropic, claude, cloudflare, ollama, groq, mcp, knowledge-base, pdf, semantic-search, search, assistant
+Tags: chatbot, ai, rag, knowledge-base, openai
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A complete, self-hosted RAG chatbot for WordPress. Ingest PDFs, DOCX, URLs and your own posts/pages, embed them with OpenAI/Cloudflare/Ollama, retrieve via native MySQL 9 VECTOR or Cloudflare Vectorize, and answer questions with citations, reasoning, streaming & MCP tool integration.
+Self-hosted RAG chatbot for WordPress. Ingest your docs, embed them, and answer questions with citations, reasoning & streaming.
 
 == Description ==
 

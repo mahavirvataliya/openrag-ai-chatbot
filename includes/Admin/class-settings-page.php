@@ -595,7 +595,7 @@ class Settings_Page {
 		$m = $s['mcp'];
 		global $wpdb;
 		$schema = new Schema();
-		$servers = $wpdb->get_results( 'SELECT * FROM `' . $schema->table( 'mcp_servers' ) . '` ORDER BY id ASC' ); // phpcs:ignore WordPress.DB
+		$servers = $wpdb->get_results( 'SELECT * FROM `' . $schema->table( 'mcp_servers' ) . '` ORDER BY id ASC' ); // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		?>
 		<h2><?php esc_html_e( 'MCP (Model Context Protocol)', 'openrag-ai-chatbot' ); ?></h2>
 		<p class="description"><?php esc_html_e( 'Connect the chatbot to external MCP servers. Their tools become available to the LLM via function calling.', 'openrag-ai-chatbot' ); ?></p>

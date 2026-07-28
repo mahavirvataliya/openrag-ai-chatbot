@@ -143,7 +143,7 @@ class Chat_Controller {
 	public function permission_public( \WP_REST_Request $request ) {
 		$nonce = (string) $request->get_header( 'x_wp_nonce' );
 		if ( '' === $nonce ) {
-			$nonce = (string) ( $_REQUEST['_wpnonce'] ?? '' );
+			$nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
 		}
 		if ( '' !== $nonce && wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			return true;
@@ -399,8 +399,8 @@ class Chat_Controller {
 		header( 'Cache-Control: no-cache, no-transform' );
 		header( 'X-Accel-Buffering: no' ); // Nginx.
 		header( 'Connection: keep-alive' );
-		@ini_set( 'zlib.output_compression', '0' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
-		@ini_set( 'output_buffering', 'off' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+		@ini_set( 'zlib.output_compression', '0' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors,Squiz.PHP.DiscouragedFunctions.Discouraged
+		@ini_set( 'output_buffering', 'off' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors,Squiz.PHP.DiscouragedFunctions.Discouraged
 	}
 
 	/**
@@ -453,7 +453,7 @@ class Chat_Controller {
 		$sql .= ' ORDER BY id DESC LIMIT %d';
 		$params[] = $limit;
 
-		// phpcs:ignore WordPress.DB.PreparedSQL
+		// phpcs:ignore WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ) );
 		$rows = array_reverse( $rows );
 
@@ -558,12 +558,12 @@ class Chat_Controller {
 		global $wpdb;
 		$hash = hash( 'sha256', uniqid( 'openrag', true ) . random_int( 0, PHP_INT_MAX ) );
 
-		$wpdb->replace( // phpcs:ignore WordPress.DB
+		$wpdb->replace( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			$this->schema->table( 'chat_sessions' ),
 			array(
 				'session_hash' => $hash,
 				'user_ip'      => $this->rate->client_ip(),
-				'user_agent'   => (string) ( $_SERVER['HTTP_USER_AGENT'] ?? '' ),
+					'user_agent'   => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '',
 				'device'       => $this->rate->device(),
 				'created_at'   => current_time( 'mysql' ),
 			)

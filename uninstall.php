@@ -16,26 +16,26 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 global $wpdb;
 
 // Load the option value directly (without booting the plugin).
-$wipe = get_option( 'openrag_general', array() );
-$wipe = is_array( $wipe ) ? ( ! empty( $wipe['wipe_on_uninstall'] ) ) : false;
+$openrag_wipe = get_option( 'openrag_general', array() );
+$openrag_wipe = is_array( $openrag_wipe ) ? ( ! empty( $openrag_wipe['wipe_on_uninstall'] ) ) : false;
 
-if ( ! $wipe ) {
+if ( ! $openrag_wipe ) {
 	return;
 }
 
 // Drop tables.
-$tables = array( 'documents', 'chunks', 'chat_sessions', 'chats', 'mcp_servers' );
-foreach ( $tables as $name ) {
-	$table = $wpdb->prefix . 'openrag_' . $name;
-	$wpdb->query( "DROP TABLE IF EXISTS `$table`" ); // phpcs:ignore WordPress.DB
+$openrag_tables = array( 'documents', 'chunks', 'chat_sessions', 'chats', 'mcp_servers' );
+foreach ( $openrag_tables as $openrag_name ) {
+	$openrag_table = $wpdb->prefix . 'openrag_' . $openrag_name;
+	$wpdb->query( "DROP TABLE IF EXISTS `$openrag_table`" ); // phpcs:ignore WordPress.DB
 }
 
 // Delete options.
-$option_groups = array( 'general', 'chat', 'providers', 'embeddings', 'vector_store', 'indexing', 'appearance', 'mcp' );
-foreach ( $option_groups as $g ) {
-	delete_option( 'openrag_' . $g );
+$openrag_option_groups = array( 'general', 'chat', 'providers', 'embeddings', 'vector_store', 'indexing', 'appearance', 'mcp' );
+foreach ( $openrag_option_groups as $openrag_g ) {
+	delete_option( 'openrag_' . $openrag_g );
 }
 delete_option( 'openrag_db_version' );
 
 // Clear scheduled events.
-	wp_clear_scheduled_hook( 'openrag_health_check' );
+wp_clear_scheduled_hook( 'openrag_health_check' );

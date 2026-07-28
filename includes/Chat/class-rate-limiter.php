@@ -46,9 +46,10 @@ class Rate_Limiter {
 		$headers = array( 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR' );
 		foreach ( $headers as $h ) {
 			if ( ! empty( $_SERVER[ $h ] ) ) {
-				// First in the list if comma-separated.
-				$ip = trim( explode( ',', wp_unslash( $_SERVER[ $h ] ) )[0] );
-				if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+				// First in the list if comma-separated. filter_var() below validates the result is a real IP.
+				$raw = trim( explode( ',', (string) wp_unslash( $_SERVER[ $h ] ) )[0] );
+				$ip  = filter_var( $raw, FILTER_VALIDATE_IP );
+				if ( false !== $ip ) {
 					return $ip;
 				}
 			}
@@ -63,7 +64,7 @@ class Rate_Limiter {
 	 * @return string
 	 */
 	public function device( $ua = '' ) {
-		$ua = $ua ?: (string) ( $_SERVER['HTTP_USER_AGENT'] ?? '' );
+		$ua = $ua ?: (string) ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '' );
 		if ( preg_match( '/android|iphone|ipad|mobile/i', $ua ) ) {
 			return 'mobile';
 		}

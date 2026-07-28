@@ -129,7 +129,7 @@ class Ingestion_Pipeline {
 	public function process_document( $document_id ) {
 		global $wpdb;
 
-		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB
+		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			$wpdb->prepare(
 				'SELECT * FROM `' . $this->schema->table( 'documents' ) . '` WHERE id = %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$document_id
@@ -252,7 +252,7 @@ class Ingestion_Pipeline {
 		$content = $post->post_content;
 
 		// Apply shortcodes / blocks to render real content.
-		$content = apply_filters( 'the_content', $content );
+		$content = apply_filters( 'the_content', $content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- core hook.
 
 		// Strip HTML tags to plain text but keep paragraph breaks.
 		$content = wp_strip_all_tags( $content );
@@ -286,7 +286,7 @@ class Ingestion_Pipeline {
 	 */
 	public function remove_post( $post_id ) {
 		global $wpdb;
-		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB
+		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			$wpdb->prepare(
 				'SELECT id FROM `' . $this->schema->table( 'documents' ) . '` WHERE post_id = %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$post_id
@@ -390,7 +390,7 @@ class Ingestion_Pipeline {
 			$params[] = $type;
 		}
 		$sql = 'SELECT * FROM `' . $this->schema->table( 'documents' ) . "` $where ORDER BY created_at DESC LIMIT 1000";
-		// phpcs:ignore WordPress.DB.PreparedSQL
+		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		$rows = $params ? $wpdb->get_results( $wpdb->prepare( $sql, $params ) ) : $wpdb->get_results( $sql );
 		return rest_ensure_response( $rows );
 	}
@@ -428,13 +428,13 @@ class Ingestion_Pipeline {
 	public function rest_get_document( \WP_REST_Request $request ) {
 		global $wpdb;
 		$id = (int) $request['id'];
-		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB
+		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			$wpdb->prepare( 'SELECT * FROM `' . $this->schema->table( 'documents' ) . '` WHERE id = %d', $id ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
 		if ( ! $doc ) {
 			return new \WP_Error( 'not_found', __( 'Document not found.', 'openrag-ai-chatbot' ), array( 'status' => 404 ) );
 		}
-		$chunks = $wpdb->get_results( // phpcs:ignore WordPress.DB
+		$chunks = $wpdb->get_results( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			$wpdb->prepare(
 				'SELECT id, chunk_index, content, source_url, source_title, token_count FROM `' . $this->schema->table( 'chunks' ) . '` WHERE document_id = %d ORDER BY chunk_index', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$id

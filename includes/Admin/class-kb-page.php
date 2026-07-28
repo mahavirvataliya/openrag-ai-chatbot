@@ -93,7 +93,7 @@ class KB_Page {
 	protected function render_documents_tab() {
 		global $wpdb;
 		$schema = new Schema();
-		$rows   = $wpdb->get_results( "SELECT * FROM `" . $schema->table( 'documents' ) . "` WHERE type IN ('pdf','docx','txt') ORDER BY created_at DESC" ); // phpcs:ignore WordPress.DB
+		$rows   = $wpdb->get_results( "SELECT * FROM `" . $schema->table( 'documents' ) . "` WHERE type IN ('pdf','docx','txt') ORDER BY created_at DESC" ); // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		$upload = wp_upload_dir();
 		?>
 		<div class="openrag-kb-grid">
@@ -165,7 +165,7 @@ class KB_Page {
 	protected function render_links_tab() {
 		global $wpdb;
 		$schema = new Schema();
-		$rows   = $wpdb->get_results( "SELECT * FROM `" . $schema->table( 'documents' ) . "` WHERE type = 'url' ORDER BY created_at DESC" ); // phpcs:ignore WordPress.DB
+		$rows   = $wpdb->get_results( "SELECT * FROM `" . $schema->table( 'documents' ) . "` WHERE type = 'url' ORDER BY created_at DESC" ); // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		?>
 		<div class="openrag-kb-grid">
 			<div>

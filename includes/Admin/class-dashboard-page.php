@@ -29,13 +29,13 @@ class Dashboard_Page {
 		$schema = new Schema();
 		global $wpdb;
 
-		$documents = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'documents' ) . '`' ); // phpcs:ignore WordPress.DB
-		$chunks    = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'chunks' ) . '`' ); // phpcs:ignore WordPress.DB
-		$chats     = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'chats' ) . "` WHERE role = 'assistant'" ); // phpcs:ignore WordPress.DB
-		$thumbs_up   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM `" . $schema->table( 'chats' ) . "` WHERE feedback = 'up'" ); // phpcs:ignore WordPress.DB
-		$thumbs_down = (int) $wpdb->get_var( "SELECT COUNT(*) FROM `" . $schema->table( 'chats' ) . "` WHERE feedback = 'down'" ); // phpcs:ignore WordPress.DB
+		$documents = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'documents' ) . '`' ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
+		$chunks    = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'chunks' ) . '`' ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
+		$chats     = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'chats' ) . "` WHERE role = 'assistant'" ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
+		$thumbs_up   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM `" . $schema->table( 'chats' ) . "` WHERE feedback = 'up'" ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
+		$thumbs_down = (int) $wpdb->get_var( "SELECT COUNT(*) FROM `" . $schema->table( 'chats' ) . "` WHERE feedback = 'down'" ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
 
-		$recent = $wpdb->get_results( // phpcs:ignore WordPress.DB
+		$recent = $wpdb->get_results( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			'SELECT id, role, content, created_at FROM `' . $schema->table( 'chats' ) . '` ORDER BY id DESC LIMIT 10' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
 

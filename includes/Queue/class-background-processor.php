@@ -115,7 +115,7 @@ class Background_Processor {
 		global $wpdb;
 		$schema = new \OpenRag\Database\Schema();
 
-		$existing = $wpdb->get_var( // phpcs:ignore WordPress.DB
+		$existing = $wpdb->get_var( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			$wpdb->prepare( 'SELECT id FROM `' . $schema->table( 'documents' ) . '` WHERE post_id = %d', $post_id ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
 		if ( $existing ) {

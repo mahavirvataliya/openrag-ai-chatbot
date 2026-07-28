@@ -189,16 +189,17 @@ class Schema {
 			$major = (int) $m[1];
 			$minor = (int) $m[2];
 			if ( false === stripos( $version, 'mariadb' ) && $major >= 9 ) {
-				// Confirm with a runtime probe (avoid 8.x false positives from version strings).
-				$probe = $wpdb->get_var( "SHOW COLUMNS FROM information_schema.columns WHERE TABLE_SCHEMA IS NOT NULL LIMIT 0" );
-				// Safer probe: try a no-op CREATE TABLE that uses VECTOR. Wrapped in try.
-				$test_table = $wpdb->prefix . 'openrag_vec_probe';
-				$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" );
-				$created = $wpdb->query(
-					"CREATE TABLE `{$test_table}` (id INT PRIMARY KEY, v VECTOR(4)) ENGINE=InnoDB"
-				);
-				$exists  = ( null !== $wpdb->get_var( "SHOW TABLES LIKE '{$test_table}'" ) );
-				$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" );
+			// Confirm with a runtime probe (avoid 8.x false positives from version strings).
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+			$probe = $wpdb->get_var( "SHOW COLUMNS FROM information_schema.columns WHERE TABLE_SCHEMA IS NOT NULL LIMIT 0" );
+			// Safer probe: try a no-op CREATE TABLE that uses VECTOR. Wrapped in try.
+			$test_table = $wpdb->prefix . 'openrag_vec_probe';
+			$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+			$created = $wpdb->query(
+				"CREATE TABLE `{$test_table}` (id INT PRIMARY KEY, v VECTOR(4)) ENGINE=InnoDB"
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+			$exists  = ( null !== $wpdb->get_var( "SHOW TABLES LIKE '{$test_table}'" ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+			$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
 				if ( $exists ) {
 					$this->native_vector_capable = true;
 				}
@@ -258,7 +259,7 @@ class Schema {
 		}
 
 		// Drop existing data (assume clean install or migration handled elsewhere).
-		$wpdb->query( "ALTER TABLE `{$table}` MODIFY COLUMN `embedding` VECTOR({$dim}) NULL" );
+		$wpdb->query( "ALTER TABLE `{$table}` MODIFY COLUMN `embedding` VECTOR({$dim}) NULL" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
 	}
 
 	/**
