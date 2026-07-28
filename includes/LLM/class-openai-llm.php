@@ -86,7 +86,7 @@ class OpenAI_LLM implements LLM_Provider {
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 ) {
-			throw new \RuntimeException( 'List models failed (' . $code . ')' ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+			throw new \RuntimeException( 'List models failed (' . (int) $code . ')' );
 		}
 		$ids = array();
 		if ( isset( $json['data'] ) && is_array( $json['data'] ) ) {
