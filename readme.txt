@@ -2,7 +2,7 @@
 Contributors: mahavirvataliya
 Tags: chatbot, ai, artificial-intelligence, rag, embeddings, vector-search, openai, anthropic, claude, cloudflare, ollama, groq, mcp, knowledge-base, pdf, semantic-search, search, assistant
 Requires at least: 6.0
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 8.0
 Stable tag: 1.0.0
 License: GPLv2 or later
@@ -119,16 +119,17 @@ The JSON fallback loads up to 5,000 chunks per query and scores them in PHP. For
 1. **Dashboard** — overview cards (documents, chunks, chats, feedback), system status showing the active LLM, embedding provider and vector store mode, plus recent activity.
 2. **Knowledge Base — Documents & Files** — upload PDF/DOCX/TXT/MD files or paste a URL; documents are listed with live status badges, chunk counts and reindex/delete actions.
 3. **Knowledge Base — WordPress Content** — pick which post types (posts, pages, CPTs) become searchable, enable auto-indexing, and bulk-queue existing content for embedding.
-4. **Chats** — paginated list of every conversation with search, date filter, feedback icons (👍/👎), per-row detail view, and one-click CSV export.
-5. **Settings — LLM Providers** — choose between OpenAI, OpenAI-compatible, Anthropic, Cloudflare, Groq, or Ollama. Fetch models and test the connection right from the admin.
-6. **Settings — Embeddings** — configure the embedding provider separately from the LLM (OpenAI, OpenAI-compatible, Cloudflare Workers AI, or local Ollama).
-7. **Settings — Vector Database** — auto-detected MySQL 9 native VECTOR capability, engine selector (Auto / MySQL / Cloudflare Vectorize), and one-click Vectorize index creation.
-8. **Settings — Indexing** — chunk size, overlap and minimum chunk length, plus the post types and auto-index options.
-9. **Settings — Chat** — bot name, welcome message, system prompt, citations toggle, reasoning/extended-thinking toggle, top-K, similarity threshold, and rate limiting.
-10. **Settings — Appearance** — four preset themes (Light, Dark, Ocean, Sunset) with per-color overrides, plus custom logo and bot avatar upload.
-11. **Settings — MCP** — connect to external MCP servers (streamable HTTP or SSE), discover their tools, and enable them for use by the chatbot via function calling.
-12. **Frontend chat widget** — floating chat with streaming answers, a collapsible reasoning panel, citations/sources list, and thumbs-up/down feedback.
-13. **Frontend chat widget (dark theme)** — the same widget rendered with the Dark theme preset to show customization.
+4. **Knowledge Base — URLs** — paste one or many URLs (plain list or `title,url` CSV) to fetch, extract readable text, embed and index.
+5. **Chats** — paginated list of every conversation with search, date filter, feedback icons (👍/👎), per-row detail view, and one-click CSV export.
+6. **Settings — General** — enable/disable the plugin and set global options.
+7. **Settings — LLM Providers** — choose between OpenAI, OpenAI-compatible, Anthropic, Cloudflare, Groq, or Ollama. Fetch models and test the connection right from the admin.
+8. **Settings — Embeddings** — configure the embedding provider separately from the LLM (OpenAI, OpenAI-compatible, Cloudflare Workers AI, or local Ollama).
+9. **Settings — Vector Database** — auto-detected MySQL 9 native VECTOR capability, engine selector (Auto / MySQL / Cloudflare Vectorize), and one-click Vectorize index creation.
+10. **Settings — Indexing** — chunk size, overlap and minimum chunk length, plus the post types and auto-index options.
+11. **Settings — Chat** — bot name, welcome message, system prompt, citations toggle, reasoning/extended-thinking toggle, top-K, similarity threshold, and rate limiting.
+12. **Settings — Appearance** — four preset themes (Light, Dark, Ocean, Sunset) with per-color overrides, plus custom logo and bot avatar upload.
+13. **Settings — MCP** — connect to external MCP servers (streamable HTTP or SSE), discover their tools, and enable them for use by the chatbot via function calling.
+14. **Frontend chat widget** — floating chat with streaming answers, a collapsible reasoning panel, citations/sources list, and thumbs-up/down feedback.
 
 == Changelog ==
 

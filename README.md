@@ -192,13 +192,88 @@ drop all tables and options when the plugin is deleted.
 
 ## 📸 Screenshots
 
-Thirteen screenshots walking through every screen of the plugin (Dashboard, Knowledge Base,
-Chats, every Settings tab, and the frontend widget in two themes) live in
-[`.wordpress-org/screenshots/`](./.wordpress-org/screenshots). The captions in
-[`readme.txt`](./readme.txt) (`== Screenshots ==` section) match them 1-to-1.
+Every screen of the plugin. The same images and captions power the WordPress.org directory
+page ([`readme.txt`](./readme.txt) `== Screenshots ==`) and are browsable in
+[`.wordpress-org/screenshots/`](./.wordpress-org/screenshots).
 
-After publishing to the WordPress.org directory these images render automatically on the
-plugin page; on GitHub they're browsable directly in the repo.
+### Dashboard
+
+**1. Dashboard** — overview cards (documents, chunks, chats, feedback), system status
+showing the active LLM, embedding provider and vector store mode, plus recent activity.
+
+![Dashboard](./.wordpress-org/screenshots/screenshot-1.png)
+
+### Knowledge Base
+
+**2. Knowledge Base — Documents & Files** — upload PDF/DOCX/TXT/MD files or paste a URL;
+documents are listed with live status badges, chunk counts and reindex/delete actions.
+
+![Knowledge Base — Documents & Files](./.wordpress-org/screenshots/screenshot-2.png)
+
+**3. Knowledge Base — WordPress Content** — pick which post types (posts, pages, CPTs)
+become searchable, enable auto-indexing, and bulk-queue existing content for embedding.
+
+![Knowledge Base — WordPress Content](./.wordpress-org/screenshots/screenshot-3.png)
+
+**4. Knowledge Base — URLs** — paste one or many URLs (plain list or `title,url` CSV) to
+fetch, extract readable text, embed and index.
+
+![Knowledge Base — URLs](./.wordpress-org/screenshots/screenshot-4.png)
+
+### Chats
+
+**5. Chats** — paginated list of every conversation with search, date filter, feedback
+icons (👍/👎), per-row detail view, and one-click CSV export.
+
+![Chats](./.wordpress-org/screenshots/screenshot-5.png)
+
+### Settings
+
+**6. Settings — General** — enable/disable the plugin and set global options.
+
+![Settings — General](./.wordpress-org/screenshots/screenshot-6.png)
+
+**7. Settings — LLM Providers** — choose between OpenAI, OpenAI-compatible, Anthropic,
+Cloudflare, Groq, or Ollama. Fetch models and test the connection right from the admin.
+
+![Settings — LLM Providers](./.wordpress-org/screenshots/screenshot-7.png)
+
+**8. Settings — Embeddings** — configure the embedding provider separately from the LLM
+(OpenAI, OpenAI-compatible, Cloudflare Workers AI, or local Ollama).
+
+![Settings — Embeddings](./.wordpress-org/screenshots/screenshot-8.png)
+
+**9. Settings — Vector Database** — auto-detected MySQL 9 native VECTOR capability, engine
+selector (Auto / MySQL / Cloudflare Vectorize), and one-click Vectorize index creation.
+
+![Settings — Vector Database](./.wordpress-org/screenshots/screenshot-9.png)
+
+**10. Settings — Indexing** — chunk size, overlap and minimum chunk length, plus the post
+types and auto-index options.
+
+![Settings — Indexing](./.wordpress-org/screenshots/screenshot-10.png)
+
+**11. Settings — Chat** — bot name, welcome message, system prompt, citations toggle,
+reasoning/extended-thinking toggle, top-K, similarity threshold, and rate limiting.
+
+![Settings — Chat](./.wordpress-org/screenshots/screenshot-11.png)
+
+**12. Settings — Appearance** — four preset themes (Light, Dark, Ocean, Sunset) with
+per-color overrides, plus custom logo and bot avatar upload.
+
+![Settings — Appearance](./.wordpress-org/screenshots/screenshot-12.png)
+
+**13. Settings — MCP** — connect to external MCP servers (streamable HTTP or SSE),
+discover their tools, and enable them for use by the chatbot via function calling.
+
+![Settings — MCP](./.wordpress-org/screenshots/screenshot-13.png)
+
+### Frontend
+
+**14. Frontend chat widget** — floating chat with streaming answers, a collapsible
+reasoning panel, citations/sources list, and thumbs-up/down feedback.
+
+![Frontend chat widget](./.wordpress-org/screenshots/screenshot-14.png)
 
 ---
 

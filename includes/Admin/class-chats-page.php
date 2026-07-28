@@ -186,7 +186,7 @@ class Chats_Page {
 				)
 			);
 		}
-		fclose( $out );
+		fclose( $out ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- php://output streams must be closed with fclose(); WP_Filesystem cannot stream to the browser.
 		exit;
 	}
 }

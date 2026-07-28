@@ -119,13 +119,13 @@ class Cloudflare_Vectorize implements Vector_Store {
 			)
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( $response->get_error_message() );
+			throw new \RuntimeException( $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( empty( $json['success'] ) ) {
 			$errs = $json['errors'] ?? array();
 			$msg  = is_array( $errs ) && ! empty( $errs[0]['message'] ) ? $errs[0]['message'] : wp_remote_retrieve_body( $response );
-			throw new \RuntimeException( 'Create index failed: ' . $msg );
+			throw new \RuntimeException( 'Create index failed: ' . $msg ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		return $json;
 	}
@@ -155,13 +155,13 @@ class Cloudflare_Vectorize implements Vector_Store {
 			)
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'Vectorize insert failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'Vectorize insert failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( empty( $json['success'] ) ) {
 			$errs = $json['errors'] ?? array();
 			$msg  = is_array( $errs ) && ! empty( $errs[0]['message'] ) ? $errs[0]['message'] : wp_remote_retrieve_body( $response );
-			throw new \RuntimeException( 'Vectorize insert error: ' . $msg );
+			throw new \RuntimeException( 'Vectorize insert error: ' . $msg ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		// Persist the external id on the chunk row.
@@ -196,13 +196,13 @@ class Cloudflare_Vectorize implements Vector_Store {
 			)
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'Vectorize query failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'Vectorize query failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( empty( $json['success'] ) ) {
 			$errs = $json['errors'] ?? array();
 			$msg  = is_array( $errs ) && ! empty( $errs[0]['message'] ) ? $errs[0]['message'] : wp_remote_retrieve_body( $response );
-			throw new \RuntimeException( 'Vectorize query error: ' . $msg );
+			throw new \RuntimeException( 'Vectorize query error: ' . $msg ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$matches = $json['result']['matches'] ?? ( $json['result'] ?? array() );

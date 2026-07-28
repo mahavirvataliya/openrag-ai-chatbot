@@ -131,7 +131,7 @@ class Ingestion_Pipeline {
 
 		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB
 			$wpdb->prepare(
-				'SELECT * FROM `' . $this->schema->table( 'documents' ) . '` WHERE id = %d',
+				'SELECT * FROM `' . $this->schema->table( 'documents' ) . '` WHERE id = %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$document_id
 			),
 			ARRAY_A
@@ -288,7 +288,7 @@ class Ingestion_Pipeline {
 		global $wpdb;
 		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB
 			$wpdb->prepare(
-				'SELECT id FROM `' . $this->schema->table( 'documents' ) . '` WHERE post_id = %d',
+				'SELECT id FROM `' . $this->schema->table( 'documents' ) . '` WHERE post_id = %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$post_id
 			)
 		);
@@ -429,14 +429,14 @@ class Ingestion_Pipeline {
 		global $wpdb;
 		$id = (int) $request['id'];
 		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB
-			$wpdb->prepare( 'SELECT * FROM `' . $this->schema->table( 'documents' ) . '` WHERE id = %d', $id )
+			$wpdb->prepare( 'SELECT * FROM `' . $this->schema->table( 'documents' ) . '` WHERE id = %d', $id ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
 		if ( ! $doc ) {
 			return new \WP_Error( 'not_found', __( 'Document not found.', 'openrag-ai-chatbot' ), array( 'status' => 404 ) );
 		}
 		$chunks = $wpdb->get_results( // phpcs:ignore WordPress.DB
 			$wpdb->prepare(
-				'SELECT id, chunk_index, content, source_url, source_title, token_count FROM `' . $this->schema->table( 'chunks' ) . '` WHERE document_id = %d ORDER BY chunk_index',
+				'SELECT id, chunk_index, content, source_url, source_title, token_count FROM `' . $this->schema->table( 'chunks' ) . '` WHERE document_id = %d ORDER BY chunk_index', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				$id
 			)
 		);

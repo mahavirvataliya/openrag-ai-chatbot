@@ -331,8 +331,8 @@ class Plugin {
 
 		wp_localize_script( 'openrag-chatbot', 'OpenRagConfig', $cfg );
 
-		// Inline appearance CSS variables (overrides theme preset).
-		echo '<style id="openrag-theme-vars">' . Settings::render_css_vars( $settings['appearance'] ) . '</style>' . "\n";
+		// Inline appearance CSS variables (overrides theme preset). render_css_vars() escapes each value via esc_attr().
+		echo '<style id="openrag-theme-vars">' . Settings::render_css_vars( $settings['appearance'] ) . '</style>' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		// Expose config to the template as a local variable.
 		$GLOBALS['OpenRagConfig'] = $cfg;

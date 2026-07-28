@@ -34,7 +34,7 @@ class MCP_Manager {
 	public function enabled_servers() {
 		global $wpdb;
 		return $wpdb->get_results( // phpcs:ignore WordPress.DB
-			'SELECT * FROM `' . $this->schema->table( 'mcp_servers' ) . '` WHERE enabled = 1 ORDER BY id ASC'
+			'SELECT * FROM `' . $this->schema->table( 'mcp_servers' ) . '` WHERE enabled = 1 ORDER BY id ASC' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
 	}
 
@@ -196,7 +196,7 @@ class MCP_Manager {
 	public function get_server( $id ) {
 		global $wpdb;
 		return $wpdb->get_row( // phpcs:ignore WordPress.DB
-			$wpdb->prepare( 'SELECT * FROM `' . $this->schema->table( 'mcp_servers' ) . '` WHERE id = %d', (int) $id )
+			$wpdb->prepare( 'SELECT * FROM `' . $this->schema->table( 'mcp_servers' ) . '` WHERE id = %d', (int) $id ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
 	}
 

@@ -339,7 +339,7 @@ class Document_Loader {
 	 */
 	protected function cleanup_temp( $path ) {
 		if ( $path && file_exists( $path ) ) {
-			@unlink( $path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+			wp_delete_file( $path );
 		}
 	}
 

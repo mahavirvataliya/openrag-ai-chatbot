@@ -259,7 +259,7 @@ class Chat_Controller {
 		$this->sse_headers();
 
 		$emit = function ( $event, $data = array() ) {
-			echo 'event: ' . $event . "\n";
+			echo 'event: ' . $event . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo 'data: ' . wp_json_encode( $data ) . "\n\n";
 			// Flush to the output buffer.
 			while ( ob_get_level() > 0 ) {

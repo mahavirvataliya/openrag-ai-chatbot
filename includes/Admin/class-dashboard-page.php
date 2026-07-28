@@ -36,7 +36,7 @@ class Dashboard_Page {
 		$thumbs_down = (int) $wpdb->get_var( "SELECT COUNT(*) FROM `" . $schema->table( 'chats' ) . "` WHERE feedback = 'down'" ); // phpcs:ignore WordPress.DB
 
 		$recent = $wpdb->get_results( // phpcs:ignore WordPress.DB
-			'SELECT id, role, content, created_at FROM `' . $schema->table( 'chats' ) . '` ORDER BY id DESC LIMIT 10'
+			'SELECT id, role, content, created_at FROM `' . $schema->table( 'chats' ) . '` ORDER BY id DESC LIMIT 10' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
 
 		// Provider + vector store status.

@@ -416,8 +416,10 @@ class Settings_Page {
 				<th><?php esc_html_e( 'MySQL capability', 'openrag-ai-chatbot' ); ?></th>
 				<td>
 					<?php if ( $native ) : ?>
+						<?php /* translators: %s: MySQL version number. */ ?>
 						<span class="openrag-badge ok"><?php echo esc_html( sprintf( __( 'MySQL %s — native VECTOR type available', 'openrag-ai-chatbot' ), $version ) ); ?></span>
 					<?php else : ?>
+						<?php /* translators: %s: MySQL version number. */ ?>
 						<span class="openrag-badge warn"><?php echo esc_html( sprintf( __( 'MySQL %s — using JSON fallback', 'openrag-ai-chatbot' ), $version ) ); ?></span>
 					<?php endif; ?>
 				</td>

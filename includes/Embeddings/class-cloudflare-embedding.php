@@ -74,14 +74,14 @@ class Cloudflare_Embedding implements Embedding_Provider {
 
 		$response = wp_remote_post( $url, $args );
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'Cloudflare embedding request failed: ' . $response->get_error_message() );
+            throw new \RuntimeException( 'Cloudflare embedding request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 || empty( $json['success'] ) ) {
 			$errs = $json['errors'] ?? array();
 			$msg  = is_array( $errs ) && ! empty( $errs[0]['message'] ) ? $errs[0]['message'] : wp_remote_retrieve_body( $response );
-			throw new \RuntimeException( 'Cloudflare embedding API error (' . $code . '): ' . $msg );
+            throw new \RuntimeException( 'Cloudflare embedding API error (' . $code . '): ' . $msg ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$vectors = array();

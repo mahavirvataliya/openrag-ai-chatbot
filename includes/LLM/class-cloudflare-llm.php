@@ -107,14 +107,14 @@ class Cloudflare_LLM implements LLM_Provider {
 			array( 'timeout' => 120, 'headers' => $this->headers(), 'body' => wp_json_encode( $payload ) )
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'Cloudflare LLM request failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'Cloudflare LLM request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 || empty( $json['success'] ) ) {
 			$errs = $json['errors'] ?? array();
 			$msg  = is_array( $errs ) && ! empty( $errs[0]['message'] ) ? $errs[0]['message'] : wp_remote_retrieve_body( $response );
-			throw new \RuntimeException( 'Cloudflare LLM error (' . $code . '): ' . $msg );
+			throw new \RuntimeException( 'Cloudflare LLM error (' . $code . '): ' . $msg ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		// CF returns OpenAI-shaped "result" sometimes, plain "response" other times.
@@ -151,11 +151,11 @@ class Cloudflare_LLM implements LLM_Provider {
 			array( 'timeout' => 300, 'headers' => $this->headers( true ), 'body' => wp_json_encode( $payload ) )
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'Cloudflare LLM stream failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'Cloudflare LLM stream failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		if ( $code < 200 || $code >= 300 ) {
-			throw new \RuntimeException( 'Cloudflare LLM stream error (' . $code . '): ' . wp_remote_retrieve_body( $response ) );
+			throw new \RuntimeException( 'Cloudflare LLM stream error (' . $code . '): ' . wp_remote_retrieve_body( $response ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$body  = wp_remote_retrieve_body( $response );

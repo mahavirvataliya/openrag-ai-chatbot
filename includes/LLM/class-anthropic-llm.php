@@ -68,12 +68,12 @@ class Anthropic_LLM implements LLM_Provider {
 			array( 'timeout' => 30, 'headers' => $this->headers() )
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( $response->get_error_message() );
+			throw new \RuntimeException( $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 ) {
-			throw new \RuntimeException( 'List models failed (' . $code . ')' );
+			throw new \RuntimeException( 'List models failed (' . $code . ')' ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$ids = array();
 		foreach ( ( $json['data'] ?? array() ) as $m ) {
@@ -178,13 +178,13 @@ class Anthropic_LLM implements LLM_Provider {
 			array( 'timeout' => 120, 'headers' => $this->headers(), 'body' => wp_json_encode( $payload ) )
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'Anthropic request failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'Anthropic request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 ) {
 			$err = $json['error']['message'] ?? wp_remote_retrieve_body( $response );
-			throw new \RuntimeException( 'Anthropic API error (' . $code . '): ' . $err );
+			throw new \RuntimeException( 'Anthropic API error (' . $code . '): ' . $err ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$content   = '';
@@ -224,11 +224,11 @@ class Anthropic_LLM implements LLM_Provider {
 			array( 'timeout' => 300, 'headers' => $this->headers( true ), 'body' => wp_json_encode( $payload ) )
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'Anthropic stream failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'Anthropic stream failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		if ( $code < 200 || $code >= 300 ) {
-			throw new \RuntimeException( 'Anthropic stream error (' . $code . '): ' . wp_remote_retrieve_body( $response ) );
+			throw new \RuntimeException( 'Anthropic stream error (' . $code . '): ' . wp_remote_retrieve_body( $response ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		yield from $this->parse_sse( wp_remote_retrieve_body( $response ), $payload['model'] );

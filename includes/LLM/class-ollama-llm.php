@@ -56,12 +56,12 @@ class Ollama_LLM implements LLM_Provider {
 			array( 'timeout' => 30 )
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( $response->get_error_message() );
+			throw new \RuntimeException( $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 ) {
-			throw new \RuntimeException( 'List models failed (' . $code . ')' );
+			throw new \RuntimeException( 'List models failed (' . $code . ')' ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$ids = array();
 		foreach ( ( $json['models'] ?? array() ) as $m ) {
@@ -110,13 +110,13 @@ class Ollama_LLM implements LLM_Provider {
 			array( 'timeout' => 120, 'headers' => array( 'Content-Type' => 'application/json' ), 'body' => wp_json_encode( $payload ) )
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'Ollama request failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'Ollama request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 ) {
 			$err = $json['error'] ?? wp_remote_retrieve_body( $response );
-			throw new \RuntimeException( 'Ollama API error (' . $code . '): ' . $err );
+			throw new \RuntimeException( 'Ollama API error (' . $code . '): ' . $err ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$msg        = $json['message'] ?? array();
@@ -159,11 +159,11 @@ class Ollama_LLM implements LLM_Provider {
 			array( 'timeout' => 300, 'headers' => array( 'Content-Type' => 'application/json' ), 'body' => wp_json_encode( $payload ) )
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'Ollama stream failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'Ollama stream failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		if ( $code < 200 || $code >= 300 ) {
-			throw new \RuntimeException( 'Ollama stream error (' . $code . '): ' . wp_remote_retrieve_body( $response ) );
+			throw new \RuntimeException( 'Ollama stream error (' . $code . '): ' . wp_remote_retrieve_body( $response ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$body  = wp_remote_retrieve_body( $response );

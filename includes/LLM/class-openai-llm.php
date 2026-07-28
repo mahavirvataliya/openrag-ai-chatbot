@@ -81,12 +81,12 @@ class OpenAI_LLM implements LLM_Provider {
 		);
 		$response = wp_remote_get( $this->base_url() . '/models', $args );
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( $response->get_error_message() );
+			throw new \RuntimeException( $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 ) {
-			throw new \RuntimeException( 'List models failed (' . $code . ')' );
+			throw new \RuntimeException( 'List models failed (' . $code . ')' ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$ids = array();
 		if ( isset( $json['data'] ) && is_array( $json['data'] ) ) {
@@ -144,13 +144,13 @@ class OpenAI_LLM implements LLM_Provider {
 			)
 		);
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'LLM request failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'LLM request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 ) {
 			$err = $json['error']['message'] ?? wp_remote_retrieve_body( $response );
-			throw new \RuntimeException( 'LLM API error (' . $code . '): ' . $err );
+			throw new \RuntimeException( 'LLM API error (' . $code . '): ' . $err ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$choice = $json['choices'][0] ?? array();
@@ -179,11 +179,11 @@ class OpenAI_LLM implements LLM_Provider {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			throw new \RuntimeException( 'LLM stream failed: ' . $response->get_error_message() );
+			throw new \RuntimeException( 'LLM stream failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		if ( $code < 200 || $code >= 300 ) {
-			throw new \RuntimeException( 'LLM stream error (' . $code . '): ' . wp_remote_retrieve_body( $response ) );
+			throw new \RuntimeException( 'LLM stream error (' . $code . '): ' . wp_remote_retrieve_body( $response ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$body = wp_remote_retrieve_body( $response );
