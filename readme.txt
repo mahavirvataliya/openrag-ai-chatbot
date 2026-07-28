@@ -1,5 +1,5 @@
-=== WP OpenRag ===
-Contributors: wp-openrag
+=== OpenRag AI Chatbot ===
+Contributors: mahavirvataliya
 Tags: chatbot, ai, artificial-intelligence, rag, embeddings, vector-search, openai, anthropic, claude, cloudflare, ollama, groq, mcp, knowledge-base, pdf, semantic-search, search, assistant
 Requires at least: 6.0
 Tested up to: 6.8
@@ -12,9 +12,9 @@ A complete, self-hosted RAG chatbot for WordPress. Ingest PDFs, DOCX, URLs and y
 
 == Description ==
 
-WP OpenRag turns your WordPress site into a retrieval-augmented-generation (RAG) assistant. Visitors ask questions through a customizable chat widget; the plugin retrieves the most relevant chunks from your knowledge base (documents, URLs, or your own posts and pages), feeds them to the LLM of your choice, and returns a grounded answer with citations.
+OpenRag AI Chatbot turns your WordPress site into a retrieval-augmented-generation (RAG) assistant. Visitors ask questions through a customizable chat widget; the plugin retrieves the most relevant chunks from your knowledge base (documents, URLs, or your own posts and pages), feeds them to the LLM of your choice, and returns a grounded answer with citations.
 
-Unlike hosted chatbot SaaS plugins, WP OpenRag is fully self-hosted. You pick the LLM, the embedding model, and the vector database. There are no per-message fees and no third-party middleman — your server talks directly to the providers you configure.
+Unlike hosted chatbot SaaS plugins, OpenRag AI Chatbot is fully self-hosted. You pick the LLM, the embedding model, and the vector database. There are no per-message fees and no third-party middleman — your server talks directly to the providers you configure.
 
 = Key features =
 
@@ -47,7 +47,7 @@ Connect to external MCP servers in client mode. Their tools become available to 
 * Custom logo, bot avatar, bot name, welcome message, launcher position.
 
 **Conflict-free UI**
-Every widget element is scoped under `#wporag-widget`; every CSS class is prefixed `wporag-`; all theming happens through `--wporag-*` custom properties. No leaked styles, no global selectors.
+Every widget element is scoped under `#openrag-widget`; every CSS class is prefixed `openrag-`; all theming happens through `--openrag-*` custom properties. No leaked styles, no global selectors.
 
 **Background processing**
 Action Scheduler-based queue for large imports, with an on-request (immediate) alternative.
@@ -56,7 +56,7 @@ Action Scheduler-based queue for large imports, with an on-request (immediate) a
 
 Embed the chatbot anywhere with:
 
-`[wp_openrag_chat]`
+`[openrag_chat]`
 
 The floating widget can be enabled or disabled from Settings → Chat.
 
@@ -68,7 +68,7 @@ This plugin sends user questions and (optionally) retrieved content to the confi
 
 = From the WordPress plugin directory (recommended) =
 
-1. Go to *Plugins → Add New* and search for "WP OpenRag".
+1. Go to *Plugins → Add New* and search for "OpenRag AI Chatbot".
 2. Click *Install Now*, then *Activate*.
 3. Go to *OpenRag → Settings* and configure at least one LLM provider and one embedding provider.
 
@@ -76,13 +76,13 @@ This plugin sends user questions and (optionally) retrieved content to the confi
 
 1. Download the ZIP from the *Advanced* section on this page or from the GitHub Releases page.
 2. Go to *Plugins → Add New → Upload Plugin*, choose the ZIP, click *Install Now*.
-3. Activate **WP OpenRag**.
+3. Activate **OpenRag AI Chatbot**.
 4. Visit *OpenRag → Settings* to configure your providers.
 
 = From source (developers) =
 
-1. `git clone https://github.com/wp-openrag/wp-openrag.git wp-openrag`
-2. `cd wp-openrag && composer install --no-dev`
+1. `git clone https://github.com/mahavirvataliya/openrag-ai-chatbot.git openrag-ai-chatbot`
+2. `cd openrag-ai-chatbot && composer install --no-dev`
 3. Move the folder into `wp-content/plugins/` and activate.
 
 == Frequently Asked Questions ==
@@ -116,15 +116,19 @@ The JSON fallback loads up to 5,000 chunks per query and scores them in PHP. For
 
 == Screenshots ==
 
-1. **Dashboard** — overview cards (documents, chunks, chats, feedback), system status, and recent activity.
-2. **Knowledge Base** — import documents, URLs, and WordPress content with live status badges and chunk preview.
-3. **Chats** — paginated list of every conversation with search, date filter, feedback icons, and a detail modal.
-4. **Settings: LLM Providers** — pick a provider, paste your key, fetch models, and test the connection.
-5. **Settings: Vector Database** — auto-detected MySQL 9 capability, engine selector, and Vectorize index creation.
-6. **Settings: Appearance** — four preset themes plus per-color overrides, logo, and bot avatar.
-7. **Frontend chat widget** — streaming answers with reasoning panel, citations, and feedback.
-
-(Screenshot images live in `.wordpress-org/screenshots/` of the GitHub repository.)
+1. **Dashboard** — overview cards (documents, chunks, chats, feedback), system status showing the active LLM, embedding provider and vector store mode, plus recent activity.
+2. **Knowledge Base — Documents & Files** — upload PDF/DOCX/TXT/MD files or paste a URL; documents are listed with live status badges, chunk counts and reindex/delete actions.
+3. **Knowledge Base — WordPress Content** — pick which post types (posts, pages, CPTs) become searchable, enable auto-indexing, and bulk-queue existing content for embedding.
+4. **Chats** — paginated list of every conversation with search, date filter, feedback icons (👍/👎), per-row detail view, and one-click CSV export.
+5. **Settings — LLM Providers** — choose between OpenAI, OpenAI-compatible, Anthropic, Cloudflare, Groq, or Ollama. Fetch models and test the connection right from the admin.
+6. **Settings — Embeddings** — configure the embedding provider separately from the LLM (OpenAI, OpenAI-compatible, Cloudflare Workers AI, or local Ollama).
+7. **Settings — Vector Database** — auto-detected MySQL 9 native VECTOR capability, engine selector (Auto / MySQL / Cloudflare Vectorize), and one-click Vectorize index creation.
+8. **Settings — Indexing** — chunk size, overlap and minimum chunk length, plus the post types and auto-index options.
+9. **Settings — Chat** — bot name, welcome message, system prompt, citations toggle, reasoning/extended-thinking toggle, top-K, similarity threshold, and rate limiting.
+10. **Settings — Appearance** — four preset themes (Light, Dark, Ocean, Sunset) with per-color overrides, plus custom logo and bot avatar upload.
+11. **Settings — MCP** — connect to external MCP servers (streamable HTTP or SSE), discover their tools, and enable them for use by the chatbot via function calling.
+12. **Frontend chat widget** — floating chat with streaming answers, a collapsible reasoning panel, citations/sources list, and thumbs-up/down feedback.
+13. **Frontend chat widget (dark theme)** — the same widget rendered with the Dark theme preset to show customization.
 
 == Changelog ==
 
@@ -147,4 +151,4 @@ Initial release.
 
 == Developers ==
 
-The plugin is namespaced under `WPOpenRag\` with PSR-4 autoloading. The codebase is organized into: `Embeddings`, `LLM`, `VectorStores`, `Ingestion`, `Queue`, `Chat`, `MCP`, `Admin`, and `Database` namespaces. See `README.md` on GitHub for the architecture diagram and REST API reference. Pull requests are welcome.
+The plugin is namespaced under `OpenRag\` with PSR-4 autoloading. The codebase is organized into: `Embeddings`, `LLM`, `VectorStores`, `Ingestion`, `Queue`, `Chat`, `MCP`, `Admin`, and `Database` namespaces. See `README.md` on GitHub for the architecture diagram and REST API reference. Pull requests are welcome.

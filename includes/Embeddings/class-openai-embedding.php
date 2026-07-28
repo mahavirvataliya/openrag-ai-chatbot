@@ -4,10 +4,10 @@
  *
  * Works against any endpoint that mirrors OpenAI's /v1/embeddings shape.
  *
- * @package WPOpenRag\Embeddings
+ * @package OpenRag\Embeddings
  */
 
-namespace WPOpenRag\Embeddings;
+namespace OpenRag\Embeddings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -28,7 +28,7 @@ class OpenAI_Embedding implements Embedding_Provider {
 	}
 
 	public function label() {
-		return __( 'OpenAI', 'wp-openrag' );
+		return __( 'OpenAI', 'openrag-ai-chatbot' );
 	}
 
 	public function is_configured() {

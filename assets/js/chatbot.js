@@ -1,19 +1,19 @@
 /**
- * WP OpenRag chatbot widget — vanilla JS, no dependencies.
+ * OpenRag AI Chatbot chatbot widget — vanilla JS, no dependencies.
  *
  * - Streaming via fetch + ReadableStream (Server-Sent Events).
  * - Markdown rendered with a small inline parser that escapes HTML first (no XSS).
  * - Reasoning + citations + tool badges rendered when present.
  * - Feedback (👍/👎) with optional comment modal.
  * - Session history persisted in localStorage and loaded from server.
- * - All DOM is namespaced under #wporag-widget; classes prefixed wporag-.
+ * - All DOM is namespaced under #openrag-widget; classes prefixed openrag-.
  */
 ( function () {
 	'use strict';
 
-	var CFG = window.WPOpenRagConfig || {};
-	var REST = CFG.restUrl || '/wp-json/wporag/v1';
-	var SESSION_KEY = 'wporag_session';
+	var CFG = window.OpenRagConfig || {};
+	var REST = CFG.restUrl || '/wp-json/openrag/v1';
+	var SESSION_KEY = 'openrag_session';
 
 	function $( sel, ctx ) { return ( ctx || document ).querySelector( sel ); }
 	function el( tag, attrs, kids ) {
@@ -88,18 +88,18 @@
 
 	/* ---------- Boot ---------- */
 	function boot() {
-		widget = document.getElementById( 'wporag-widget' );
+		widget = document.getElementById( 'openrag-widget' );
 		if ( ! widget ) { return; }
-		messages = $( '.wporag-messages', widget );
-		input = $( '.wporag-input', widget );
-		sendBtn = $( '.wporag-send', widget );
-		window_ = $( '.wporag-window', widget );
-		launcher = $( '.wporag-launcher', widget );
+		messages = $( '.openrag-messages', widget );
+		input = $( '.openrag-input', widget );
+		sendBtn = $( '.openrag-send', widget );
+		window_ = $( '.openrag-window', widget );
+		launcher = $( '.openrag-launcher', widget );
 
 		if ( launcher ) {
 			launcher.addEventListener( 'click', toggleOpen );
 		}
-		$( '.wporag-clear', widget ).addEventListener( 'click', clearChat );
+		$( '.openrag-clear', widget ).addEventListener( 'click', clearChat );
 
 		// Auto-resize textarea.
 		input.addEventListener( 'input', function () {
@@ -112,13 +112,13 @@
 				submit();
 			}
 		} );
-		$( '.wporag-form', widget ).addEventListener( 'submit', function ( e ) {
+		$( '.openrag-form', widget ).addEventListener( 'submit', function ( e ) {
 			e.preventDefault();
 			submit();
 		} );
 
 		// Open by default when inline (shortcode).
-		if ( widget.classList.contains( 'wporag-inline' ) ) {
+		if ( widget.classList.contains( 'openrag-inline' ) ) {
 			widget.classList.add( 'is-open' );
 			if ( window_ ) { window_.hidden = false; }
 		}
@@ -140,8 +140,8 @@
 
 	/* ---------- Rendering ---------- */
 	function addMsg( role, content ) {
-		var msg = el( 'div', { class: 'wporag-msg wporag-msg-' + role } );
-		var bubble = el( 'div', { class: 'wporag-bubble wporag-bubble-' + role, html: role === 'user' ? escapeHtml( content ) : md( content ) } );
+		var msg = el( 'div', { class: 'openrag-msg openrag-msg-' + role } );
+		var bubble = el( 'div', { class: 'openrag-bubble openrag-bubble-' + role, html: role === 'user' ? escapeHtml( content ) : md( content ) } );
 		msg.appendChild( bubble );
 		messages.appendChild( msg );
 		scrollToBottom();
@@ -149,8 +149,8 @@
 	}
 
 	function addTyping() {
-		var msg = el( 'div', { class: 'wporag-msg wporag-msg-bot' } );
-		var t = el( 'div', { class: 'wporag-bubble wporag-bubble-bot wporag-typing' }, [
+		var msg = el( 'div', { class: 'openrag-msg openrag-msg-bot' } );
+		var t = el( 'div', { class: 'openrag-bubble openrag-bubble-bot openrag-typing' }, [
 			el( 'span' ), el( 'span' ), el( 'span' )
 		] );
 		msg.appendChild( t );
@@ -164,13 +164,13 @@
 	}
 
 	function addBadge( text ) {
-		var msg = el( 'div', { class: 'wporag-tool-badge' }, [ '🔧 ' + text ] );
+		var msg = el( 'div', { class: 'openrag-tool-badge' }, [ '🔧 ' + text ] );
 		messages.appendChild( msg );
 		scrollToBottom();
 	}
 
 	function addError( text ) {
-		messages.appendChild( el( 'div', { class: 'wporag-error' }, [ text ] ) );
+		messages.appendChild( el( 'div', { class: 'openrag-error' }, [ text ] ) );
 		scrollToBottom();
 	}
 
@@ -250,7 +250,7 @@
 		.catch( function ( err ) {
 			if ( typingNode && typingNode.parentNode ) { typingNode.parentNode.removeChild( typingNode ); }
 			addError( ( CFG.i18n && CFG.i18n.errorMessage ) || 'Error' );
-			if ( window.console ) { console.error( '[wporag]', err ); }
+			if ( window.console ) { console.error( '[openrag]', err ); }
 		} )
 		.finally( function () {
 			streaming = null;
@@ -272,9 +272,9 @@
 			case 'reasoning':
 				if ( ! CFG.showReasoning ) { break; }
 				if ( ! current.reasoningWrap ) {
-					current.reasoningWrap = el( 'details', { class: 'wporag-reasoning' }, [
+					current.reasoningWrap = el( 'details', { class: 'openrag-reasoning' }, [
 						el( 'summary', {}, [ ( CFG.i18n && CFG.i18n.reasoning) || 'Reasoning' ] ),
-						current.reasoningBody = el( 'div', { class: 'wporag-reasoning-body' } ),
+						current.reasoningBody = el( 'div', { class: 'openrag-reasoning-body' } ),
 					] );
 					current.msg.insertBefore( current.reasoningWrap, current.bubble );
 				}
@@ -302,10 +302,10 @@
 
 	function renderCitations( msgEl, sources ) {
 		if ( ! sources || ! sources.length ) { return; }
-		var wrap = el( 'div', { class: 'wporag-citations' } );
-		wrap.appendChild( el( 'div', { class: 'wporag-citations-title' }, [ ( CFG.i18n && CFG.i18n.sources ) || 'Sources' ] ) );
+		var wrap = el( 'div', { class: 'openrag-citations' } );
+		wrap.appendChild( el( 'div', { class: 'openrag-citations-title' }, [ ( CFG.i18n && CFG.i18n.sources ) || 'Sources' ] ) );
 		sources.forEach( function ( s, i ) {
-			var a = el( 'a', { class: 'wporag-citation', href: s.url || '#', target: '_blank', rel: 'noopener noreferrer' }, [ '[' + ( i + 1 ) + '] ' + ( s.title || s.url ) ] );
+			var a = el( 'a', { class: 'openrag-citation', href: s.url || '#', target: '_blank', rel: 'noopener noreferrer' }, [ '[' + ( i + 1 ) + '] ' + ( s.title || s.url ) ] );
 			if ( ! s.url ) { a.removeAttribute( 'href' ); }
 			wrap.appendChild( a );
 		} );
@@ -316,9 +316,9 @@
 	function finalizeMessage( current, doneEvent ) {
 		// Add feedback buttons.
 		if ( CFG.i18n ) {
-			var actions = el( 'div', { class: 'wporag-actions' } );
-			var up = el( 'button', { class: 'wporag-feedback', 'data-feedback': 'up', title: CFG.i18n.feedbackGood }, [ '👍' ] );
-			var down = el( 'button', { class: 'wporag-feedback', 'data-feedback': 'down', title: CFG.i18n.feedbackBad }, [ '👎' ] );
+			var actions = el( 'div', { class: 'openrag-actions' } );
+			var up = el( 'button', { class: 'openrag-feedback', 'data-feedback': 'up', title: CFG.i18n.feedbackGood }, [ '👍' ] );
+			var down = el( 'button', { class: 'openrag-feedback', 'data-feedback': 'down', title: CFG.i18n.feedbackBad }, [ '👎' ] );
 			up.addEventListener( 'click', function () { sendFeedback( doneEvent.message_id || current.msg.dataset.id, 'up', up ); } );
 			down.addEventListener( 'click', function () {
 				promptComment( function ( c ) { sendFeedback( doneEvent.message_id || current.msg.dataset.id, 'down', down, c ); } );
@@ -344,21 +344,21 @@
 			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': CFG.nonce || '' },
 			body: JSON.stringify( { message_id: parseInt( messageId, 10 ), feedback: feedback, comment: comment || '' } ),
 		} ).then( function () {
-			var siblings = btnEl.parentNode.querySelectorAll( '.wporag-feedback' );
+			var siblings = btnEl.parentNode.querySelectorAll( '.openrag-feedback' );
 			siblings.forEach( function ( s ) { s.classList.remove( 'is-active' ); } );
 			btnEl.classList.add( 'is-active' );
 		} ).catch( function () {} );
 	}
 
 	function promptComment( cb ) {
-		var overlay = el( 'div', { class: 'wporag-feedback-overlay', style: 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:2147483001;display:flex;align-items:center;justify-content:center;' } );
+		var overlay = el( 'div', { class: 'openrag-feedback-overlay', style: 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:2147483001;display:flex;align-items:center;justify-content:center;' } );
 		var box = el( 'div', { style: 'background:#fff;color:#0f172a;padding:16px;border-radius:12px;max-width:340px;width:90%;' } );
 		box.appendChild( el( 'p', { style: 'margin:0 0 8px;font-weight:600;' }, [ ( CFG.i18n && CFG.i18n.feedbackBad ) || 'Feedback' ] ) );
 		var ta = el( 'textarea', { rows: 3, style: 'width:100%;border:1px solid #ccc;border-radius:8px;padding:8px;' } );
 		ta.setAttribute( 'placeholder', ( CFG.i18n && CFG.i18n.feedbackComment ) || '' );
 		var row = el( 'div', { style: 'display:flex;gap:8px;justify-content:flex-end;margin-top:10px;' } );
 		var cancel = el( 'button', { style: 'padding:6px 12px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;' }, [ 'Cancel' ] );
-		var send = el( 'button', { style: 'padding:6px 12px;border:none;border-radius:6px;background:var(--wporag-primary,#3b82f6);color:#fff;cursor:pointer;' }, [ ( CFG.i18n && CFG.i18n.send ) || 'Send' ] );
+		var send = el( 'button', { style: 'padding:6px 12px;border:none;border-radius:6px;background:var(--openrag-primary,#3b82f6);color:#fff;cursor:pointer;' }, [ ( CFG.i18n && CFG.i18n.send ) || 'Send' ] );
 		cancel.addEventListener( 'click', function () { document.body.removeChild( overlay ); } );
 		send.addEventListener( 'click', function () {
 			var v = ta.value.trim();
@@ -412,8 +412,8 @@
 			messages.innerHTML = '';
 			history = [];
 			if ( CFG.welcome ) {
-				var m = el( 'div', { class: 'wporag-msg wporag-msg-bot' } );
-				m.appendChild( el( 'div', { class: 'wporag-bubble wporag-bubble-bot', html: escapeHtml( CFG.welcome ) } ) );
+				var m = el( 'div', { class: 'openrag-msg openrag-msg-bot' } );
+				m.appendChild( el( 'div', { class: 'openrag-bubble openrag-bubble-bot', html: escapeHtml( CFG.welcome ) } ) );
 				messages.appendChild( m );
 			}
 		} );

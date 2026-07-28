@@ -6,12 +6,12 @@
  * and have no overlap, this preserves formatting and slides a window over
  * sentences so that adjacent chunks share context.
  *
- * @package WPOpenRag\Ingestion
+ * @package OpenRag\Ingestion
  */
 
-namespace WPOpenRag\Ingestion;
+namespace OpenRag\Ingestion;
 
-use WPOpenRag\Settings;
+use OpenRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

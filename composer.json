@@ -1,6 +1,6 @@
 {
-    "name": "wp-openrag/wp-openrag",
-    "description": "WP OpenRag - RAG chatbot WordPress plugin with embeddings, knowledge base, MCP integration, and multi-provider support.",
+    "name": "openrag-ai-chatbot/openrag-ai-chatbot",
+    "description": "OpenRag AI Chatbot - RAG chatbot WordPress plugin with embeddings, knowledge base, MCP integration, and multi-provider support.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "stable",
@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "WPOpenRag\\": "includes/"
+            "OpenRag\\": "includes/"
         }
     },
     "config": {

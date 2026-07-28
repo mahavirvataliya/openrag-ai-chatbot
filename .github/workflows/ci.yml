@@ -52,30 +52,30 @@ jobs:
 
       - name: Autoload smoke test
         env:
-          WP_OPENRAG_VERSION: '1.0.0'
-          WP_OPENRAG_FILE: 'wp-openrag.php'
+          OPENRAG_VERSION: '1.0.0'
+          OPENRAG_FILE: 'openrag-ai-chatbot.php'
         run: |
           php -r '
           define("ABSPATH", "/tmp/");
-          define("WP_OPENRAG_VERSION", "1.0.0");
-          define("WP_OPENRAG_FILE", __FILE__);
-          define("WP_OPENRAG_DIR", getcwd() . "/");
-          define("WP_OPENRAG_URL", "");
-          define("WP_OPENRAG_BASENAME", "wp-openrag/wp-openrag.php");
-          define("WP_OPENRAG_DB_VERSION", "1.0.0");
-          define("WP_OPENRAG_REST_NAMESPACE", "wporag/v1");
-          define("WP_OPENRAG_OPTION_PREFIX", "wporag_");
-          require WP_OPENRAG_DIR . "includes/class-autoloader.php";
-          WPOpenRag\Autoloader::register();
+          define("OPENRAG_VERSION", "1.0.0");
+          define("OPENRAG_FILE", __FILE__);
+          define("OPENRAG_DIR", getcwd() . "/");
+          define("OPENRAG_URL", "");
+          define("OPENRAG_BASENAME", "openrag-ai-chatbot/openrag-ai-chatbot.php");
+          define("OPENRAG_DB_VERSION", "1.0.0");
+          define("OPENRAG_REST_NAMESPACE", "openrag/v1");
+          define("OPENRAG_OPTION_PREFIX", "openrag_");
+          require OPENRAG_DIR . "includes/class-autoloader.php";
+          OpenRag\Autoloader::register();
           $classes = [
-            "WPOpenRag\\Plugin","WPOpenRag\\Activator","WPOpenRag\\Settings",
-            "WPOpenRag\\Database\\Schema",
-            "WPOpenRag\\Embeddings\\Embedding_Manager","WPOpenRag\\Embeddings\\OpenAI_Embedding",
-            "WPOpenRag\\LLM\\LLM_Manager","WPOpenRag\\LLM\\OpenAI_LLM","WPOpenRag\\LLM\\Anthropic_LLM",
-            "WPOpenRag\\VectorStores\\MySQL_Store","WPOpenRag\\VectorStores\\Cloudflare_Vectorize",
-            "WPOpenRag\\Ingestion\\Ingestion_Pipeline","WPOpenRag\\Queue\\Background_Processor",
-            "WPOpenRag\\Chat\\Chat_Controller","WPOpenRag\\MCP\\MCP_Manager",
-            "WPOpenRag\\Admin\\Admin_Menu","WPOpenRag\\Admin\\Settings_Page",
+            "OpenRag\\Plugin","OpenRag\\Activator","OpenRag\\Settings",
+            "OpenRag\\Database\\Schema",
+            "OpenRag\\Embeddings\\Embedding_Manager","OpenRag\\Embeddings\\OpenAI_Embedding",
+            "OpenRag\\LLM\\LLM_Manager","OpenRag\\LLM\\OpenAI_LLM","OpenRag\\LLM\\Anthropic_LLM",
+            "OpenRag\\VectorStores\\MySQL_Store","OpenRag\\VectorStores\\Cloudflare_Vectorize",
+            "OpenRag\\Ingestion\\Ingestion_Pipeline","OpenRag\\Queue\\Background_Processor",
+            "OpenRag\\Chat\\Chat_Controller","OpenRag\\MCP\\MCP_Manager",
+            "OpenRag\\Admin\\Admin_Menu","OpenRag\\Admin\\Settings_Page",
           ];
           $missing = [];
           foreach ($classes as $c) {

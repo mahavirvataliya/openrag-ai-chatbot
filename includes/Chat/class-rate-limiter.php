@@ -2,12 +2,12 @@
 /**
  * Rate limiter — per-IP request counters using transients.
  *
- * @package WPOpenRag\Chat
+ * @package OpenRag\Chat
  */
 
-namespace WPOpenRag\Chat;
+namespace OpenRag\Chat;
 
-use WPOpenRag\Settings;
+use OpenRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -27,7 +27,7 @@ class Rate_Limiter {
 		$window   = max( 5, (int) ( $settings['rate_limit_window'] ?? 60 ) );
 		$max      = max( 1, (int) ( $settings['rate_limit_max'] ?? 15 ) );
 
-		$key   = 'wporag_rl_' . md5( $ip );
+		$key   = 'openrag_rl_' . md5( $ip );
 		$count = (int) get_transient( $key );
 		if ( $count >= $max ) {
 			return false;

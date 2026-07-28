@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 #
-# Generate the languages/wp-openrag.pot translation template.
+# Generate the languages/openrag-ai-chatbot.pot translation template.
 #
 # Primary method: wp-cli i18n make-pot (handles PHP, JS, and proper plural forms).
 # Fallback: xgettext (if wp-cli isn't available; PHP-only).
 #
-# Translators consume this .pot to produce wp-openrag-<locale>.po/.mo files
+# Translators consume this .pot to produce openrag-ai-chatbot-<locale>.po/.mo files
 # which are then committed under languages/.
 #
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-OUT="${ROOT_DIR}/languages/wp-openrag.pot"
+OUT="${ROOT_DIR}/languages/openrag-ai-chatbot.pot"
 
 cd "${ROOT_DIR}"
 mkdir -p languages
@@ -20,10 +20,10 @@ mkdir -p languages
 if command -v wp >/dev/null 2>&1; then
     echo "==> Generating POT via wp-cli i18n make-pot"
     wp i18n make-pot . "${OUT}" \
-        --domain="wp-openrag" \
-        --package-name="WP OpenRag" \
+        --domain="openrag-ai-chatbot" \
+        --package-name="OpenRag AI Chatbot" \
         --exclude="vendor,dist,.git,.github" \
-        --headers='{"Report-Msgid-Bugs-To":"https://github.com/wp-openrag/wp-openrag/issues","POT-Creation-Date":""}' \
+        --headers='{"Report-Msgid-Bugs-To":"https://github.com/mahavirvataliya/openrag-ai-chatbot/issues","POT-Creation-Date":""}' \
         --allow-root
 elif command -v xgettext >/dev/null 2>&1; then
     echo "==> wp-cli not found — falling back to xgettext (PHP only)"
@@ -39,8 +39,8 @@ elif command -v xgettext >/dev/null 2>&1; then
         --keyword=esc_attr_e \
         --keyword=esc_attr_x:1,2c \
         --keyword=wp_json_encode:1 \
-        --package-name="WP OpenRag" \
-        --msgid-bugs-address="https://github.com/wp-openrag/wp-openrag/issues" \
+        --package-name="OpenRag AI Chatbot" \
+        --msgid-bugs-address="https://github.com/mahavirvataliya/openrag-ai-chatbot/issues" \
         --output="${OUT}" \
         $(find . -name "*.php" -not -path "./vendor/*" -not -path "./dist/*")
     # Strip xgettext's default charset header so the file is consistent.

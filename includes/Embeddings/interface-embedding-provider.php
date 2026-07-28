@@ -2,10 +2,10 @@
 /**
  * Embedding provider contract.
  *
- * @package WPOpenRag\Embeddings
+ * @package OpenRag\Embeddings
  */
 
-namespace WPOpenRag\Embeddings;
+namespace OpenRag\Embeddings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

@@ -8,16 +8,16 @@
  *   - Optionally attach MCP tools and run a tool-call loop.
  *   - Return content + reasoning + citations + usage.
  *
- * @package WPOpenRag\Chat
+ * @package OpenRag\Chat
  */
 
-namespace WPOpenRag\Chat;
+namespace OpenRag\Chat;
 
-use WPOpenRag\Embeddings\Embedding_Manager;
-use WPOpenRag\LLM\LLM_Manager;
-use WPOpenRag\MCP\MCP_Manager;
-use WPOpenRag\Settings;
-use WPOpenRag\VectorStores\Vector_Store_Manager;
+use OpenRag\Embeddings\Embedding_Manager;
+use OpenRag\LLM\LLM_Manager;
+use OpenRag\MCP\MCP_Manager;
+use OpenRag\Settings;
+use OpenRag\VectorStores\Vector_Store_Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -84,7 +84,7 @@ class Rag_Engine {
 	 * @return array<int,float>
 	 */
 	public function embed_query( $query ) {
-		$key = 'wporag_q_' . md5( $query );
+		$key = 'openrag_q_' . md5( $query );
 		$cached = get_transient( $key );
 		if ( false !== $cached && is_array( $cached ) ) {
 			return $cached;
@@ -128,7 +128,7 @@ class Rag_Engine {
 			}
 			$seen[ $ckey ] = true;
 			$citations[]   = array(
-				'title' => '' !== $title ? $title : ( $url ? wp_basename( $url ) : __( 'Source', 'wp-openrag' ) ),
+				'title' => '' !== $title ? $title : ( $url ? wp_basename( $url ) : __( 'Source', 'openrag-ai-chatbot' ) ),
 				'url'   => $url,
 			);
 		}
@@ -153,9 +153,9 @@ class Rag_Engine {
 		$system   = (string) ( $settings['system_prompt'] ?? '' );
 		if ( '' !== $context ) {
 			$citation_instruction = $citations
-				? __( 'Cite sources using bracketed numbers like [1], [2] that correspond to the context blocks above.', 'wp-openrag' )
+				? __( 'Cite sources using bracketed numbers like [1], [2] that correspond to the context blocks above.', 'openrag-ai-chatbot' )
 				: '';
-			$system .= "\n\n" . __( 'Use the following knowledge base context when relevant:', 'wp-openrag' )
+			$system .= "\n\n" . __( 'Use the following knowledge base context when relevant:', 'openrag-ai-chatbot' )
 				. "\n\n" . $context
 				. ( '' !== $citation_instruction ? "\n\n" . $citation_instruction : '' );
 		}

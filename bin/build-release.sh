@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
-# Build a distributable WP OpenRag plugin ZIP.
+# Build a distributable OpenRag AI Chatbot plugin ZIP.
 #
 # Usage:
 #   ./bin/build-release.sh [version]
 #
-# - Default version is read from wp-openrag.php (WP_OPENRAG_VERSION constant).
-# - Produces dist/wp-openrag-{version}.zip containing the plugin with vendor/
+# - Default version is read from openrag-ai-chatbot.php (OPENRAG_VERSION constant).
+# - Produces dist/openrag-ai-chatbot-{version}.zip containing the plugin with vendor/
 #   pre-built, no dev dependencies, no dev tooling.
 # - Requires: bash 4+, php, composer, zip.
 #
@@ -22,9 +22,9 @@ cd "${ROOT_DIR}"
 # ---- Determine version ------------------------------------------------------
 VERSION="${1:-}"
 if [[ -z "${VERSION}" ]]; then
-    VERSION="$(grep -E "WP_OPENRAG_VERSION" wp-openrag.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)"
+    VERSION="$(grep -E "OPENRAG_VERSION" openrag-ai-chatbot.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)"
     if [[ -z "${VERSION}" ]]; then
-        echo "ERROR: could not detect version from wp-openrag.php" >&2
+        echo "ERROR: could not detect version from openrag-ai-chatbot.php" >&2
         exit 1
     fi
 fi
@@ -53,7 +53,7 @@ fi
 STAGE="$(mktemp -d)"
 trap 'rm -rf "${STAGE}"' EXIT
 
-PKG_DIR="${STAGE}/wp-openrag"
+PKG_DIR="${STAGE}/openrag-ai-chatbot"
 mkdir -p "${PKG_DIR}"
 
 echo "==> Copying source files"
@@ -82,11 +82,11 @@ echo "==> Installing production dependencies"
 rm -f "${PKG_DIR}/composer.lock"
 
 # ---- Package ----------------------------------------------------------------
-echo "==> Packaging dist/wp-openrag-${VERSION}.zip"
+echo "==> Packaging dist/openrag-ai-chatbot-${VERSION}.zip"
 mkdir -p "${DIST_DIR}"
-OUT="${DIST_DIR}/wp-openrag-${VERSION}.zip"
+OUT="${DIST_DIR}/openrag-ai-chatbot-${VERSION}.zip"
 rm -f "${OUT}"
-( cd "${STAGE}" && zip -qr "${OUT}" wp-openrag )
+( cd "${STAGE}" && zip -qr "${OUT}" openrag-ai-chatbot )
 
 # ---- Report -----------------------------------------------------------------
 SIZE="$(du -h "${OUT}" | cut -f1)"

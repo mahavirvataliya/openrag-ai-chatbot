@@ -4,10 +4,10 @@
  *
  * Endpoint: POST {base_url}/api/chat  Body: { model, messages, stream, tools }
  *
- * @package WPOpenRag\LLM
+ * @package OpenRag\LLM
  */
 
-namespace WPOpenRag\LLM;
+namespace OpenRag\LLM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -23,7 +23,7 @@ class Ollama_LLM implements LLM_Provider {
 	}
 
 	public function label() {
-		return __( 'Ollama (local)', 'wp-openrag' );
+		return __( 'Ollama (local)', 'openrag-ai-chatbot' );
 	}
 
 	public function is_configured() {

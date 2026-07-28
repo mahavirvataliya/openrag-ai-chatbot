@@ -2,10 +2,10 @@
 /**
  * Generic OpenAI-compatible embedding provider (LM Studio, Together, vLLM, etc.).
  *
- * @package WPOpenRag\Embeddings
+ * @package OpenRag\Embeddings
  */
 
-namespace WPOpenRag\Embeddings;
+namespace OpenRag\Embeddings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -18,7 +18,7 @@ class Compatible_Embedding extends OpenAI_Embedding {
 	}
 
 	public function label() {
-		return __( 'OpenAI-compatible', 'wp-openrag' );
+		return __( 'OpenAI-compatible', 'openrag-ai-chatbot' );
 	}
 
 	public function is_configured() {

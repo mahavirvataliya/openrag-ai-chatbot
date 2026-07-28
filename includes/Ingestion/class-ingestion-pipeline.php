@@ -4,15 +4,15 @@
  *
  * Also exposes REST routes for the knowledge-base admin UI.
  *
- * @package WPOpenRag\Ingestion
+ * @package OpenRag\Ingestion
  */
 
-namespace WPOpenRag\Ingestion;
+namespace OpenRag\Ingestion;
 
-use WPOpenRag\Database\Schema;
-use WPOpenRag\Embeddings\Embedding_Manager;
-use WPOpenRag\Settings;
-use WPOpenRag\VectorStores\Vector_Store_Manager;
+use OpenRag\Database\Schema;
+use OpenRag\Embeddings\Embedding_Manager;
+use OpenRag\Settings;
+use OpenRag\VectorStores\Vector_Store_Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -304,7 +304,7 @@ class Ingestion_Pipeline {
 	 */
 	protected function maybe_migrate_vector_dimension() {
 		$store = $this->vectors->store();
-		if ( ! ( $store instanceof \WPOpenRag\VectorStores\MySQL_Store ) || ! $store->is_native() ) {
+		if ( ! ( $store instanceof \OpenRag\VectorStores\MySQL_Store ) || ! $store->is_native() ) {
 			return;
 		}
 		$dim = $this->embeddings->dimensions();
@@ -319,7 +319,7 @@ class Ingestion_Pipeline {
 
 	public function register_routes() {
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/documents',
 			array(
 				array(
@@ -336,7 +336,7 @@ class Ingestion_Pipeline {
 		);
 
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/documents/(?P<id>\d+)',
 			array(
 				array(
@@ -353,7 +353,7 @@ class Ingestion_Pipeline {
 		);
 
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/documents/(?P<id>\d+)/process',
 			array(
 				'methods'             => 'POST',
@@ -363,7 +363,7 @@ class Ingestion_Pipeline {
 		);
 
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/posts/index',
 			array(
 				'methods'             => 'POST',
@@ -375,7 +375,7 @@ class Ingestion_Pipeline {
 
 	public function check_admin( \WP_REST_Request $request ) {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return new \WP_Error( 'rest_forbidden', __( 'Insufficient permissions.', 'wp-openrag' ), array( 'status' => 403 ) );
+			return new \WP_Error( 'rest_forbidden', __( 'Insufficient permissions.', 'openrag-ai-chatbot' ), array( 'status' => 403 ) );
 		}
 		return true;
 	}
@@ -418,8 +418,8 @@ class Ingestion_Pipeline {
 			)
 		);
 
-		if ( $queue && has_action( 'wporag_process_document' ) ) {
-			do_action( 'wporag_schedule_document', $doc_id );
+		if ( $queue && has_action( 'openrag_process_document' ) ) {
+			do_action( 'openrag_schedule_document', $doc_id );
 		}
 
 		return rest_ensure_response( array( 'id' => $doc_id, 'queued' => $queue ) );
@@ -432,7 +432,7 @@ class Ingestion_Pipeline {
 			$wpdb->prepare( 'SELECT * FROM `' . $this->schema->table( 'documents' ) . '` WHERE id = %d', $id )
 		);
 		if ( ! $doc ) {
-			return new \WP_Error( 'not_found', __( 'Document not found.', 'wp-openrag' ), array( 'status' => 404 ) );
+			return new \WP_Error( 'not_found', __( 'Document not found.', 'openrag-ai-chatbot' ), array( 'status' => 404 ) );
 		}
 		$chunks = $wpdb->get_results( // phpcs:ignore WordPress.DB
 			$wpdb->prepare(
@@ -455,8 +455,8 @@ class Ingestion_Pipeline {
 		$general = Settings::group( 'general' );
 		$mode    = $mode ?: (string) ( $general['processing_mode'] ?? 'background' );
 
-		if ( 'background' === $mode && has_action( 'wporag_schedule_document' ) ) {
-			do_action( 'wporag_schedule_document', $id );
+		if ( 'background' === $mode && has_action( 'openrag_schedule_document' ) ) {
+			do_action( 'openrag_schedule_document', $id );
 			return rest_ensure_response( array( 'id' => $id, 'queued' => true ) );
 		}
 
@@ -485,8 +485,8 @@ class Ingestion_Pipeline {
 
 		$queued = 0;
 		foreach ( $query->posts as $post_id ) {
-			if ( has_action( 'wporag_schedule_post' ) ) {
-				do_action( 'wporag_schedule_post', $post_id );
+			if ( has_action( 'openrag_schedule_post' ) ) {
+				do_action( 'openrag_schedule_post', $post_id );
 				$queued++;
 			}
 		}

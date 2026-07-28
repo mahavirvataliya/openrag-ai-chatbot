@@ -7,7 +7,7 @@ name: Release
 #   git tag v1.0.0
 #   git push --tags
 #
-# The resulting release will contain wp-openrag-<version>.zip with vendor/
+# The resulting release will contain openrag-ai-chatbot-<version>.zip with vendor/
 # pre-built, ready for end users to upload via Plugins → Add New → Upload Plugin.
 
 on:
@@ -60,23 +60,23 @@ jobs:
 
       - name: Verify archive contents
         run: |
-          unzip -l "dist/wp-openrag-${{ steps.ver.outputs.version }}.zip" | head -40
-          test -f dist/wp-openrag-${{ steps.ver.outputs.version }}.zip
+          unzip -l "dist/openrag-ai-chatbot-${{ steps.ver.outputs.version }}.zip" | head -40
+          test -f dist/openrag-ai-chatbot-${{ steps.ver.outputs.version }}.zip
 
       - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: WP OpenRag ${{ steps.ver.outputs.version }}
+          name: OpenRag AI Chatbot ${{ steps.ver.outputs.version }}
           tag_name: ${{ github.ref_name || format('v{0}', steps.ver.outputs.version) }}
           generate_release_notes: true
           files: |
-            dist/wp-openrag-${{ steps.ver.outputs.version }}.zip
+            dist/openrag-ai-chatbot-${{ steps.ver.outputs.version }}.zip
           body: |
             ## Installation
 
-            1. Download `wp-openrag-${{ steps.ver.outputs.version }}.zip`.
+            1. Download `openrag-ai-chatbot-${{ steps.ver.outputs.version }}.zip`.
             2. In WordPress: **Plugins → Add New → Upload Plugin** → choose the ZIP → **Install Now**.
-            3. Activate **WP OpenRag**.
+            3. Activate **OpenRag AI Chatbot**.
             4. Visit **OpenRag → Settings** to configure an LLM provider and an embedding provider.
 
             See the [README](https://github.com/${{ github.repository }}/blob/main/README.md#-installation) for full setup instructions

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- WP OpenRag plugin banner source (772x250 logical). Rasterized to banner-772x250.png and banner-1544x500.png. -->
-<svg xmlns="http://www.w3.org/2000/svg" width="772" height="250" viewBox="0 0 772 250" role="img" aria-label="WP OpenRag">
+<!-- OpenRag AI Chatbot plugin banner source (772x250 logical). Rasterized to banner-772x250.png and banner-1544x500.png. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="772" height="250" viewBox="0 0 772 250" role="img" aria-label="OpenRag AI Chatbot">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#1e3a8a"/>
@@ -35,7 +35,7 @@
 
   <!-- Wordmark on the left -->
   <g transform="translate(48,92)">
-    <text x="0" y="0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">WP OpenRag</text>
+    <text x="0" y="0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#ffffff">OpenRag AI Chatbot</text>
     <text x="2" y="34" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#dbeafe" fill-opacity="0.95">Self-hosted RAG chatbot · embeddings · vector search · MCP</text>
   </g>
 </svg>

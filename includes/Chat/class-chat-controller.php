@@ -2,24 +2,24 @@
 /**
  * Chat controller — REST routes including SSE streaming.
  *
- * Routes (namespace wporag/v1):
+ * Routes (namespace openrag/v1):
  *   POST /chat          → streaming SSE response
  *   POST /chat/sync     → non-streaming response
  *   POST /feedback      → record 👍/👎 feedback
  *   GET  /history       → session-scoped history
  *   DELETE /history     → clear session history
  *
- * @package WPOpenRag\Chat
+ * @package OpenRag\Chat
  */
 
-namespace WPOpenRag\Chat;
+namespace OpenRag\Chat;
 
-use WPOpenRag\Database\Schema;
-use WPOpenRag\Embeddings\Embedding_Manager;
-use WPOpenRag\LLM\LLM_Manager;
-use WPOpenRag\Settings;
-use WPOpenRag\VectorStores\Vector_Store_Manager;
-use WPOpenRag\MCP\MCP_Manager;
+use OpenRag\Database\Schema;
+use OpenRag\Embeddings\Embedding_Manager;
+use OpenRag\LLM\LLM_Manager;
+use OpenRag\Settings;
+use OpenRag\VectorStores\Vector_Store_Manager;
+use OpenRag\MCP\MCP_Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -58,7 +58,7 @@ class Chat_Controller {
 		$perm = array( $this, 'permission_public' );
 
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/chat',
 			array(
 				'methods'             => 'POST',
@@ -73,7 +73,7 @@ class Chat_Controller {
 		);
 
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/chat/sync',
 			array(
 				'methods'             => 'POST',
@@ -88,7 +88,7 @@ class Chat_Controller {
 		);
 
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/feedback',
 			array(
 				'methods'             => 'POST',
@@ -107,7 +107,7 @@ class Chat_Controller {
 		);
 
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/history',
 			array(
 				array(
@@ -165,7 +165,7 @@ class Chat_Controller {
 	 */
 	public function handle_chat_sync( \WP_REST_Request $request ) {
 		if ( ! $this->rate->allow() ) {
-			return new \WP_Error( 'rate_limited', __( 'Too many requests. Please slow down.', 'wp-openrag' ), array( 'status' => 429 ) );
+			return new \WP_Error( 'rate_limited', __( 'Too many requests. Please slow down.', 'openrag-ai-chatbot' ), array( 'status' => 429 ) );
 		}
 
 		$message   = sanitize_textarea_field( (string) $request->get_param( 'message' ) );
@@ -173,7 +173,7 @@ class Chat_Controller {
 		$history   = (array) $request->get_param( 'history' );
 
 		if ( '' === $message ) {
-			return new \WP_Error( 'empty_message', __( 'Message is required.', 'wp-openrag' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'empty_message', __( 'Message is required.', 'openrag-ai-chatbot' ), array( 'status' => 400 ) );
 		}
 
 		$start = microtime( true );
@@ -228,7 +228,7 @@ class Chat_Controller {
 	public function handle_chat_stream( \WP_REST_Request $request ) {
 		if ( ! $this->rate->allow() ) {
 			status_header( 429 );
-			wp_die( esc_html__( 'Too many requests. Please slow down.', 'wp-openrag' ) );
+			wp_die( esc_html__( 'Too many requests. Please slow down.', 'openrag-ai-chatbot' ) );
 		}
 
 		$message = sanitize_textarea_field( (string) $request->get_param( 'message' ) );
@@ -237,7 +237,7 @@ class Chat_Controller {
 
 		if ( '' === $message ) {
 			status_header( 400 );
-			wp_die( esc_html__( 'Message is required.', 'wp-openrag' ) );
+			wp_die( esc_html__( 'Message is required.', 'openrag-ai-chatbot' ) );
 		}
 
 		$settings = Settings::group( 'chat' );
@@ -416,7 +416,7 @@ class Chat_Controller {
 		$comment    = sanitize_textarea_field( (string) $request->get_param( 'comment' ) );
 
 		if ( ! in_array( $feedback, array( 'up', 'down' ), true ) ) {
-			return new \WP_Error( 'invalid_feedback', __( 'Invalid feedback value.', 'wp-openrag' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'invalid_feedback', __( 'Invalid feedback value.', 'openrag-ai-chatbot' ), array( 'status' => 400 ) );
 		}
 
 		$updated = $wpdb->update( // phpcs:ignore WordPress.DB
@@ -483,7 +483,7 @@ class Chat_Controller {
 		global $wpdb;
 		$session = (string) ( $request->get_param( 'session_id' ) ?: '' );
 		if ( '' === $session ) {
-			return new \WP_Error( 'no_session', __( 'session_id is required.', 'wp-openrag' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'no_session', __( 'session_id is required.', 'openrag-ai-chatbot' ), array( 'status' => 400 ) );
 		}
 		$deleted = $wpdb->delete( $this->schema->table( 'chats' ), array( 'session_id' => $session ), array( '%s' ) ); // phpcs:ignore WordPress.DB
 		return rest_ensure_response( array( 'deleted' => (int) $deleted ) );
@@ -556,7 +556,7 @@ class Chat_Controller {
 	 */
 	protected function new_session() {
 		global $wpdb;
-		$hash = hash( 'sha256', uniqid( 'wporag', true ) . random_int( 0, PHP_INT_MAX ) );
+		$hash = hash( 'sha256', uniqid( 'openrag', true ) . random_int( 0, PHP_INT_MAX ) );
 
 		$wpdb->replace( // phpcs:ignore WordPress.DB
 			$this->schema->table( 'chat_sessions' ),

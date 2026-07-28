@@ -2,13 +2,13 @@
 /**
  * Admin menu + page routing + asset enqueue.
  *
- * @package WPOpenRag\Admin
+ * @package OpenRag\Admin
  */
 
-namespace WPOpenRag\Admin;
+namespace OpenRag\Admin;
 
-use WPOpenRag\Plugin;
-use WPOpenRag\Settings;
+use OpenRag\Plugin;
+use OpenRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Admin_Menu {
 
 	const CAPABILITY = 'manage_options';
-	const SLUG       = 'wp-openrag';
+	const SLUG       = 'openrag-ai-chatbot';
 
 	/**
 	 * @var Plugin
@@ -46,12 +46,12 @@ class Admin_Menu {
 
 	public function menu() {
 		$icon = 'dashicons-format-chat';
-		add_menu_page( __( 'WP OpenRag', 'wp-openrag' ), __( 'OpenRag', 'wp-openrag' ), self::CAPABILITY, self::SLUG, array( $this, 'render_dashboard' ), $icon, 26 );
+		add_menu_page( __( 'OpenRag AI Chatbot', 'openrag-ai-chatbot' ), __( 'OpenRag', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG, array( $this, 'render_dashboard' ), $icon, 26 );
 
-		add_submenu_page( self::SLUG, __( 'Dashboard', 'wp-openrag' ), __( 'Dashboard', 'wp-openrag' ), self::CAPABILITY, self::SLUG, array( $this, 'render_dashboard' ) );
-		add_submenu_page( self::SLUG, __( 'Knowledge Base', 'wp-openrag' ), __( 'Knowledge Base', 'wp-openrag' ), self::CAPABILITY, self::SLUG . '-kb', array( $this, 'render_kb' ) );
-		add_submenu_page( self::SLUG, __( 'Chats', 'wp-openrag' ), __( 'Chats', 'wp-openrag' ), self::CAPABILITY, self::SLUG . '-chats', array( $this, 'render_chats' ) );
-		add_submenu_page( self::SLUG, __( 'Settings', 'wp-openrag' ), __( 'Settings', 'wp-openrag' ), self::CAPABILITY, self::SLUG . '-settings', array( $this, 'render_settings' ) );
+		add_submenu_page( self::SLUG, __( 'Dashboard', 'openrag-ai-chatbot' ), __( 'Dashboard', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG, array( $this, 'render_dashboard' ) );
+		add_submenu_page( self::SLUG, __( 'Knowledge Base', 'openrag-ai-chatbot' ), __( 'Knowledge Base', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG . '-kb', array( $this, 'render_kb' ) );
+		add_submenu_page( self::SLUG, __( 'Chats', 'openrag-ai-chatbot' ), __( 'Chats', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG . '-chats', array( $this, 'render_chats' ) );
+		add_submenu_page( self::SLUG, __( 'Settings', 'openrag-ai-chatbot' ), __( 'Settings', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG . '-settings', array( $this, 'render_settings' ) );
 	}
 
 	public function assets( $hook ) {
@@ -59,34 +59,34 @@ class Admin_Menu {
 			return;
 		}
 		wp_enqueue_style(
-			'wporag-admin',
-			WP_OPENRAG_URL . 'assets/css/admin.css',
+			'openrag-admin',
+			OPENRAG_URL . 'assets/css/admin.css',
 			array(),
-			WP_OPENRAG_VERSION
+			OPENRAG_VERSION
 		);
 		wp_enqueue_script(
-			'wporag-admin',
-			WP_OPENRAG_URL . 'assets/js/admin.js',
+			'openrag-admin',
+			OPENRAG_URL . 'assets/js/admin.js',
 			array( 'jquery', 'wp-util' ),
-			WP_OPENRAG_VERSION,
+			OPENRAG_VERSION,
 			true
 		);
 		wp_enqueue_media();
 
 		wp_localize_script(
-			'wporag-admin',
-			'WPOpenRagAdmin',
+			'openrag-admin',
+			'OpenRagAdmin',
 			array(
-				'restUrl' => esc_url_raw( rest_url( WP_OPENRAG_REST_NAMESPACE ) ),
+				'restUrl' => esc_url_raw( rest_url( OPENRAG_REST_NAMESPACE ) ),
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 				'i18n'    => array(
-					'saving'        => __( 'Saving…', 'wp-openrag' ),
-					'saved'         => __( 'Saved', 'wp-openrag' ),
-					'processing'    => __( 'Processing…', 'wp-openrag' ),
-					'delete'        => __( 'Delete this item?', 'wp-openrag' ),
-					'fetching'      => __( 'Fetching…', 'wp-openrag' ),
-					'discovering'   => __( 'Discovering tools…', 'wp-openrag' ),
-					'indexing'      => __( 'Queued for indexing', 'wp-openrag' ),
+					'saving'        => __( 'Saving…', 'openrag-ai-chatbot' ),
+					'saved'         => __( 'Saved', 'openrag-ai-chatbot' ),
+					'processing'    => __( 'Processing…', 'openrag-ai-chatbot' ),
+					'delete'        => __( 'Delete this item?', 'openrag-ai-chatbot' ),
+					'fetching'      => __( 'Fetching…', 'openrag-ai-chatbot' ),
+					'discovering'   => __( 'Discovering tools…', 'openrag-ai-chatbot' ),
+					'indexing'      => __( 'Queued for indexing', 'openrag-ai-chatbot' ),
 				),
 			)
 		);

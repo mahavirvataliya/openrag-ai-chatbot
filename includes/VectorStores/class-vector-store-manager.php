@@ -7,12 +7,12 @@
  *   - "mysql"      → MySQL store (always available)
  *   - "auto"       → Vectorize if configured, else MySQL
  *
- * @package WPOpenRag\VectorStores
+ * @package OpenRag\VectorStores
  */
 
-namespace WPOpenRag\VectorStores;
+namespace OpenRag\VectorStores;
 
-use WPOpenRag\Settings;
+use OpenRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -84,9 +84,9 @@ class Vector_Store_Manager {
 	 */
 	public function stores() {
 		return array(
-			'auto'       => __( 'Auto (Vectorize if configured, else MySQL)', 'wp-openrag' ),
-			'mysql'      => __( 'MySQL', 'wp-openrag' ),
-			'cloudflare' => __( 'Cloudflare Vectorize', 'wp-openrag' ),
+			'auto'       => __( 'Auto (Vectorize if configured, else MySQL)', 'openrag-ai-chatbot' ),
+			'mysql'      => __( 'MySQL', 'openrag-ai-chatbot' ),
+			'cloudflare' => __( 'Cloudflare Vectorize', 'openrag-ai-chatbot' ),
 		);
 	}
 }

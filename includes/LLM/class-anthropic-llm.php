@@ -4,10 +4,10 @@
  *
  * Uses /v1/messages. Supports extended thinking (reasoning) and tool calls.
  *
- * @package WPOpenRag\LLM
+ * @package OpenRag\LLM
  */
 
-namespace WPOpenRag\LLM;
+namespace OpenRag\LLM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -23,7 +23,7 @@ class Anthropic_LLM implements LLM_Provider {
 	}
 
 	public function label() {
-		return __( 'Anthropic Claude', 'wp-openrag' );
+		return __( 'Anthropic Claude', 'openrag-ai-chatbot' );
 	}
 
 	public function is_configured() {

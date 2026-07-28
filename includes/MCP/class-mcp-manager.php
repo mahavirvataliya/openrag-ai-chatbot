@@ -3,13 +3,13 @@
  * MCP manager — manages configured MCP servers, exposes REST routes for admin,
  * and provides the chat-time helpers collect_tools() / call_tool().
  *
- * @package WPOpenRag\MCP
+ * @package OpenRag\MCP
  */
 
-namespace WPOpenRag\MCP;
+namespace OpenRag\MCP;
 
-use WPOpenRag\Database\Schema;
-use WPOpenRag\Settings;
+use OpenRag\Database\Schema;
+use OpenRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -206,7 +206,7 @@ class MCP_Manager {
 
 	public function register_routes() {
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/mcp/servers',
 			array(
 				array(
@@ -223,7 +223,7 @@ class MCP_Manager {
 		);
 
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/mcp/servers/(?P<id>\d+)',
 			array(
 				array(
@@ -240,7 +240,7 @@ class MCP_Manager {
 		);
 
 		register_rest_route(
-			WP_OPENRAG_REST_NAMESPACE,
+			OPENRAG_REST_NAMESPACE,
 			'/mcp/servers/(?P<id>\d+)/discover',
 			array(
 				'methods'             => 'POST',
@@ -252,7 +252,7 @@ class MCP_Manager {
 
 	public function check_admin( \WP_REST_Request $request ) {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return new \WP_Error( 'rest_forbidden', __( 'Insufficient permissions.', 'wp-openrag' ), array( 'status' => 403 ) );
+			return new \WP_Error( 'rest_forbidden', __( 'Insufficient permissions.', 'openrag-ai-chatbot' ), array( 'status' => 403 ) );
 		}
 		return true;
 	}

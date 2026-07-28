@@ -2,10 +2,10 @@
 /**
  * Centralized settings access and defaults.
  *
- * @package WPOpenRag
+ * @package OpenRag
  */
 
-namespace WPOpenRag;
+namespace OpenRag;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -30,7 +30,7 @@ class Settings {
 	/**
 	 * Get all defaults in the storage shape.
 	 *
-	 * Each top-level key is an option name (stored as wporag_<key>) whose value
+	 * Each top-level key is an option name (stored as openrag_<key>) whose value
 	 * is an associative array of group settings. The "all()" method merges these.
 	 *
 	 * @return array<string,array<string,mixed>>
@@ -52,10 +52,10 @@ class Settings {
 
 			'chat' => array(
 				'widget_enabled'    => '1',
-				'bot_name'          => __( 'Assistant', 'wp-openrag' ),
-				'welcome_message'   => __( "Hi! I'm an AI assistant. Ask me anything about the content on this site.", 'wp-openrag' ),
+				'bot_name'          => __( 'Assistant', 'openrag-ai-chatbot' ),
+				'welcome_message'   => __( "Hi! I'm an AI assistant. Ask me anything about the content on this site.", 'openrag-ai-chatbot' ),
 				'launcher_position' => 'bottom-right',
-				'system_prompt'     => __( 'You are a helpful assistant answering questions using the provided knowledge base. When relevant context is given, base your answer on it and cite sources by their number (e.g. [1]). Be concise and accurate. If the answer is not in the context, say so.', 'wp-openrag' ),
+				'system_prompt'     => __( 'You are a helpful assistant answering questions using the provided knowledge base. When relevant context is given, base your answer on it and cite sources by their number (e.g. [1]). Be concise and accurate. If the answer is not in the context, say so.', 'openrag-ai-chatbot' ),
 				'temperature'       => '0.3',
 				'max_tokens'        => '800',
 				'history_turns'     => '6',
@@ -108,7 +108,7 @@ class Settings {
 				'mysql_native_vector'  => '',     // detected at runtime, '' until probed.
 				'cloudflare_account'   => '',
 				'cloudflare_token'     => '',
-				'cloudflare_index'     => 'wp-openrag',
+				'cloudflare_index'     => 'openrag-ai-chatbot',
 			),
 
 			'indexing' => array(
@@ -156,7 +156,7 @@ class Settings {
 	 */
 	public static function group( $group ) {
 		$defaults = self::defaults();
-		$stored   = get_option( WP_OPENRAG_OPTION_PREFIX . $group, array() );
+		$stored   = get_option( OPENRAG_OPTION_PREFIX . $group, array() );
 		if ( ! is_array( $stored ) ) {
 			$stored = array();
 		}
@@ -193,7 +193,7 @@ class Settings {
 		if ( ! is_array( $values ) ) {
 			$values = array();
 		}
-		update_option( WP_OPENRAG_OPTION_PREFIX . $group, $values );
+		update_option( OPENRAG_OPTION_PREFIX . $group, $values );
 		self::$cache = null;
 	}
 
@@ -215,20 +215,20 @@ class Settings {
 	public static function render_css_vars( $appearance ) {
 		$colors = isset( $appearance['colors'] ) ? $appearance['colors'] : array();
 		$vars   = array(
-			'--wporag-primary'     => $colors['primary'] ?? '#3b82f6',
-			'--wporag-header-bg'   => $colors['header_bg'] ?? '#1e293b',
-			'--wporag-header-text' => $colors['header_text'] ?? '#ffffff',
-			'--wporag-bg'          => $colors['bg'] ?? '#ffffff',
-			'--wporag-text'        => $colors['text'] ?? '#0f172a',
-			'--wporag-user-bubble' => $colors['user_bubble'] ?? '#3b82f6',
-			'--wporag-user-text'   => $colors['user_text'] ?? '#ffffff',
-			'--wporag-bot-bubble'  => $colors['bot_bubble'] ?? '#f1f5f9',
-			'--wporag-bot-text'    => $colors['bot_text'] ?? '#0f172a',
-			'--wporag-launcher'    => $colors['launcher'] ?? '#3b82f6',
-			'--wporag-launcher-icon' => $colors['launcher_icon'] ?? '#ffffff',
+			'--openrag-primary'     => $colors['primary'] ?? '#3b82f6',
+			'--openrag-header-bg'   => $colors['header_bg'] ?? '#1e293b',
+			'--openrag-header-text' => $colors['header_text'] ?? '#ffffff',
+			'--openrag-bg'          => $colors['bg'] ?? '#ffffff',
+			'--openrag-text'        => $colors['text'] ?? '#0f172a',
+			'--openrag-user-bubble' => $colors['user_bubble'] ?? '#3b82f6',
+			'--openrag-user-text'   => $colors['user_text'] ?? '#ffffff',
+			'--openrag-bot-bubble'  => $colors['bot_bubble'] ?? '#f1f5f9',
+			'--openrag-bot-text'    => $colors['bot_text'] ?? '#0f172a',
+			'--openrag-launcher'    => $colors['launcher'] ?? '#3b82f6',
+			'--openrag-launcher-icon' => $colors['launcher_icon'] ?? '#ffffff',
 		);
 
-		$css = ':root, #wporag-widget, .wporag-inline {';
+		$css = ':root, #openrag-widget, .openrag-inline {';
 		foreach ( $vars as $name => $value ) {
 			$css .= $name . ':' . esc_attr( $value ) . ';';
 		}
@@ -245,7 +245,7 @@ class Settings {
 	public static function theme_presets() {
 		return array(
 			'light' => array(
-				'label'   => __( 'Light', 'wp-openrag' ),
+				'label'   => __( 'Light', 'openrag-ai-chatbot' ),
 				'colors'  => array(
 					'primary'      => '#3b82f6',
 					'header_bg'    => '#1e293b',
@@ -261,7 +261,7 @@ class Settings {
 				),
 			),
 			'dark' => array(
-				'label'   => __( 'Dark', 'wp-openrag' ),
+				'label'   => __( 'Dark', 'openrag-ai-chatbot' ),
 				'colors'  => array(
 					'primary'      => '#60a5fa',
 					'header_bg'    => '#0f172a',
@@ -277,7 +277,7 @@ class Settings {
 				),
 			),
 			'ocean' => array(
-				'label'   => __( 'Ocean', 'wp-openrag' ),
+				'label'   => __( 'Ocean', 'openrag-ai-chatbot' ),
 				'colors'  => array(
 					'primary'      => '#0891b2',
 					'header_bg'    => '#155e75',
@@ -293,7 +293,7 @@ class Settings {
 				),
 			),
 			'sunset' => array(
-				'label'   => __( 'Sunset', 'wp-openrag' ),
+				'label'   => __( 'Sunset', 'openrag-ai-chatbot' ),
 				'colors'  => array(
 					'primary'      => '#ea580c',
 					'header_bg'    => '#7c2d12',

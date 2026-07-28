@@ -2,12 +2,12 @@
 /**
  * Chats admin page — list all conversations, feedback, detail modal, CSV export.
  *
- * @package WPOpenRag\Admin
+ * @package OpenRag\Admin
  */
 
-namespace WPOpenRag\Admin;
+namespace OpenRag\Admin;
 
-use WPOpenRag\Database\Schema;
+use OpenRag\Database\Schema;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -74,30 +74,30 @@ class Chats_Page {
 		$pages      = max( 1, (int) ceil( $total / $per_page ) );
 		$base_url   = admin_url( 'admin.php?page=' . Admin_Menu::SLUG . '-chats' );
 		?>
-		<div class="wrap wporag-admin-wrap">
-			<h1><?php esc_html_e( 'Chats', 'wp-openrag' ); ?> <a class="page-title-action" href="<?php echo esc_url( add_query_arg( 'export', '1', $base_url ) ); ?>"><?php esc_html_e( 'Export CSV', 'wp-openrag' ); ?></a></h1>
+		<div class="wrap openrag-admin-wrap">
+			<h1><?php esc_html_e( 'Chats', 'openrag-ai-chatbot' ); ?> <a class="page-title-action" href="<?php echo esc_url( add_query_arg( 'export', '1', $base_url ) ); ?>"><?php esc_html_e( 'Export CSV', 'openrag-ai-chatbot' ); ?></a></h1>
 
-			<form method="get" class="wporag-filter-row">
+			<form method="get" class="openrag-filter-row">
 				<input type="hidden" name="page" value="<?php echo esc_attr( Admin_Menu::SLUG ); ?>-chats" />
-				<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'Search messages…', 'wp-openrag' ); ?>" />
+				<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'Search messages…', 'openrag-ai-chatbot' ); ?>" />
 				<input type="date" name="from" value="<?php echo esc_attr( $from ); ?>" />
 				<input type="date" name="to" value="<?php echo esc_attr( $to ); ?>" />
-				<button class="button"><?php esc_html_e( 'Filter', 'wp-openrag' ); ?></button>
+				<button class="button"><?php esc_html_e( 'Filter', 'openrag-ai-chatbot' ); ?></button>
 			</form>
 
 			<table class="widefat striped">
 				<thead>
 				<tr>
-					<th style="width:90px"><?php esc_html_e( 'When', 'wp-openrag' ); ?></th>
-					<th><?php esc_html_e( 'Message', 'wp-openrag' ); ?></th>
-					<th style="width:70px"><?php esc_html_e( 'Device', 'wp-openrag' ); ?></th>
-					<th style="width:80px"><?php esc_html_e( 'Feedback', 'wp-openrag' ); ?></th>
-					<th style="width:90px"><?php esc_html_e( 'Actions', 'wp-openrag' ); ?></th>
+					<th style="width:90px"><?php esc_html_e( 'When', 'openrag-ai-chatbot' ); ?></th>
+					<th><?php esc_html_e( 'Message', 'openrag-ai-chatbot' ); ?></th>
+					<th style="width:70px"><?php esc_html_e( 'Device', 'openrag-ai-chatbot' ); ?></th>
+					<th style="width:80px"><?php esc_html_e( 'Feedback', 'openrag-ai-chatbot' ); ?></th>
+					<th style="width:90px"><?php esc_html_e( 'Actions', 'openrag-ai-chatbot' ); ?></th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php if ( empty( $rows ) ) : ?>
-					<tr><td colspan="5"><?php esc_html_e( 'No chats found.', 'wp-openrag' ); ?></td></tr>
+					<tr><td colspan="5"><?php esc_html_e( 'No chats found.', 'openrag-ai-chatbot' ); ?></td></tr>
 				<?php else : ?>
 					<?php foreach ( $rows as $row ) : ?>
 						<tr>
@@ -108,7 +108,7 @@ class Chats_Page {
 								<?php if ( 'up' === $row->feedback ) : ?>👍<?php elseif ( 'down' === $row->feedback ) : ?>👎<?php else : ?>—<?php endif; ?>
 							</td>
 							<td>
-								<button class="button button-small wporag-view-chat" data-id="<?php echo esc_attr( $row->id ); ?>"><?php esc_html_e( 'View', 'wp-openrag' ); ?></button>
+								<button class="button button-small openrag-view-chat" data-id="<?php echo esc_attr( $row->id ); ?>"><?php esc_html_e( 'View', 'openrag-ai-chatbot' ); ?></button>
 							</td>
 						</tr>
 					<?php endforeach; ?>
@@ -133,10 +133,10 @@ class Chats_Page {
 		</div>
 
 		<!-- Detail modal -->
-		<div id="wporag-chat-modal" class="wporag-modal" style="display:none;">
-			<div class="wporag-modal-content">
-				<button type="button" class="wporag-modal-close" aria-label="Close">&times;</button>
-				<div id="wporag-chat-detail"></div>
+		<div id="openrag-chat-modal" class="openrag-modal" style="display:none;">
+			<div class="openrag-modal-content">
+				<button type="button" class="openrag-modal-close" aria-label="Close">&times;</button>
+				<div id="openrag-chat-detail"></div>
 			</div>
 		</div>
 		<?php
@@ -162,7 +162,7 @@ class Chats_Page {
 
 		nocache_headers();
 		header( 'Content-Type: text/csv; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename="wporag-chats.csv"' );
+		header( 'Content-Disposition: attachment; filename="openrag-chats.csv"' );
 
 		$out = fopen( 'php://output', 'w' );
 		fputcsv( $out, array( 'id', 'created_at', 'session_id', 'ip', 'device', 'user_message', 'reply', 'model', 'response_ms', 'feedback', 'feedback_comment' ) );

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# Deploy WP OpenRag to the WordPress.org plugin SVN repository.
+# Deploy OpenRag AI Chatbot to the WordPress.org plugin SVN repository.
 #
 # This is the canonical release mechanism for WordPress.org. After your
-# plugin is approved (you've received the "wp-openrag" slug and SVN URL),
+# plugin is approved (you've received the "openrag-ai-chatbot" slug and SVN URL),
 # this script:
 #
 #   1. Stages a clean build (composer install --no-dev).
@@ -20,7 +20,7 @@
 #
 # Usage
 # -----
-#   bin/deploy-wordpress-org.sh                       # uses WP_OPENRAG_VERSION
+#   bin/deploy-wordpress-org.sh                       # uses OPENRAG_VERSION
 #   bin/deploy-wordpress-org.sh 1.0.0                 # explicit version
 #   bin/deploy-wordpress-org.sh 1.0.0 --tag           # also creates /tags/1.0.0
 #   bin/deploy-wordpress-org.sh 1.0.0 --tag --dry-run # no svn commit
@@ -29,7 +29,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-SLUG="wp-openrag"
+SLUG="openrag-ai-chatbot"
 SVN_URL="https://plugins.svn.wordpress.org/${SLUG}"
 
 # ---- Parse args -------------------------------------------------------------
@@ -49,7 +49,7 @@ done
 
 # ---- Resolve version --------------------------------------------------------
 if [[ -z "${VERSION}" ]]; then
-    VERSION="$(grep -E "WP_OPENRAG_VERSION" wp-openrag.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)"
+    VERSION="$(grep -E "OPENRAG_VERSION" openrag-ai-chatbot.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)"
 fi
 if [[ -z "${VERSION}" ]]; then
     echo "ERROR: could not determine version" >&2; exit 1

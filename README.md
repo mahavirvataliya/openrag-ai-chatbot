@@ -1,4 +1,4 @@
-# WP OpenRag
+# OpenRag AI Chatbot
 
 > A complete, self-hosted **RAG (Retrieval-Augmented Generation) chatbot** for WordPress.
 > Ingest your own documents, links and posts, embed them with the provider of your choice,
@@ -64,11 +64,11 @@ OpenAI · OpenAI-compatible · **Anthropic Claude** · **Cloudflare Workers AI**
 - Tool invocations surface as a `🔧 Using tool: X` badge in the chat stream.
 
 ### 🎨 Frontend widget
-- **Conflict-proof** — every element is scoped inside `#wporag-widget`, every class is
-  prefixed `wporag-`, all theming happens through `--wporag-*` custom properties on the root.
+- **Conflict-proof** — every element is scoped inside `#openrag-widget`, every class is
+  prefixed `openrag-`, all theming happens through `--openrag-*` custom properties on the root.
   No leaked styles, no global selectors.
 - Two delivery modes: **floating widget** (auto-injected, toggleable) and
-  **`[wp_openrag_chat]` shortcode** for inline embedding.
+  **`[openrag_chat]` shortcode** for inline embedding.
 - **4 preset themes** — Light, Dark, Ocean, Sunset — plus per-color overrides.
 - **Logo, bot avatar, bot name, welcome message, launcher position** — all configurable.
 - Vanilla JS, mobile-responsive, markdown rendering with HTML escaping (no XSS).
@@ -94,24 +94,24 @@ OpenAI · OpenAI-compatible · **Anthropic Claude** · **Cloudflare Workers AI**
 
 ### From a release ZIP (recommended for most users)
 
-1. Download the latest `wp-openrag-{version}.zip` from the
-   [**Releases** page](https://github.com/wp-openrag/wp-openrag/releases).
+1. Download the latest `openrag-ai-chatbot-{version}.zip` from the
+   [**Releases** page](https://github.com/mahavirvataliya/openrag-ai-chatbot/releases).
    *(Release ZIPs ship with `vendor/` pre-built — no Composer required.)*
 2. In WordPress: **Plugins → Add New → Upload Plugin → Choose File** → select the ZIP →
    **Install Now**.
-3. Activate **WP OpenRag**.
+3. Activate **OpenRag AI Chatbot**.
 4. Go to **OpenRag → Settings** and configure at least one LLM provider and one embedding
    provider.
 
 ### From source (for developers)
 
 ```bash
-git clone https://github.com/wp-openrag/wp-openrag.git wp-openrag
-cd wp-openrag
+git clone https://github.com/mahavirvataliya/openrag-ai-chatbot.git openrag-ai-chatbot
+cd openrag-ai-chatbot
 composer install --no-dev
 ```
 
-Then copy/symlink the `wp-openrag` folder into `wp-content/plugins/` and activate it.
+Then copy/symlink the `openrag-ai-chatbot` folder into `wp-content/plugins/` and activate it.
 
 ### Requirements
 
@@ -141,14 +141,14 @@ Then copy/symlink the `wp-openrag` folder into `wp-content/plugins/` and activat
 Embed your chatbot inline anywhere with the shortcode:
 
 ```text
-[wp_openrag_chat]
+[openrag_chat]
 ```
 
 ---
 
 ## 🔌 REST API
 
-Namespace: `wporag/v1` — base URL: `/wp-json/wporag/v1`.
+Namespace: `openrag/v1` — base URL: `/wp-json/openrag/v1`.
 
 | Method | Path | Auth | Purpose |
 |--------|------|------|---------|
@@ -175,7 +175,7 @@ All public endpoints accept the standard WordPress REST nonce via the `X-WP-Nonc
 
 ## 🗄 Database schema
 
-All tables are prefixed with `{$wpdb->prefix}wporag_`:
+All tables are prefixed with `{$wpdb->prefix}openrag_`:
 
 | Table | Holds |
 |-------|-------|
@@ -190,11 +190,23 @@ drop all tables and options when the plugin is deleted.
 
 ---
 
+## 📸 Screenshots
+
+Thirteen screenshots walking through every screen of the plugin (Dashboard, Knowledge Base,
+Chats, every Settings tab, and the frontend widget in two themes) live in
+[`.wordpress-org/screenshots/`](./.wordpress-org/screenshots). The captions in
+[`readme.txt`](./readme.txt) (`== Screenshots ==` section) match them 1-to-1.
+
+After publishing to the WordPress.org directory these images render automatically on the
+plugin page; on GitHub they're browsable directly in the repo.
+
+---
+
 ## 🏗 Architecture
 
 ```
-wp-openrag/
-├── wp-openrag.php              # Headers, constants, bootstrap
+openrag-ai-chatbot/
+├── openrag-ai-chatbot.php              # Headers, constants, bootstrap
 ├── uninstall.php               # Opt-in full cleanup
 ├── composer.json
 ├── includes/
@@ -223,7 +235,7 @@ A one-file release script is included for maintainers:
 
 ```bash
 ./bin/build-release.sh 1.0.0
-# → produces dist/wp-openrag-1.0.0.zip with vendor/ included
+# → produces dist/openrag-ai-chatbot-1.0.0.zip with vendor/ included
 ```
 
 GitHub Actions workflow (`.github/workflows/release.yml`) is provided so tagged pushes
@@ -238,7 +250,7 @@ Pull requests are welcome. Please:
 
 1. Fork & branch from `main`.
 2. Run `composer install` (dev) and `php -l` on changed files.
-3. Keep the **CSS class prefix `wporag-`** and the **`#wporag-widget` root scope** intact —
+3. Keep the **CSS class prefix `openrag-`** and the **`#openrag-widget` root scope** intact —
    this is what keeps the widget conflict-free on arbitrary sites.
 4. Open a PR describing the change and referencing any issue.
 

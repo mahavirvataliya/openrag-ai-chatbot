@@ -2,10 +2,10 @@
 /**
  * Database schema: table creation + MySQL 9 VECTOR detection.
  *
- * @package WPOpenRag\Database
+ * @package OpenRag\Database
  */
 
-namespace WPOpenRag\Database;
+namespace OpenRag\Database;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -37,7 +37,7 @@ class Schema {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		$charset_collate = $wpdb->get_charset_collate();
-		$prefix          = $wpdb->prefix . 'wporag_';
+		$prefix          = $wpdb->prefix . 'openrag_';
 
 		$native_vector = $this->supports_native_vector();
 		// Force-safe: never create VECTOR columns unless MySQL 9 is detected.
@@ -158,12 +158,12 @@ class Schema {
 		}
 
 		// Store the detected capability in vector_store settings.
-		$vs_settings = get_option( WP_OPENRAG_OPTION_PREFIX . 'vector_store', array() );
+		$vs_settings = get_option( OPENRAG_OPTION_PREFIX . 'vector_store', array() );
 		if ( ! is_array( $vs_settings ) ) {
 			$vs_settings = array();
 		}
 		$vs_settings['mysql_native_vector'] = $native_vector ? '1' : '0';
-		update_option( WP_OPENRAG_OPTION_PREFIX . 'vector_store', $vs_settings );
+		update_option( OPENRAG_OPTION_PREFIX . 'vector_store', $vs_settings );
 	}
 
 	/**
@@ -192,7 +192,7 @@ class Schema {
 				// Confirm with a runtime probe (avoid 8.x false positives from version strings).
 				$probe = $wpdb->get_var( "SHOW COLUMNS FROM information_schema.columns WHERE TABLE_SCHEMA IS NOT NULL LIMIT 0" );
 				// Safer probe: try a no-op CREATE TABLE that uses VECTOR. Wrapped in try.
-				$test_table = $wpdb->prefix . 'wporag_vec_probe';
+				$test_table = $wpdb->prefix . 'openrag_vec_probe';
 				$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" );
 				$created = $wpdb->query(
 					"CREATE TABLE `{$test_table}` (id INT PRIMARY KEY, v VECTOR(4)) ENGINE=InnoDB"
@@ -269,6 +269,6 @@ class Schema {
 	 */
 	public function table( $name ) {
 		global $wpdb;
-		return $wpdb->prefix . 'wporag_' . $name;
+		return $wpdb->prefix . 'openrag_' . $name;
 	}
 }

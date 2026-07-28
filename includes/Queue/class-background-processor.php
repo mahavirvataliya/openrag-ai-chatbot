@@ -3,17 +3,17 @@
  * Background processor — Action Scheduler integration.
  *
  * Two job types:
- *   - wporag_process_document  (one per document)
- *   - wporag_index_post        (one per WP post)
+ *   - openrag_process_document  (one per document)
+ *   - openrag_index_post        (one per WP post)
  *
  * Both call into Ingestion_Pipeline. AS handles retries, batching, and admin UI.
  *
- * @package WPOpenRag\Queue
+ * @package OpenRag\Queue
  */
 
-namespace WPOpenRag\Queue;
+namespace OpenRag\Queue;
 
-use WPOpenRag\Ingestion\Ingestion_Pipeline;
+use OpenRag\Ingestion\Ingestion_Pipeline;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,9 +29,9 @@ class Background_Processor {
 	/**
 	 * Hook suffixes.
 	 */
-	const GROUP       = 'wp-openrag';
-	const HOOK_DOC    = 'wporag_process_document';
-	const HOOK_POST   = 'wporag_index_post';
+	const GROUP       = 'openrag-ai-chatbot';
+	const HOOK_DOC    = 'openrag_process_document';
+	const HOOK_POST   = 'openrag_index_post';
 
 	public function __construct( Ingestion_Pipeline $ingestion ) {
 		$this->ingestion = $ingestion;
@@ -46,9 +46,9 @@ class Background_Processor {
 		add_action( self::HOOK_DOC, array( $this, 'run_document' ), 10, 1 );
 		add_action( self::HOOK_POST, array( $this, 'run_post' ), 10, 1 );
 
-		// Make wporag_schedule_document / wporag_schedule_post available.
-		add_action( 'wporag_schedule_document', array( $this, 'schedule_document' ), 10, 1 );
-		add_action( 'wporag_schedule_post', array( $this, 'schedule_post' ), 10, 1 );
+		// Make openrag_schedule_document / openrag_schedule_post available.
+		add_action( 'openrag_schedule_document', array( $this, 'schedule_document' ), 10, 1 );
+		add_action( 'openrag_schedule_post', array( $this, 'schedule_post' ), 10, 1 );
 	}
 
 	/**
@@ -113,7 +113,7 @@ class Background_Processor {
 	 */
 	private function ensure_post_document( $post_id ) {
 		global $wpdb;
-		$schema = new \WPOpenRag\Database\Schema();
+		$schema = new \OpenRag\Database\Schema();
 
 		$existing = $wpdb->get_var( // phpcs:ignore WordPress.DB
 			$wpdb->prepare( 'SELECT id FROM `' . $schema->table( 'documents' ) . '` WHERE post_id = %d', $post_id )

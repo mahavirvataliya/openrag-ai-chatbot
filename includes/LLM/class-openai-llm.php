@@ -4,10 +4,10 @@
  *
  * All three share the same wire format; only base URL and credentials differ.
  *
- * @package WPOpenRag\LLM
+ * @package OpenRag\LLM
  */
 
-namespace WPOpenRag\LLM;
+namespace OpenRag\LLM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

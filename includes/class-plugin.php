@@ -2,21 +2,21 @@
 /**
  * Main plugin class — singleton that wires everything together.
  *
- * @package WPOpenRag
+ * @package OpenRag
  */
 
-namespace WPOpenRag;
+namespace OpenRag;
 
-use WPOpenRag\Admin\Admin_Menu;
-use WPOpenRag\Chat\Chat_Controller;
-use WPOpenRag\Chat\Rate_Limiter;
-use WPOpenRag\Embeddings\Embedding_Manager;
-use WPOpenRag\LLM\LLM_Manager;
-use WPOpenRag\VectorStores\Vector_Store_Manager;
-use WPOpenRag\Ingestion\Ingestion_Pipeline;
-use WPOpenRag\Queue\Background_Processor;
-use WPOpenRag\MCP\MCP_Manager;
-use WPOpenRag\Database\Schema;
+use OpenRag\Admin\Admin_Menu;
+use OpenRag\Chat\Chat_Controller;
+use OpenRag\Chat\Rate_Limiter;
+use OpenRag\Embeddings\Embedding_Manager;
+use OpenRag\LLM\LLM_Manager;
+use OpenRag\VectorStores\Vector_Store_Manager;
+use OpenRag\Ingestion\Ingestion_Pipeline;
+use OpenRag\Queue\Background_Processor;
+use OpenRag\MCP\MCP_Manager;
+use OpenRag\Database\Schema;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -65,7 +65,7 @@ class Plugin {
 	 * @return void
 	 */
 	public function load_textdomain() {
-		load_plugin_textdomain( 'wp-openrag', false, dirname( WP_OPENRAG_BASENAME ) . '/languages' );
+		load_plugin_textdomain( 'openrag-ai-chatbot', false, dirname( OPENRAG_BASENAME ) . '/languages' );
 	}
 
 	/**
@@ -81,13 +81,13 @@ class Plugin {
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 
 		// Eagerly bootstrap the background queue so its do_action handlers exist
-		// before any ingestion REST route calls do_action('wporag_schedule_document').
+		// before any ingestion REST route calls do_action('openrag_schedule_document').
 		add_action( 'init', array( $this, 'prime_queue' ), 5 );
 
 		// Frontend widget + assets.
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
 		add_action( 'wp_footer', array( $this, 'maybe_render_widget' ) );
-		add_shortcode( 'wp_openrag_chat', array( $this, 'render_inline_shortcode' ) );
+		add_shortcode( 'openrag_chat', array( $this, 'render_inline_shortcode' ) );
 
 		// WP content auto-indexing.
 		add_action( 'save_post', array( $this, 'on_save_post' ), 20, 2 );
@@ -225,10 +225,10 @@ class Plugin {
 	 * @return void
 	 */
 	public function maybe_create_schema() {
-		$db_version = get_option( WP_OPENRAG_OPTION_PREFIX . 'db_version' );
-		if ( WP_OPENRAG_DB_VERSION !== $db_version ) {
+		$db_version = get_option( OPENRAG_OPTION_PREFIX . 'db_version' );
+		if ( OPENRAG_DB_VERSION !== $db_version ) {
 			$this->schema()->create();
-			update_option( WP_OPENRAG_OPTION_PREFIX . 'db_version', WP_OPENRAG_DB_VERSION );
+			update_option( OPENRAG_OPTION_PREFIX . 'db_version', OPENRAG_DB_VERSION );
 		}
 	}
 
@@ -250,16 +250,16 @@ class Plugin {
 	 */
 	public function register_assets() {
 		wp_register_style(
-			'wporag-chatbot',
-			WP_OPENRAG_URL . 'assets/css/chatbot.css',
+			'openrag-chatbot',
+			OPENRAG_URL . 'assets/css/chatbot.css',
 			array(),
-			WP_OPENRAG_VERSION
+			OPENRAG_VERSION
 		);
 		wp_register_script(
-			'wporag-chatbot',
-			WP_OPENRAG_URL . 'assets/js/chatbot.js',
+			'openrag-chatbot',
+			OPENRAG_URL . 'assets/js/chatbot.js',
 			array(),
-			WP_OPENRAG_VERSION,
+			OPENRAG_VERSION,
 			true
 		);
 	}
@@ -295,16 +295,16 @@ class Plugin {
 	 * @return void
 	 */
 	private function render_widget( $inline ) {
-		wp_enqueue_style( 'wporag-chatbot' );
-		wp_enqueue_script( 'wporag-chatbot' );
+		wp_enqueue_style( 'openrag-chatbot' );
+		wp_enqueue_script( 'openrag-chatbot' );
 
 		$settings = Settings::all();
 		$cfg = array(
-			'restUrl'         => esc_url_raw( rest_url( WP_OPENRAG_REST_NAMESPACE ) ),
+			'restUrl'         => esc_url_raw( rest_url( OPENRAG_REST_NAMESPACE ) ),
 			'nonce'           => wp_create_nonce( 'wp_rest' ),
 			'botName'         => $settings['chat']['bot_name'],
 			'welcome'         => $settings['chat']['welcome_message'],
-			'placeholder'     => __( 'Type your message…', 'wp-openrag' ),
+			'placeholder'     => __( 'Type your message…', 'openrag-ai-chatbot' ),
 			'position'        => $settings['chat']['launcher_position'],
 			'theme'           => $settings['appearance']['theme'],
 			'colors'          => $settings['appearance']['colors'],
@@ -314,32 +314,32 @@ class Plugin {
 			'showCitations'   => ! empty( $settings['chat']['citations'] ),
 			'inline'          => $inline,
 			'i18n'            => array(
-				'thinking'        => __( 'Thinking…', 'wp-openrag' ),
-				'sources'         => __( 'Sources', 'wp-openrag' ),
-				'reasoning'       => __( 'Reasoning', 'wp-openrag' ),
-				'askAgain'        => __( 'Ask again', 'wp-openrag' ),
-				'clearChat'       => __( 'Clear chat', 'wp-openrag' ),
-				'feedbackGood'    => __( 'Good response', 'wp-openrag' ),
-				'feedbackBad'     => __( 'Needs improvement', 'wp-openrag' ),
-				'feedbackComment' => __( 'Tell us more (optional)', 'wp-openrag' ),
-				'send'            => __( 'Send', 'wp-openrag' ),
-				'poweredBy'       => __( 'Powered by WP OpenRag', 'wp-openrag' ),
-				'errorMessage'    => __( 'Something went wrong. Please try again.', 'wp-openrag' ),
-				'usingTool'       => __( 'Using tool', 'wp-openrag' ),
+				'thinking'        => __( 'Thinking…', 'openrag-ai-chatbot' ),
+				'sources'         => __( 'Sources', 'openrag-ai-chatbot' ),
+				'reasoning'       => __( 'Reasoning', 'openrag-ai-chatbot' ),
+				'askAgain'        => __( 'Ask again', 'openrag-ai-chatbot' ),
+				'clearChat'       => __( 'Clear chat', 'openrag-ai-chatbot' ),
+				'feedbackGood'    => __( 'Good response', 'openrag-ai-chatbot' ),
+				'feedbackBad'     => __( 'Needs improvement', 'openrag-ai-chatbot' ),
+				'feedbackComment' => __( 'Tell us more (optional)', 'openrag-ai-chatbot' ),
+				'send'            => __( 'Send', 'openrag-ai-chatbot' ),
+				'poweredBy'       => __( 'Powered by OpenRag AI Chatbot', 'openrag-ai-chatbot' ),
+				'errorMessage'    => __( 'Something went wrong. Please try again.', 'openrag-ai-chatbot' ),
+				'usingTool'       => __( 'Using tool', 'openrag-ai-chatbot' ),
 			),
 		);
 
-		wp_localize_script( 'wporag-chatbot', 'WPOpenRagConfig', $cfg );
+		wp_localize_script( 'openrag-chatbot', 'OpenRagConfig', $cfg );
 
 		// Inline appearance CSS variables (overrides theme preset).
-		echo '<style id="wporag-theme-vars">' . Settings::render_css_vars( $settings['appearance'] ) . '</style>' . "\n";
+		echo '<style id="openrag-theme-vars">' . Settings::render_css_vars( $settings['appearance'] ) . '</style>' . "\n";
 
 		// Expose config to the template as a local variable.
-		$GLOBALS['WPOpenRagConfig'] = $cfg;
+		$GLOBALS['OpenRagConfig'] = $cfg;
 
-		require WP_OPENRAG_DIR . 'templates/chatbot-widget.php';
+		require OPENRAG_DIR . 'templates/chatbot-widget.php';
 
-		unset( $GLOBALS['WPOpenRagConfig'] );
+		unset( $GLOBALS['OpenRagConfig'] );
 	}
 
 	/**
@@ -395,7 +395,7 @@ class Plugin {
 		if ( class_exists( 'ActionScheduler' ) ) {
 			return; // Already initialized.
 		}
-		$as_path = WP_OPENRAG_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
+		$as_path = OPENRAG_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
 		if ( file_exists( $as_path ) ) {
 			require_once $as_path;
 		}

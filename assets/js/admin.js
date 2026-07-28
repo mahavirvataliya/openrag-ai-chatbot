@@ -1,11 +1,11 @@
 /**
- * WP OpenRag admin JS (jQuery-based; WP ships jQuery).
+ * OpenRag AI Chatbot admin JS (jQuery-based; WP ships jQuery).
  */
 ( function ( $ ) {
 	'use strict';
 
-	var A = window.WPOpenRagAdmin || {};
-	var REST = A.restUrl || '/wp-json/wporag/v1';
+	var A = window.OpenRagAdmin || {};
+	var REST = A.restUrl || '/wp-json/openrag/v1';
 	var HEADERS = function () {
 		return {
 			'Content-Type': 'application/json',
@@ -19,8 +19,8 @@
 		if ( ! $sel.length ) { return; }
 		function update() {
 			var v = $sel.val();
-			$( wrapSel + ' .wporag-provider-fieldset' ).removeClass( 'is-active' );
-			$( wrapSel + ' .wporag-provider-fieldset[data-provider="' + v + '"]' ).addClass( 'is-active' );
+			$( wrapSel + ' .openrag-provider-fieldset' ).removeClass( 'is-active' );
+			$( wrapSel + ' .openrag-provider-fieldset[data-provider="' + v + '"]' ).addClass( 'is-active' );
 		}
 		$sel.on( 'change', update );
 		update();
@@ -37,13 +37,13 @@
 	}
 
 	$( function () {
-		showProviderFields( '#wporag-llm-provider', '.wporag-provider-fields' );
-		showProviderFields( '#wporag-emb-provider', '.wporag-provider-fields' );
+		showProviderFields( '#openrag-llm-provider', '.openrag-provider-fields' );
+		showProviderFields( '#openrag-emb-provider', '.openrag-provider-fields' );
 
 		/* Fetch models — collect the active provider's creds from the visible fieldset. */
-		$( '#wporag-fetch-models' ).on( 'click', function () {
+		$( '#openrag-fetch-models' ).on( 'click', function () {
 			var $btn = $( this );
-			var provider = $( '#wporag-llm-provider' ).val();
+			var provider = $( '#openrag-llm-provider' ).val();
 			// For demo simplicity, call the server endpoint that resolves the active settings.
 			$btn.prop( 'disabled', true ).text( A.i18n.fetching );
 			$.ajax( {
@@ -51,12 +51,12 @@
 				method: 'GET',
 				headers: { 'X-WP-Nonce': A.nonce || '' },
 			} ).done( function ( data ) {
-				var $sel = $( '.wporag-provider-fieldset.is-active input[name$="[openai_model]"], .wporag-provider-fieldset.is-active input[name$="[groq_model]"], .wporag-provider-fieldset.is-active input[name$="[compatible_model]"], .wporag-provider-fieldset.is-active input[name$="[anthropic_model]"], .wporag-provider-fieldset.is-active input[name$="[ollama_model]"]' ).first();
+				var $sel = $( '.openrag-provider-fieldset.is-active input[name$="[openai_model]"], .openrag-provider-fieldset.is-active input[name$="[groq_model]"], .openrag-provider-fieldset.is-active input[name$="[compatible_model]"], .openrag-provider-fieldset.is-active input[name$="[anthropic_model]"], .openrag-provider-fieldset.is-active input[name$="[ollama_model]"]' ).first();
 				var models = ( data && data.models ) || [];
 				if ( models.length && $sel.length ) {
-					$sel.attr( 'list', 'wporag-model-list' );
-					if ( ! $( '#wporag-model-list' ).length ) { $( 'body' ).append( '<datalist id="wporag-model-list"></datalist>' ); }
-					var $dl = $( '#wporag-model-list' ).empty();
+					$sel.attr( 'list', 'openrag-model-list' );
+					if ( ! $( '#openrag-model-list' ).length ) { $( 'body' ).append( '<datalist id="openrag-model-list"></datalist>' ); }
+					var $dl = $( '#openrag-model-list' ).empty();
 					models.forEach( function ( m ) { $dl.append( '<option value="' + m + '">' ); } );
 					alert( 'Found ' + models.length + ' models. Start typing in the model field to pick one.' );
 				} else {
@@ -69,7 +69,7 @@
 			} );
 		} );
 
-		$( '#wporag-test-connection' ).on( 'click', function () {
+		$( '#openrag-test-connection' ).on( 'click', function () {
 			var $btn = $( this );
 			$btn.prop( 'disabled', true ).text( A.i18n.saving );
 			restPost( '/admin/test', {} ).done( function ( r ) {
@@ -82,7 +82,7 @@
 		} );
 
 		/* Create Vectorize index */
-		$( '#wporag-create-index' ).on( 'click', function () {
+		$( '#openrag-create-index' ).on( 'click', function () {
 			var $btn = $( this );
 			$btn.prop( 'disabled', true );
 			restPost( '/vector-store/create-index', {} ).done( function ( r ) {
@@ -93,7 +93,7 @@
 		} );
 
 		/* KB: add document (file or URL) */
-		$( '#wporag-add-doc' ).on( 'submit', function ( e ) {
+		$( '#openrag-add-doc' ).on( 'submit', function ( e ) {
 			e.preventDefault();
 			var $f = $( this );
 			var data = {
@@ -121,7 +121,7 @@
 		} );
 
 		/* KB: add URLs */
-		$( '#wporag-add-urls' ).on( 'submit', function ( e ) {
+		$( '#openrag-add-urls' ).on( 'submit', function ( e ) {
 			e.preventDefault();
 			var raw = $( this ).find( '[name=urls]' ).val().split( /\r?\n/ ).map( function ( l ) { return l.trim(); } ).filter( Boolean );
 			var queue = $( this ).find( '[name=queue]' ).is( ':checked' );
@@ -138,13 +138,13 @@
 		} );
 
 		/* KB: reindex */
-		$( document ).on( 'click', '.wporag-reindex', function () {
+		$( document ).on( 'click', '.openrag-reindex', function () {
 			var id = $( this ).data( 'id' );
 			restPost( '/documents/' + id + '/process', {} ).done( function () { location.reload(); } );
 		} );
 
 		/* KB: delete */
-		$( document ).on( 'click', '.wporag-delete', function () {
+		$( document ).on( 'click', '.openrag-delete', function () {
 			if ( ! confirm( A.i18n.delete ) ) { return; }
 			var id = $( this ).data( 'id' );
 			$.ajax( { url: REST + '/documents/' + id, method: 'DELETE', headers: HEADERS() } )
@@ -152,7 +152,7 @@
 		} );
 
 		/* KB: view chunks */
-		$( document ).on( 'click', '.wporag-view-chunks', function () {
+		$( document ).on( 'click', '.openrag-view-chunks', function () {
 			var id = $( this ).data( 'id' );
 			$.getJSON( REST + '/documents/' + id, { _wpnonce: A.nonce } ).done( function ( data ) {
 				var html = '<h3>' + ( data.document.title || 'Document' ) + '</h3>';
@@ -162,20 +162,20 @@
 					html += '<div style="white-space:pre-wrap;">' + $( '<div>' ).text( c.content ).html() + '</div>';
 					html += '</div>';
 				} );
-				$( '#wporag-chat-detail' ).html( html );
-				$( '#wporag-chat-modal' ).show();
+				$( '#openrag-chat-detail' ).html( html );
+				$( '#openrag-chat-modal' ).show();
 			} );
 		} );
 
 		/* KB: index WP content now */
-		$( '#wporag-index-now' ).on( 'click', function () {
+		$( '#openrag-index-now' ).on( 'click', function () {
 			restPost( '/posts/index', {} ).done( function ( r ) {
-				$( '#wporag-index-now-msg' ).text( 'Queued ' + ( r.queued || 0 ) + ' posts.' );
+				$( '#openrag-index-now-msg' ).text( 'Queued ' + ( r.queued || 0 ) + ' posts.' );
 			} );
 		} );
 
 		/* Media picker for logo / avatar */
-		$( '.wporag-media' ).on( 'click', function ( e ) {
+		$( '.openrag-media' ).on( 'click', function ( e ) {
 			e.preventDefault();
 			var target = $( this ).data( 'target' );
 			var frame = wp.media( { title: 'Select image', multiple: false, library: { type: 'image' }, button: { text: 'Use' } } );
@@ -188,41 +188,41 @@
 
 		/* Media picker for KB upload */
 		var mediaFrame;
-		$( '#wporag-upload-btn' ).on( 'click', function ( e ) {
+		$( '#openrag-upload-btn' ).on( 'click', function ( e ) {
 			e.preventDefault();
 			mediaFrame = wp.media( { title: 'Select document', multiple: false, button: { text: 'Use' } } );
 			mediaFrame.on( 'select', function () {
 				var att = mediaFrame.state().get( 'selection' ).first().toJSON();
-				$( '#wporag-file-path' ).val( att.url );
-				$( '#wporag-file-mime' ).val( att.mime );
-				$( '#wporag-file-name' ).text( att.filename );
+				$( '#openrag-file-path' ).val( att.url );
+				$( '#openrag-file-mime' ).val( att.mime );
+				$( '#openrag-file-name' ).text( att.filename );
 			} );
 			mediaFrame.open();
 		} );
 
 		/* Appearance: apply preset */
-		$( '#wporag-apply-preset' ).on( 'click', function () {
-			var preset = $( '#wporag-theme-preset' ).val();
-			var data = ( window.wporagThemePresets || {} )[ preset ];
+		$( '#openrag-apply-preset' ).on( 'click', function () {
+			var preset = $( '#openrag-theme-preset' ).val();
+			var data = ( window.openragThemePresets || {} )[ preset ];
 			if ( ! data || ! data.colors ) { return; }
 			Object.keys( data.colors ).forEach( function ( k ) {
-				$( '.wporag-color-picker[data-key="' + k + '"]' ).val( data.colors[ k ] );
+				$( '.openrag-color-picker[data-key="' + k + '"]' ).val( data.colors[ k ] );
 			} );
 		} );
 
 		/* MCP: add server */
-		$( '#wporag-mcp-add' ).on( 'click', function () {
+		$( '#openrag-mcp-add' ).on( 'click', function () {
 			restPost( '/mcp/servers', {
-				name:      $( '#wporag-mcp-name' ).val(),
-				url:       $( '#wporag-mcp-url' ).val(),
-				transport: $( '#wporag-mcp-transport' ).val(),
-				auth_header:$( '#wporag-mcp-auth' ).val(),
+				name:      $( '#openrag-mcp-name' ).val(),
+				url:       $( '#openrag-mcp-url' ).val(),
+				transport: $( '#openrag-mcp-transport' ).val(),
+				auth_header:$( '#openrag-mcp-auth' ).val(),
 				enabled:   true,
 			} ).done( function () { location.reload(); } )
 			   .fail( function ( xhr ) { alert( 'Failed: ' + ( xhr.responseText || xhr.statusText ) ); } );
 		} );
 
-		$( document ).on( 'click', '.wporag-mcp-discover', function () {
+		$( document ).on( 'click', '.openrag-mcp-discover', function () {
 			var id = $( this ).data( 'id' );
 			var $b = $( this ).prop( 'disabled', true ).text( A.i18n.discovering );
 			restPost( '/mcp/servers/' + id + '/discover', {} )
@@ -231,20 +231,20 @@
 				.always( function () { $b.prop( 'disabled', false ).text( 'Discover' ); } );
 		} );
 
-		$( document ).on( 'click', '.wporag-mcp-delete', function () {
+		$( document ).on( 'click', '.openrag-mcp-delete', function () {
 			if ( ! confirm( A.i18n.delete ) ) { return; }
 			var id = $( this ).data( 'id' );
 			$.ajax( { url: REST + '/mcp/servers/' + id, method: 'DELETE', headers: HEADERS() } )
 				.done( function () { location.reload(); } );
 		} );
 
-		$( document ).on( 'click', '.wporag-mcp-toggle', function () {
+		$( document ).on( 'click', '.openrag-mcp-toggle', function () {
 			var id = $( this ).data( 'id' );
 			restPost( '/mcp/servers/' + id, { enabled: false } ).done( function () { location.reload(); } );
 		} );
 
 		/* Chats: view detail */
-		$( document ).on( 'click', '.wporag-view-chat', function () {
+		$( document ).on( 'click', '.openrag-view-chat', function () {
 			var id = $( this ).data( 'id' );
 			$.getJSON( REST + '/history?limit=200' ).done( function ( data ) {
 				var turns = ( data.turns || [] );
@@ -255,29 +255,29 @@
 				if ( idx >= 0 ) {
 					for ( var j = Math.max(0, idx - 1); j <= Math.min( turns.length - 1, idx + 1 ); j++ ) {
 						var t = turns[j];
-						html += '<div class="wporag-chat-msg wporag-chat-msg-' + t.role + '">';
+						html += '<div class="openrag-chat-msg openrag-chat-msg-' + t.role + '">';
 						html += '<strong>' + t.role.toUpperCase() + '</strong><div style="white-space:pre-wrap;margin-top:4px;">' + $( '<div>' ).text( t.content ).html() + '</div>';
 						if ( t.reasoning ) {
-							html += '<details class="wporag-chat-reasoning"><summary>Reasoning</summary>' + $( '<div>' ).text( t.reasoning ).html() + '</details>';
+							html += '<details class="openrag-chat-reasoning"><summary>Reasoning</summary>' + $( '<div>' ).text( t.reasoning ).html() + '</details>';
 						}
 						if ( t.citations && t.citations.length ) {
-							html += '<div class="wporag-chat-citations"><strong>Sources:</strong> ';
+							html += '<div class="openrag-chat-citations"><strong>Sources:</strong> ';
 							t.citations.forEach( function ( c ) {
 								html += '<a href="' + c.url + '" target="_blank">' + c.title + '</a>';
 							} );
 							html += '</div>';
 						}
-						html += '<div class="wporag-chat-msg-meta">' + t.createdAt + ( t.model ? ' · ' + t.model : '' ) + ( t.feedback ? ' · ' + t.feedback : '' ) + '</div>';
+						html += '<div class="openrag-chat-msg-meta">' + t.createdAt + ( t.model ? ' · ' + t.model : '' ) + ( t.feedback ? ' · ' + t.feedback : '' ) + '</div>';
 						html += '</div>';
 					}
 				}
-				$( '#wporag-chat-detail' ).html( html || 'No data.' );
-				$( '#wporag-chat-modal' ).show();
+				$( '#openrag-chat-detail' ).html( html || 'No data.' );
+				$( '#openrag-chat-modal' ).show();
 			} );
 		} );
 
 		/* Modal close */
-		$( document ).on( 'click', '.wporag-modal-close', function () { $( this ).closest( '.wporag-modal' ).hide(); } );
-		$( document ).on( 'click', '.wporag-modal', function ( e ) { if ( e.target === this ) { $( this ).hide(); } } );
+		$( document ).on( 'click', '.openrag-modal-close', function () { $( this ).closest( '.openrag-modal' ).hide(); } );
+		$( document ).on( 'click', '.openrag-modal', function ( e ) { if ( e.target === this ) { $( this ).hide(); } } );
 	} );
 } )( jQuery );

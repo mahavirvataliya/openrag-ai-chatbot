@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to **WP OpenRag** are documented in this file.
+All notable changes to **OpenRag AI Chatbot** are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -66,7 +66,7 @@ The first stable, public release.
   it in a collapsible panel.
 
 #### Chat
-- **REST namespace `wporag/v1`**: `POST /chat` (SSE), `POST /chat/sync`, `POST /feedback`,
+- **REST namespace `openrag/v1`**: `POST /chat` (SSE), `POST /chat/sync`, `POST /feedback`,
   `GET/DELETE /history`.
 - **RAG pipeline**: query embedding (cached) → vector store `query(top_k, min_score)` →
   numbered context block → optional tools → bounded tool-call loop (max 5 iterations) →
@@ -99,12 +99,12 @@ The first stable, public release.
 - **Admin REST** — `/admin/models`, `/admin/test`, `/vector-store/create-index`.
 
 #### Frontend
-- **Floating widget** (auto-injected, toggleable position) and **`[wp_openrag_chat]` shortcode**.
+- **Floating widget** (auto-injected, toggleable position) and **`[openrag_chat]` shortcode**.
 - **4 preset themes** — Light, Dark, Ocean, Sunset — plus per-color overrides
   (primary, header bg, text, user/bot bubble colors, launcher color).
 - **Logo, bot avatar, bot name, welcome message** configurable.
-- **Conflict-proof CSS**: everything scoped under `#wporag-widget`, all classes prefixed
-  `wporag-`, theming via `--wporag-*` custom properties.
+- **Conflict-proof CSS**: everything scoped under `#openrag-widget`, all classes prefixed
+  `openrag-`, theming via `--openrag-*` custom properties.
 - **Vanilla JS** chatbot: SSE stream parsing, typing indicator, markdown rendering with
   HTML-escaping (no XSS), collapsible reasoning panel, citations list, 👍/👎 feedback modal,
   localStorage session, mobile-responsive.
@@ -138,5 +138,5 @@ The first stable, public release.
 - WordPress 6.0 – 6.8
 - MySQL 5.7 / 8.x / 9.x, MariaDB 10.x
 
-[Unreleased]: https://github.com/wp-openrag/wp-openrag/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/wp-openrag/wp-openrag/releases/tag/v1.0.0
+[Unreleased]: https://github.com/mahavirvataliya/openrag-ai-chatbot/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.0

@@ -2,12 +2,12 @@
 /**
  * LLM manager — factory + cached active provider.
  *
- * @package WPOpenRag\LLM
+ * @package OpenRag\LLM
  */
 
-namespace WPOpenRag\LLM;
+namespace OpenRag\LLM;
 
-use WPOpenRag\Settings;
+use OpenRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -37,7 +37,7 @@ class LLM_Manager {
 			case 'groq':
 				$this->provider = new OpenAI_LLM(
 					'groq',
-					__( 'Groq', 'wp-openrag' ),
+					__( 'Groq', 'openrag-ai-chatbot' ),
 					array(
 						'base_url' => $settings['groq_base_url'] ?? 'https://api.groq.com/openai/v1',
 						'api_key'  => $settings['groq_api_key'] ?? '',
@@ -49,7 +49,7 @@ class LLM_Manager {
 			case 'openai-compatible':
 				$this->provider = new OpenAI_LLM(
 					'openai-compatible',
-					__( 'OpenAI-compatible', 'wp-openrag' ),
+					__( 'OpenAI-compatible', 'openrag-ai-chatbot' ),
 					array(
 						'base_url' => $settings['compatible_base_url'] ?? '',
 						'api_key'  => $settings['compatible_api_key'] ?? '',
@@ -79,7 +79,7 @@ class LLM_Manager {
 			default:
 				$this->provider = new OpenAI_LLM(
 					'openai',
-					__( 'OpenAI', 'wp-openrag' ),
+					__( 'OpenAI', 'openrag-ai-chatbot' ),
 					array(
 						'base_url' => $settings['openai_base_url'] ?? 'https://api.openai.com/v1',
 						'api_key'  => $settings['openai_api_key'] ?? '',
@@ -99,12 +99,12 @@ class LLM_Manager {
 	 */
 	public function providers() {
 		return array(
-			'openai'            => __( 'OpenAI', 'wp-openrag' ),
-			'openai-compatible' => __( 'OpenAI-compatible', 'wp-openrag' ),
-			'anthropic'         => __( 'Anthropic Claude', 'wp-openrag' ),
-			'cloudflare'        => __( 'Cloudflare Workers AI', 'wp-openrag' ),
-			'groq'              => __( 'Groq', 'wp-openrag' ),
-			'ollama'            => __( 'Ollama (local)', 'wp-openrag' ),
+			'openai'            => __( 'OpenAI', 'openrag-ai-chatbot' ),
+			'openai-compatible' => __( 'OpenAI-compatible', 'openrag-ai-chatbot' ),
+			'anthropic'         => __( 'Anthropic Claude', 'openrag-ai-chatbot' ),
+			'cloudflare'        => __( 'Cloudflare Workers AI', 'openrag-ai-chatbot' ),
+			'groq'              => __( 'Groq', 'openrag-ai-chatbot' ),
+			'ollama'            => __( 'Ollama (local)', 'openrag-ai-chatbot' ),
 		);
 	}
 

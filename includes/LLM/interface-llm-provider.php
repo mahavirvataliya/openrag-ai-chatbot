@@ -2,10 +2,10 @@
 /**
  * LLM provider contract.
  *
- * @package WPOpenRag\LLM
+ * @package OpenRag\LLM
  */
 
-namespace WPOpenRag\LLM;
+namespace OpenRag\LLM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

@@ -2,10 +2,10 @@
 /**
  * Vector store contract.
  *
- * @package WPOpenRag\VectorStores
+ * @package OpenRag\VectorStores
  */
 
-namespace WPOpenRag\VectorStores;
+namespace OpenRag\VectorStores;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

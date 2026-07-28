@@ -2,12 +2,12 @@
 /**
  * MySQL vector store — native VECTOR(n) when MySQL 9, else JSON + PHP cosine.
  *
- * @package WPOpenRag\VectorStores
+ * @package OpenRag\VectorStores
  */
 
-namespace WPOpenRag\VectorStores;
+namespace OpenRag\VectorStores;
 
-use WPOpenRag\Database\Schema;
+use OpenRag\Database\Schema;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -31,7 +31,7 @@ class MySQL_Store implements Vector_Store {
 	}
 
 	public function label() {
-		return __( 'MySQL', 'wp-openrag' );
+		return __( 'MySQL', 'openrag-ai-chatbot' );
 	}
 
 	public function is_configured() {

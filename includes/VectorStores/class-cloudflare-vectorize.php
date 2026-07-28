@@ -10,13 +10,13 @@
  *
  * Chunks table stores the text/metadata; Vectorize holds the vector + namespace.
  *
- * @package WPOpenRag\VectorStores
+ * @package OpenRag\VectorStores
  */
 
-namespace WPOpenRag\VectorStores;
+namespace OpenRag\VectorStores;
 
-use WPOpenRag\Database\Schema;
-use WPOpenRag\Settings;
+use OpenRag\Database\Schema;
+use OpenRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -44,7 +44,7 @@ class Cloudflare_Vectorize implements Vector_Store {
 	}
 
 	public function label() {
-		return __( 'Cloudflare Vectorize', 'wp-openrag' );
+		return __( 'Cloudflare Vectorize', 'openrag-ai-chatbot' );
 	}
 
 	public function is_configured() {
@@ -62,7 +62,7 @@ class Cloudflare_Vectorize implements Vector_Store {
 	}
 
 	protected function index() {
-		return rawurlencode( (string) ( $this->settings['cloudflare_index'] ?? 'wp-openrag' ) );
+		return rawurlencode( (string) ( $this->settings['cloudflare_index'] ?? 'openrag-ai-chatbot' ) );
 	}
 
 	protected function api_base() {

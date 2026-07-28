@@ -2,13 +2,13 @@
 /**
  * Admin Dashboard page — overview cards + recent activity.
  *
- * @package WPOpenRag\Admin
+ * @package OpenRag\Admin
  */
 
-namespace WPOpenRag\Admin;
+namespace OpenRag\Admin;
 
-use WPOpenRag\Database\Schema;
-use WPOpenRag\Plugin;
+use OpenRag\Database\Schema;
+use OpenRag\Plugin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -48,56 +48,56 @@ class Dashboard_Page {
 		$mysql_native = $this->plugin->vector_store()->is_mysql_native();
 
 		?>
-		<div class="wrap wporag-admin-wrap">
-			<h1><?php esc_html_e( 'WP OpenRag — Dashboard', 'wp-openrag' ); ?></h1>
+		<div class="wrap openrag-admin-wrap">
+			<h1><?php esc_html_e( 'OpenRag AI Chatbot — Dashboard', 'openrag-ai-chatbot' ); ?></h1>
 
-			<div class="wporag-cards">
-				<div class="wporag-card">
-					<div class="wporag-card-value"><?php echo esc_html( number_format_i18n( $documents ) ); ?></div>
-					<div class="wporag-card-label"><?php esc_html_e( 'Documents', 'wp-openrag' ); ?></div>
+			<div class="openrag-cards">
+				<div class="openrag-card">
+					<div class="openrag-card-value"><?php echo esc_html( number_format_i18n( $documents ) ); ?></div>
+					<div class="openrag-card-label"><?php esc_html_e( 'Documents', 'openrag-ai-chatbot' ); ?></div>
 				</div>
-				<div class="wporag-card">
-					<div class="wporag-card-value"><?php echo esc_html( number_format_i18n( $chunks ) ); ?></div>
-					<div class="wporag-card-label"><?php esc_html_e( 'Chunks', 'wp-openrag' ); ?></div>
+				<div class="openrag-card">
+					<div class="openrag-card-value"><?php echo esc_html( number_format_i18n( $chunks ) ); ?></div>
+					<div class="openrag-card-label"><?php esc_html_e( 'Chunks', 'openrag-ai-chatbot' ); ?></div>
 				</div>
-				<div class="wporag-card">
-					<div class="wporag-card-value"><?php echo esc_html( number_format_i18n( $chats ) ); ?></div>
-					<div class="wporag-card-label"><?php esc_html_e( 'Chats', 'wp-openrag' ); ?></div>
+				<div class="openrag-card">
+					<div class="openrag-card-value"><?php echo esc_html( number_format_i18n( $chats ) ); ?></div>
+					<div class="openrag-card-label"><?php esc_html_e( 'Chats', 'openrag-ai-chatbot' ); ?></div>
 				</div>
-				<div class="wporag-card">
-					<div class="wporag-card-value">👍 <?php echo esc_html( number_format_i18n( $thumbs_up ) ); ?> / 👎 <?php echo esc_html( number_format_i18n( $thumbs_down ) ); ?></div>
-					<div class="wporag-card-label"><?php esc_html_e( 'Feedback', 'wp-openrag' ); ?></div>
+				<div class="openrag-card">
+					<div class="openrag-card-value">👍 <?php echo esc_html( number_format_i18n( $thumbs_up ) ); ?> / 👎 <?php echo esc_html( number_format_i18n( $thumbs_down ) ); ?></div>
+					<div class="openrag-card-label"><?php esc_html_e( 'Feedback', 'openrag-ai-chatbot' ); ?></div>
 				</div>
 			</div>
 
-			<div class="wporag-admin-grid">
-				<div class="wporag-admin-col">
-					<h2><?php esc_html_e( 'System Status', 'wp-openrag' ); ?></h2>
+			<div class="openrag-admin-grid">
+				<div class="openrag-admin-col">
+					<h2><?php esc_html_e( 'System Status', 'openrag-ai-chatbot' ); ?></h2>
 					<table class="widefat striped">
 						<tbody>
 						<tr>
-							<th><?php esc_html_e( 'LLM Provider', 'wp-openrag' ); ?></th>
+							<th><?php esc_html_e( 'LLM Provider', 'openrag-ai-chatbot' ); ?></th>
 							<td>
 								<?php echo esc_html( $llm_label ); ?>
-								<span class="wporag-badge <?php echo $llm_ok ? 'ok' : 'err'; ?>"><?php echo $llm_ok ? esc_html__( 'Configured', 'wp-openrag' ) : esc_html__( 'Not configured', 'wp-openrag' ); ?></span>
+								<span class="openrag-badge <?php echo $llm_ok ? 'ok' : 'err'; ?>"><?php echo $llm_ok ? esc_html__( 'Configured', 'openrag-ai-chatbot' ) : esc_html__( 'Not configured', 'openrag-ai-chatbot' ); ?></span>
 							</td>
 						</tr>
 						<tr>
-							<th><?php esc_html_e( 'Embedding Provider', 'wp-openrag' ); ?></th>
+							<th><?php esc_html_e( 'Embedding Provider', 'openrag-ai-chatbot' ); ?></th>
 							<td>
 								<?php echo esc_html( $emb_label ); ?>
-								<span class="wporag-badge <?php echo $emb_ok ? 'ok' : 'err'; ?>"><?php echo $emb_ok ? esc_html__( 'Configured', 'wp-openrag' ) : esc_html__( 'Not configured', 'wp-openrag' ); ?></span>
+								<span class="openrag-badge <?php echo $emb_ok ? 'ok' : 'err'; ?>"><?php echo $emb_ok ? esc_html__( 'Configured', 'openrag-ai-chatbot' ) : esc_html__( 'Not configured', 'openrag-ai-chatbot' ); ?></span>
 							</td>
 						</tr>
 						<tr>
-							<th><?php esc_html_e( 'Vector Store', 'wp-openrag' ); ?></th>
+							<th><?php esc_html_e( 'Vector Store', 'openrag-ai-chatbot' ); ?></th>
 							<td>
 								<?php echo esc_html( $store->label() ); ?>
-								<?php if ( $store instanceof \WPOpenRag\VectorStores\MySQL_Store ) : ?>
+								<?php if ( $store instanceof \OpenRag\VectorStores\MySQL_Store ) : ?>
 									<?php if ( $mysql_native ) : ?>
-										<span class="wporag-badge ok"><?php esc_html_e( 'MySQL 9 native VECTOR', 'wp-openrag' ); ?></span>
+										<span class="openrag-badge ok"><?php esc_html_e( 'MySQL 9 native VECTOR', 'openrag-ai-chatbot' ); ?></span>
 									<?php else : ?>
-										<span class="wporag-badge warn"><?php esc_html_e( 'MySQL (JSON fallback)', 'wp-openrag' ); ?></span>
+										<span class="openrag-badge warn"><?php esc_html_e( 'MySQL (JSON fallback)', 'openrag-ai-chatbot' ); ?></span>
 									<?php endif; ?>
 								<?php endif; ?>
 							</td>
@@ -106,15 +106,15 @@ class Dashboard_Page {
 					</table>
 				</div>
 
-				<div class="wporag-admin-col">
-					<h2><?php esc_html_e( 'Recent Activity', 'wp-openrag' ); ?></h2>
+				<div class="openrag-admin-col">
+					<h2><?php esc_html_e( 'Recent Activity', 'openrag-ai-chatbot' ); ?></h2>
 					<table class="widefat striped">
 						<thead>
-						<tr><th><?php esc_html_e( 'Role', 'wp-openrag' ); ?></th><th><?php esc_html_e( 'Excerpt', 'wp-openrag' ); ?></th><th><?php esc_html_e( 'When', 'wp-openrag' ); ?></th></tr>
+						<tr><th><?php esc_html_e( 'Role', 'openrag-ai-chatbot' ); ?></th><th><?php esc_html_e( 'Excerpt', 'openrag-ai-chatbot' ); ?></th><th><?php esc_html_e( 'When', 'openrag-ai-chatbot' ); ?></th></tr>
 						</thead>
 						<tbody>
 						<?php if ( empty( $recent ) ) : ?>
-							<tr><td colspan="3"><?php esc_html_e( 'No activity yet.', 'wp-openrag' ); ?></td></tr>
+							<tr><td colspan="3"><?php esc_html_e( 'No activity yet.', 'openrag-ai-chatbot' ); ?></td></tr>
 						<?php else : ?>
 							<?php foreach ( $recent as $row ) : ?>
 								<tr>

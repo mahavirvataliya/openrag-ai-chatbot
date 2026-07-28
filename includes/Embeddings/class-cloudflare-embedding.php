@@ -6,10 +6,10 @@
  *   POST https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/{model}
  *   Body: { "text": "..." } (single) or { "text": ["...","..."] } (batch)
  *
- * @package WPOpenRag\Embeddings
+ * @package OpenRag\Embeddings
  */
 
-namespace WPOpenRag\Embeddings;
+namespace OpenRag\Embeddings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,7 +25,7 @@ class Cloudflare_Embedding implements Embedding_Provider {
 	}
 
 	public function label() {
-		return __( 'Cloudflare Workers AI', 'wp-openrag' );
+		return __( 'Cloudflare Workers AI', 'openrag-ai-chatbot' );
 	}
 
 	public function is_configured() {

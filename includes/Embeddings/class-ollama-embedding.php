@@ -4,10 +4,10 @@
  *
  * Endpoint: POST {base_url}/api/embed  Body: { "model": "...", "input": [...] }
  *
- * @package WPOpenRag\Embeddings
+ * @package OpenRag\Embeddings
  */
 
-namespace WPOpenRag\Embeddings;
+namespace OpenRag\Embeddings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -23,7 +23,7 @@ class Ollama_Embedding implements Embedding_Provider {
 	}
 
 	public function label() {
-		return __( 'Ollama (local)', 'wp-openrag' );
+		return __( 'Ollama (local)', 'openrag-ai-chatbot' );
 	}
 
 	public function is_configured() {

@@ -2,10 +2,10 @@
 /**
  * Document loaders — extract clean text from PDF / DOCX / TXT / MD / HTML.
  *
- * @package WPOpenRag\Ingestion
+ * @package OpenRag\Ingestion
  */
 
-namespace WPOpenRag\Ingestion;
+namespace OpenRag\Ingestion;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

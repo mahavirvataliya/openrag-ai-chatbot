@@ -2,7 +2,7 @@ name: WordPress.org
 
 # Validates that the plugin is ready for the WordPress.org plugin directory:
 #   • readme.txt is well-formed and version-consistent
-#   • required headers exist in wp-openrag.php
+#   • required headers exist in openrag-ai-chatbot.php
 #   • the .pot is in sync with the source strings
 #   • a release ZIP builds without errors
 
@@ -11,7 +11,7 @@ on:
     branches: [ main, develop ]
     paths:
       - 'readme.txt'
-      - 'wp-openrag.php'
+      - 'openrag-ai-chatbot.php'
       - '.github/workflows/wordpress-org.yml'
   pull_request:
     branches: [ main, develop ]
@@ -51,15 +51,15 @@ jobs:
 
       - name: Confirm Stable tag matches plugin version
         run: |
-          PLUGIN_VERSION=$(grep -E "WP_OPENRAG_VERSION" wp-openrag.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)
+          PLUGIN_VERSION=$(grep -E "OPENRAG_VERSION" openrag-ai-chatbot.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)
           STABLE_TAG=$(grep -E "^Stable tag:" readme.txt | awk '{print $3}')
           echo "Plugin version: ${PLUGIN_VERSION}"
           echo "Stable tag:     ${STABLE_TAG}"
           if [[ -z "${PLUGIN_VERSION}" ]]; then
-            echo "ERROR: could not detect WP_OPENRAG_VERSION" >&2; exit 1
+            echo "ERROR: could not detect OPENRAG_VERSION" >&2; exit 1
           fi
           if [[ "${STABLE_TAG}" != "${PLUGIN_VERSION}" ]]; then
-            echo "ERROR: readme.txt Stable tag (${STABLE_TAG}) does not match WP_OPENRAG_VERSION (${PLUGIN_VERSION})" >&2
+            echo "ERROR: readme.txt Stable tag (${STABLE_TAG}) does not match OPENRAG_VERSION (${PLUGIN_VERSION})" >&2
             exit 1
           fi
           echo "  ✓ Versions match"
@@ -67,7 +67,7 @@ jobs:
       - name: Confirm Plugin Name matches readme.txt title
         run: |
           README_TITLE=$(sed -n 's/^=== \([^=]*\) ===$/\1/p' readme.txt | head -1 | sed 's/^ *//;s/ *$//')
-          PLUGIN_NAME=$(grep -E "^ \* Plugin Name:" wp-openrag.php | head -1 | sed 's/^.*: *//')
+          PLUGIN_NAME=$(grep -E "^ \* Plugin Name:" openrag-ai-chatbot.php | head -1 | sed 's/^.*: *//')
           echo "readme.txt title: ${README_TITLE}"
           echo "Plugin Name:      ${PLUGIN_NAME}"
           if [[ "${README_TITLE}" != "${PLUGIN_NAME}" ]]; then
@@ -86,16 +86,16 @@ jobs:
 
       - name: Confirm .pot exists and is parseable
         run: |
-          if [[ ! -f languages/wp-openrag.pot ]]; then
-            echo "ERROR: languages/wp-openrag.pot missing" >&2
+          if [[ ! -f languages/openrag-ai-chatbot.pot ]]; then
+            echo "ERROR: languages/openrag-ai-chatbot.pot missing" >&2
             exit 1
           fi
           # Must contain a non-empty header block.
-          if ! grep -q 'Project-Id-Version' languages/wp-openrag.pot; then
-            echo "ERROR: languages/wp-openrag.pot has no Project-Id-Version header" >&2
+          if ! grep -q 'Project-Id-Version' languages/openrag-ai-chatbot.pot; then
+            echo "ERROR: languages/openrag-ai-chatbot.pot has no Project-Id-Version header" >&2
             exit 1
           fi
-          COUNT=$(grep -c '^msgid ' languages/wp-openrag.pot)
+          COUNT=$(grep -c '^msgid ' languages/openrag-ai-chatbot.pot)
           echo "  ✓ .pot present with ${COUNT} strings"
 
       - name: Confirm no banned patterns in source
@@ -103,7 +103,7 @@ jobs:
           set -e
           # No call-home telemetry, no curl/file_get_contents for remote HTTP.
           if grep -rn --include='*.php' -E 'curl_exec|curl_init|file_get_contents\s*\(\s*["\x27]https?://' \
-              includes/ wp-openrag.php templates/ 2>/dev/null; then
+              includes/ openrag-ai-chatbot.php templates/ 2>/dev/null; then
             echo "ERROR: found banned remote-fetch functions (use wp_remote_* instead)" >&2
             exit 1
           fi
@@ -112,7 +112,7 @@ jobs:
       - name: Build a release ZIP (smoke test)
         run: |
           ./bin/build-release.sh >/dev/null
-          if ! ls dist/wp-openrag-*.zip >/dev/null 2>&1; then
+          if ! ls dist/openrag-ai-chatbot-*.zip >/dev/null 2>&1; then
             echo "ERROR: build did not produce a release ZIP" >&2
             exit 1
           fi
@@ -121,6 +121,6 @@ jobs:
       - name: Upload release ZIP as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: wp-openrag-release-zip
-          path: dist/wp-openrag-*.zip
+          name: openrag-ai-chatbot-release-zip
+          path: dist/openrag-ai-chatbot-*.zip
           retention-days: 14
