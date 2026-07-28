@@ -24,7 +24,7 @@ Choose your chat-completion provider: OpenAI, OpenAI-compatible, Anthropic
 Claude, Cloudflare Workers AI, Groq, or Ollama. Each provider has its own API
 key, base URL and model fields. Use **Fetch models** to populate the model
 dropdown from the provider, and **Test connection** to verify your credentials
-before saving. See [Providers](providers.md) for per-provider notes.
+before saving. See [Providers]({% link providers.md %}) for per-provider notes.
 
 ## Embeddings
 
@@ -44,7 +44,7 @@ The screen auto-detects whether your MySQL server is **MySQL ≥ 9** with native
 - **Cloudflare Vectorize** — hosted vector index; a **Create / verify index**
   button auto-detects the dimension from your embedding model.
 
-See [Vector stores](vector-stores.md) for the full comparison.
+See [Vector stores]({% link vector-stores.md %}) for the full comparison.
 
 ## Indexing
 
@@ -89,7 +89,7 @@ Theming happens entirely through `--openrag-*` custom properties on the
 Connect to external MCP (Model Context Protocol) servers in client mode. Add,
 edit, delete, enable and disable servers; click **Discover** to cache each
 server's tool list. Enabled servers' tools are offered to the LLM via function
-calling. See the [MCP guide](mcp.md).
+calling. See the [MCP guide]({% link mcp.md %}).
 
 ## Advanced
 

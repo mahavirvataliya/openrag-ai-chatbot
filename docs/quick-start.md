@@ -28,7 +28,7 @@ choose a model. Click **Test connection** to verify.
 pick an engine (or leave on **Auto**). If using Cloudflare Vectorize, click
 **Create / verify index**.
 
-See [Vector stores](vector-stores.md) for the trade-offs.
+See [Vector stores]({% link vector-stores.md %}) for the trade-offs.
 
 ## 4. Add content to your knowledge base
 

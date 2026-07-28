@@ -59,7 +59,7 @@ chat, providers, MCP, a conflict-free widget, and a full admin UI.
 OpenAI · OpenAI-compatible · **Anthropic Claude** · **Cloudflare Workers AI** ·
 **Groq** · **Ollama** (local). Per-provider API key, base URL, model. "Fetch
 models" and "Test connection" buttons in the admin. See
-[Providers](providers.md) for setup details.
+[Providers]({% link providers.md %}) for setup details.
 
 ## 🔌 MCP integration (Model Context Protocol — client mode)
 
@@ -71,7 +71,7 @@ models" and "Test connection" buttons in the admin. See
   MCP server and feeding results back into the conversation.
 - Tool invocations surface as a `🔧 Using tool: X` badge in the chat stream.
 
-See the [MCP guide](mcp.md) for details.
+See the [MCP guide]({% link mcp.md %}) for details.
 
 ## 🎨 Frontend widget
 

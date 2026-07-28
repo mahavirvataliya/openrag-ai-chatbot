@@ -37,7 +37,7 @@ completion, and Cloudflare Vectorize can host the vector index.
 
 No. All requests go directly from your WordPress server to the providers you
 configure. No telemetry, no call-home, no analytics. See
-[Privacy](privacy.md).
+[Privacy]({% link privacy.md %}).
 
 ### How are citations built?
 
