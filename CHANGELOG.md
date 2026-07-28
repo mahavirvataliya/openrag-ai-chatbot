@@ -11,7 +11,7 @@ _Nothing yet._
 
 ---
 
-## [1.0.1] — 2026-07-28
+## [1.0.5] — 2026-07-28
 
 Maintenance release focused on WordPress.org Plugin Check compliance, screenshot publishing, and release build hardening.
 
@@ -157,6 +157,6 @@ The first stable, public release.
 - WordPress 6.0 – 6.8
 - MySQL 5.7 / 8.x / 9.x, MariaDB 10.x
 
-[Unreleased]: https://github.com/mahavirvataliya/openrag-ai-chatbot/compare/v1.0.1...HEAD
-[1.0.1]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.1
+[Unreleased]: https://github.com/mahavirvataliya/openrag-ai-chatbot/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.5
 [1.0.0]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.0
