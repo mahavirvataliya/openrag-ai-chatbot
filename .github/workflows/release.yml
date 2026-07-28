@@ -60,8 +60,21 @@ jobs:
 
       - name: Verify archive contents
         run: |
-          unzip -l "dist/openrag-ai-chatbot-${{ steps.ver.outputs.version }}.zip" | head -40
-          test -f dist/openrag-ai-chatbot-${{ steps.ver.outputs.version }}.zip
+          ZIP="dist/openrag-ai-chatbot-${{ steps.ver.outputs.version }}.zip"
+          test -f "${ZIP}"
+          unzip -l "${ZIP}" | head -40
+
+          # Hard requirement: the ZIP must contain NO hidden files (no .DS_Store,
+          # no .git, no .github, no editor swap files). A release that ships OS
+          # cruft or VCS metadata fails the workflow.
+          echo "==> Scanning archive for hidden files..."
+          LEAKS="$(unzip -Z1 "${ZIP}" | grep -E '(^|/)\.[^/]*(/|$)' || true)"
+          if [[ -n "${LEAKS}" ]]; then
+            echo "::error::Release archive contains hidden files:"
+            echo "${LEAKS}"
+            exit 1
+          fi
+          echo "✔ No hidden files in release archive."
 
       - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v2

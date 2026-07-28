@@ -72,14 +72,25 @@ BUILD_DIR="${STAGE}/build"
 trap 'rm -rf "${STAGE}"' EXIT
 
 rsync -a \
-    --exclude='/vendor' --exclude='/dist' --exclude='/.git' --exclude='/.github' \
-    --exclude='/.zcode' --exclude='/node_modules' --exclude='/.wordpress-org' \
-    --exclude='/bin' --exclude='/docs' --exclude='/.gitignore' \
-    --exclude='/composer.lock' --exclude='*.zip' --exclude='/.DS_Store' \
+    --exclude='vendor' --exclude='dist' --exclude='.git' --exclude='.github' \
+    --exclude='.zcode' --exclude='node_modules' --exclude='.wordpress-org' \
+    --exclude='bin' --exclude='docs' --exclude='.gitignore' \
+    --exclude='.gitattributes' --exclude='.gitmodules' --exclude='.editorconfig' \
+    --exclude='.phpcs.xml.dist' --exclude='.distignore' \
+    --exclude='composer.lock' --exclude='*.zip' --exclude='.DS_Store' \
+    --exclude='.*.swp' --exclude='.*.swo' --exclude='Thumbs.db' \
+    --exclude='CHAT_HISTORY.md' \
+    --exclude='openrag-ai-chatbot-openrag-ai-chatbot-php-*.md' \
+    --exclude='openrag-ai-chatbot-php-*.md' \
     "${ROOT_DIR}/" "${BUILD_DIR}/"
 
 ( cd "${BUILD_DIR}" && composer install --no-dev --prefer-dist --no-interaction )
 rm -f "${BUILD_DIR}/composer.lock"
+
+# Purge any hidden files (OS cruft, editor swaps, vendored dotfile junk) so
+# nothing leaks into the WordPress.org SVN trunk.
+find "${BUILD_DIR}" -name '.*' -not -name '.' -delete 2>/dev/null || true
+find "${BUILD_DIR}/vendor" -type d -name '.git' -prune -exec rm -rf {} + 2>/dev/null || true
 
 # ---- SVN checkout -----------------------------------------------------------
 echo "==> Checking out ${SVN_URL}"
@@ -95,8 +106,8 @@ TRUNK="${SVN_DIR}/trunk"
 # Remove everything currently in trunk (except .svn).
 find "${TRUNK}" -mindepth 1 -maxdepth 1 ! -name '.svn' -exec rm -rf {} +
 
-# Copy the build in.
-rsync -a --exclude='.svn' "${BUILD_DIR}/" "${TRUNK}/"
+# Copy the build in. --exclude='.*' is a final guard against hidden files.
+rsync -am --exclude='.svn' --exclude='.*' "${BUILD_DIR}/" "${TRUNK}/"
 
 # Make sure languages/ and templates/ exist in trunk (they ship with the plugin).
 mkdir -p "${TRUNK}/languages"

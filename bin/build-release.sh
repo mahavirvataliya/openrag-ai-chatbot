@@ -58,21 +58,43 @@ mkdir -p "${PKG_DIR}"
 
 echo "==> Copying source files"
 # Include everything except dev/build artifacts.
+# NOTE: exclude patterns have NO leading slash so they match at any depth
+# (e.g. /.DS_Store would only match the repo root; .DS_Store matches nested
+# ones like includes/.DS_Store too).
 rsync -a \
-    --exclude='/vendor' \
-    --exclude='/dist' \
-    --exclude='/.git' \
-    --exclude='/.github' \
-    --exclude='/.zcode' \
-    --exclude='/.wordpress-org' \
-    --exclude='/bin' \
-    --exclude='/docs' \
-    --exclude='/node_modules' \
-    --exclude='/composer.lock' \
-    --exclude='/.gitignore' \
-    --exclude='/.DS_Store' \
+    --exclude='vendor' \
+    --exclude='dist' \
+    --exclude='.git' \
+    --exclude='.github' \
+    --exclude='.zcode' \
+    --exclude='.wordpress-org' \
+    --exclude='bin' \
+    --exclude='docs' \
+    --exclude='node_modules' \
+    --exclude='composer.lock' \
+    --exclude='.gitignore' \
+    --exclude='.gitattributes' \
+    --exclude='.gitmodules' \
+    --exclude='.editorconfig' \
+    --exclude='.phpcs.xml.dist' \
+    --exclude='.distignore' \
     --exclude='*.zip' \
+    --exclude='.DS_Store' \
+    --exclude='.*.swp' \
+    --exclude='.*.swo' \
+    --exclude='Thumbs.db' \
+    --exclude='ehthumbs.db' \
+    --exclude='desktop.ini' \
+    --exclude='CHAT_HISTORY.md' \
+    --exclude='openrag-ai-chatbot-openrag-ai-chatbot-php-*.md' \
+    --exclude='openrag-ai-chatbot-php-*.md' \
     ./ "${PKG_DIR}/"
+
+# Belt-and-suspenders: purge any remaining hidden files/dirs that slipped
+# through (OS cruft like .DS_Store, editor swap files, stray .dotfiles from
+# vendored packages). Also strips dotfile junk that composer may install
+# inside vendor/ (test stubs, .travis.yml, etc.).
+find "${PKG_DIR}" -name '.*' -not -path "${PKG_DIR}/vendor/*" -delete 2>/dev/null || true
 
 # ---- Install production dependencies ---------------------------------------
 echo "==> Installing production dependencies"
@@ -81,12 +103,30 @@ echo "==> Installing production dependencies"
 # Remove composer tooling artifacts that aren't needed at runtime.
 rm -f "${PKG_DIR}/composer.lock"
 
+# Strip dotfile junk that composer packages sometimes ship (test stubs,
+# .travis.yml, .distignore, editor configs). Only remove FILES named .* ,
+# never the .git directories some packages embed (they're harmless but we
+# drop them too for a clean archive).
+find "${PKG_DIR}/vendor" \( -name '.*' -o -name '*.dist' -o -name 'phpunit.xml*' \) -delete 2>/dev/null || true
+find "${PKG_DIR}/vendor" -type d -name '.git' -prune -exec rm -rf {} + 2>/dev/null || true
+
+# ---- Verify no hidden files remain in the staged package --------------------
+# A release ZIP must never contain OS cruft (.DS_Store), VCS metadata (.git,
+# .github), editor swap files, or dev tooling. Fail loudly if any survive.
+LEAKS="$(find "${PKG_DIR}" -name '.*' -not -name '.' 2>/dev/null)"
+if [[ -n "${LEAKS}" ]]; then
+    echo "ERROR: hidden files would leak into the release:" >&2
+    echo "${LEAKS}" >&2
+    exit 1
+fi
+
 # ---- Package ----------------------------------------------------------------
 echo "==> Packaging dist/openrag-ai-chatbot-${VERSION}.zip"
 mkdir -p "${DIST_DIR}"
 OUT="${DIST_DIR}/openrag-ai-chatbot-${VERSION}.zip"
 rm -f "${OUT}"
-( cd "${STAGE}" && zip -qr "${OUT}" openrag-ai-chatbot )
+# zip with -x as a final guard: skip any dotfile even if rsync/find missed it.
+( cd "${STAGE}" && zip -qr "${OUT}" openrag-ai-chatbot -x '*/.*' '*/.*/' '*.DS_Store' )
 
 # ---- Report -----------------------------------------------------------------
 SIZE="$(du -h "${OUT}" | cut -f1)"
