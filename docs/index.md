@@ -1,7 +1,8 @@
 ---
-title: Home
+title: Self-Hosted RAG Chatbot Plugin for WordPress | OpenRag
+nav_title: Home
 nav_order: 1
-description: A complete, self-hosted RAG chatbot for WordPress.
+description: Self-hosted RAG chatbot for WordPress. Ingest PDFs, DOCX & URLs, embed with OpenAI or Ollama, and answer with citations, reasoning & streaming.
 ---
 
 <script type="application/ld+json">
