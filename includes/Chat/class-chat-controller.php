@@ -444,7 +444,7 @@ class Chat_Controller {
 		$session = (string) ( $request->get_param( 'session_id' ) ?: '' );
 		$limit   = max( 1, min( 200, (int) $request->get_param( 'limit' ) ) );
 
-		$sql = 'SELECT id, session_id, role, content, citations, reasoning, model, feedback, created_at FROM `' . $this->schema->table( 'chats' ) . '`';
+		$sql = 'SELECT id, session_id, role, content, citations, reasoning, model, feedback, created_at, prompt_tokens, completion_tokens, response_time_ms FROM `' . $this->schema->table( 'chats' ) . '`';
 		$params = array();
 		if ( '' !== $session ) {
 			$sql .= ' WHERE session_id = %s';
@@ -460,14 +460,17 @@ class Chat_Controller {
 		$turns = array();
 		foreach ( $rows as $row ) {
 			$turns[] = array(
-				'id'        => (int) $row->id,
-				'role'      => $row->role,
-				'content'   => $row->content,
-				'citations' => $row->citations ? json_decode( $row->citations, true ) : array(),
-				'reasoning' => $row->reasoning,
-				'model'     => $row->model,
-				'feedback'  => $row->feedback,
-				'createdAt' => $row->created_at,
+				'id'               => (int) $row->id,
+				'role'             => $row->role,
+				'content'          => $row->content,
+				'citations'        => $row->citations ? json_decode( $row->citations, true ) : array(),
+				'reasoning'        => $row->reasoning,
+				'model'            => $row->model,
+				'feedback'         => $row->feedback,
+				'createdAt'        => $row->created_at,
+				'promptTokens'     => (int) ( $row->prompt_tokens ?? 0 ),
+				'completionTokens' => (int) ( $row->completion_tokens ?? 0 ),
+				'responseTimeMs'   => (int) ( $row->response_time_ms ?? 0 ),
 			);
 		}
 		return rest_ensure_response( array( 'turns' => $turns ) );

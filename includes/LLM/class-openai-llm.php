@@ -124,6 +124,11 @@ class OpenAI_LLM implements LLM_Provider {
 			'stream'      => $stream,
 		);
 
+		// Request usage stats in the stream so the final chunk carries token counts.
+		if ( $stream ) {
+			$payload['stream_options'] = array( 'include_usage' => true );
+		}
+
 		if ( ! empty( $opts['tools'] ) ) {
 			$payload['tools'] = $opts['tools'];
 		}

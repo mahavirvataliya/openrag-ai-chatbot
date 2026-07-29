@@ -267,7 +267,15 @@
 							} );
 							html += '</div>';
 						}
-						html += '<div class="openrag-chat-msg-meta">' + t.createdAt + ( t.model ? ' · ' + t.model : '' ) + ( t.feedback ? ' · ' + t.feedback : '' ) + '</div>';
+						html += '<div class="openrag-chat-msg-meta">' + ( function () {
+							var metaParts = [ t.createdAt ];
+							if ( t.model ) { metaParts.push( t.model ); }
+							var tot = ( t.promptTokens || 0 ) + ( t.completionTokens || 0 );
+							if ( t.role === 'assistant' && tot > 0 ) { metaParts.push( tot + ' tokens' ); }
+							if ( t.role === 'assistant' && t.responseTimeMs ) { metaParts.push( t.responseTimeMs + ' ms' ); }
+							if ( t.feedback ) { metaParts.push( t.feedback ); }
+							return metaParts.join( ' · ' );
+						}() ) + '</div>';
 						html += '</div>';
 					}
 				}

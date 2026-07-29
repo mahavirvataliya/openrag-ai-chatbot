@@ -35,6 +35,11 @@ class Dashboard_Page {
 		$thumbs_up   = (int) $wpdb->get_var( "SELECT COUNT(*) FROM `" . $schema->table( 'chats' ) . "` WHERE feedback = 'up'" ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
 		$thumbs_down = (int) $wpdb->get_var( "SELECT COUNT(*) FROM `" . $schema->table( 'chats' ) . "` WHERE feedback = 'down'" ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
 
+		// Token usage totals (assistant turns only).
+		$prompt_tokens     = (int) $wpdb->get_var( "SELECT COALESCE(SUM(prompt_tokens),0) FROM `" . $schema->table( 'chats' ) . "` WHERE role = 'assistant'" ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
+		$completion_tokens = (int) $wpdb->get_var( "SELECT COALESCE(SUM(completion_tokens),0) FROM `" . $schema->table( 'chats' ) . "` WHERE role = 'assistant'" ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
+		$total_tokens      = $prompt_tokens + $completion_tokens;
+
 		$recent = $wpdb->get_results( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			'SELECT id, role, content, created_at FROM `' . $schema->table( 'chats' ) . '` ORDER BY id DESC LIMIT 10' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
@@ -67,6 +72,13 @@ class Dashboard_Page {
 				<div class="openrag-card">
 					<div class="openrag-card-value">👍 <?php echo esc_html( number_format_i18n( $thumbs_up ) ); ?> / 👎 <?php echo esc_html( number_format_i18n( $thumbs_down ) ); ?></div>
 					<div class="openrag-card-label"><?php esc_html_e( 'Feedback', 'openrag-ai-chatbot' ); ?></div>
+				</div>
+				<div class="openrag-card">
+					<div class="openrag-card-value"><?php echo esc_html( number_format_i18n( $total_tokens ) ); ?></div>
+					<div class="openrag-card-label">
+						<?php esc_html_e( 'Tokens Used', 'openrag-ai-chatbot' ); ?><br>
+						<small><?php echo esc_html( sprintf( /* translators: 1: prompt tokens, 2: completion tokens */ __( '%1$s prompt · %2$s completion', 'openrag-ai-chatbot' ), number_format_i18n( $prompt_tokens ), number_format_i18n( $completion_tokens ) ) ); ?></small>
+					</div>
 				</div>
 			</div>
 

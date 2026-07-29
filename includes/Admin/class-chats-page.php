@@ -58,7 +58,7 @@ class Chats_Page {
 
 		// Rows (user turns + their assistant replies joined).
 		$sql = 'SELECT u.id, u.session_id, u.content AS user_message, u.created_at, u.device, u.user_ip,
-				a.id AS assistant_id, a.content AS reply, a.citations, a.reasoning, a.model, a.feedback, a.feedback_comment, a.response_time_ms
+				a.id AS assistant_id, a.content AS reply, a.citations, a.reasoning, a.model, a.feedback, a.feedback_comment, a.response_time_ms, a.prompt_tokens, a.completion_tokens
 				FROM `' . $schema->table( 'chats' ) . '` u
 				LEFT JOIN `' . $schema->table( 'chats' ) . '` a
 				  ON a.session_id = u.session_id AND a.role = "assistant" AND a.id > u.id
@@ -91,19 +91,27 @@ class Chats_Page {
 					<th style="width:90px"><?php esc_html_e( 'When', 'openrag-ai-chatbot' ); ?></th>
 					<th><?php esc_html_e( 'Message', 'openrag-ai-chatbot' ); ?></th>
 					<th style="width:70px"><?php esc_html_e( 'Device', 'openrag-ai-chatbot' ); ?></th>
+					<th style="width:80px"><?php esc_html_e( 'Tokens', 'openrag-ai-chatbot' ); ?></th>
 					<th style="width:80px"><?php esc_html_e( 'Feedback', 'openrag-ai-chatbot' ); ?></th>
 					<th style="width:90px"><?php esc_html_e( 'Actions', 'openrag-ai-chatbot' ); ?></th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php if ( empty( $rows ) ) : ?>
-					<tr><td colspan="5"><?php esc_html_e( 'No chats found.', 'openrag-ai-chatbot' ); ?></td></tr>
+					<tr><td colspan="6"><?php esc_html_e( 'No chats found.', 'openrag-ai-chatbot' ); ?></td></tr>
 				<?php else : ?>
 					<?php foreach ( $rows as $row ) : ?>
 						<tr>
 							<td><?php echo esc_html( $row->created_at ); ?></td>
 							<td><strong><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $row->user_message ), 14 ) ); ?></strong></td>
 							<td><?php echo esc_html( $row->device ); ?></td>
+							<td>
+								<?php
+								$row_pt = (int) ( $row->prompt_tokens ?? 0 );
+								$row_ct = (int) ( $row->completion_tokens ?? 0 );
+								echo esc_html( ( $row_pt + $row_ct ) > 0 ? number_format_i18n( $row_pt + $row_ct ) : '—' );
+								?>
+							</td>
 							<td>
 								<?php if ( 'up' === $row->feedback ) : ?>👍<?php elseif ( 'down' === $row->feedback ) : ?>👎<?php else : ?>—<?php endif; ?>
 							</td>
@@ -152,7 +160,7 @@ class Chats_Page {
 		$schema = new Schema();
 
 		$sql = 'SELECT u.id, u.session_id, u.content AS user_message, u.created_at, u.device, u.user_ip,
-				a.content AS reply, a.citations, a.model, a.feedback, a.feedback_comment, a.response_time_ms
+				a.content AS reply, a.citations, a.model, a.feedback, a.feedback_comment, a.response_time_ms, a.prompt_tokens, a.completion_tokens
 				FROM `' . $schema->table( 'chats' ) . '` u
 				LEFT JOIN `' . $schema->table( 'chats' ) . '` a
 				  ON a.session_id = u.session_id AND a.role = "assistant" AND a.id > u.id
@@ -165,7 +173,7 @@ class Chats_Page {
 		header( 'Content-Disposition: attachment; filename="openrag-chats.csv"' );
 
 		$out = fopen( 'php://output', 'w' );
-		fputcsv( $out, array( 'id', 'created_at', 'session_id', 'ip', 'device', 'user_message', 'reply', 'model', 'response_ms', 'feedback', 'feedback_comment' ) );
+		fputcsv( $out, array( 'id', 'created_at', 'session_id', 'ip', 'device', 'user_message', 'reply', 'model', 'response_ms', 'prompt_tokens', 'completion_tokens', 'feedback', 'feedback_comment' ) );
 
 		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		foreach ( $wpdb->get_results( $sql ) as $row ) {
@@ -181,6 +189,8 @@ class Chats_Page {
 					$row->reply,
 					$row->model,
 					$row->response_time_ms,
+					$row->prompt_tokens,
+					$row->completion_tokens,
 					$row->feedback,
 					$row->feedback_comment,
 				)

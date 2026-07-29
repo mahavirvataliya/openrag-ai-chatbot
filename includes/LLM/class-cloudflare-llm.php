@@ -160,6 +160,7 @@ class Cloudflare_LLM implements LLM_Provider {
 
 		$body  = wp_remote_retrieve_body( $response );
 		$lines = preg_split( '/\r\n|\n|\r/', $body );
+		$usage = array();
 		foreach ( $lines as $line ) {
 			$line = trim( $line );
 			if ( '' === $line || 0 !== strpos( $line, 'data:' ) ) {
@@ -173,6 +174,10 @@ class Cloudflare_LLM implements LLM_Provider {
 			if ( ! is_array( $json ) ) {
 				continue;
 			}
+			// Capture token usage from any chunk that carries it (some models emit it in the final chunk).
+			if ( isset( $json['usage'] ) && is_array( $json['usage'] ) ) {
+				$usage = array_merge( $usage, $json['usage'] );
+			}
 			$delta = $json['choices'][0]['delta'] ?? ( $json['delta'] ?? array() );
 			if ( isset( $delta['content'] ) && '' !== $delta['content'] ) {
 				yield array( 'type' => 'delta', 'content' => (string) $delta['content'] );
@@ -182,6 +187,6 @@ class Cloudflare_LLM implements LLM_Provider {
 			}
 		}
 
-		yield array( 'type' => 'done', 'usage' => array(), 'model' => $model );
+		yield array( 'type' => 'done', 'usage' => $usage, 'model' => $model );
 	}
 }
