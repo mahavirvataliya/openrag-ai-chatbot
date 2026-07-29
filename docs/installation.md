@@ -59,4 +59,4 @@ options when the plugin is deleted.
 
 ---
 
-Once installed, head to the [Quick start]({% link quick-start.md %}) guide.
+Once installed, head to the [Quick start]({{ site.baseurl }}/quick-start/) guide.

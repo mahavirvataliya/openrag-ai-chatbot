@@ -65,5 +65,5 @@ You need an account with at least one LLM/embedding provider.
 - **Cloudflare Workers AI** includes a generous free tier and can serve both
   embeddings and chat.
 
-See the [Quick start]({% link quick-start.md %}) for a fully local (Ollama) or fully
+See the [Quick start]({{ site.baseurl }}/quick-start/) for a fully local (Ollama) or fully
 Cloudflare setup.

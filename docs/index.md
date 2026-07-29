@@ -15,7 +15,7 @@ live streaming and MCP tool integration** — all from a customizable,
 conflict-free chat widget.
 {: .fs-6 .fw-300 }
 
-[Get started]({% link quick-start.md %}){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Get started]({{ site.baseurl }}/quick-start/){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
 [View on GitHub](https://github.com/mahavirvataliya/openrag-ai-chatbot){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ---
@@ -57,7 +57,7 @@ directly to the providers you configure.
 ```
 
 Embed the chatbot inline anywhere with the shortcode above, or enable the
-floating widget from **Settings → Chat**. See the [Quick start guide]({% link quick-start.md %})
+floating widget from **Settings → Chat**. See the [Quick start guide]({{ site.baseurl }}/quick-start/)
 to get a working chatbot in under 5 minutes.
 
 ## Requirements
@@ -72,7 +72,7 @@ to get a working chatbot in under 5 minutes.
 
 ## Next steps
 
-- [Installation]({% link installation.md %})
-- [Features]({% link features.md %})
-- [Quick start]({% link quick-start.md %})
-- [REST API]({% link rest-api.md %})
+- [Installation]({{ site.baseurl }}/installation/)
+- [Features]({{ site.baseurl }}/features/)
+- [Quick start]({{ site.baseurl }}/quick-start/)
+- [REST API]({{ site.baseurl }}/rest-api/)
