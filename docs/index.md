@@ -4,6 +4,38 @@ nav_order: 1
 description: A complete, self-hosted RAG chatbot for WordPress.
 ---
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OpenRag AI Chatbot",
+  "applicationCategory": "WordPressPlugin",
+  "operatingSystem": "WordPress 6.0+, PHP 8.0+, MySQL 5.7+",
+  "url": "https://mahavirvataliya.github.io/openrag-ai-chatbot/",
+  "downloadUrl": "https://github.com/mahavirvataliya/openrag-ai-chatbot/releases",
+  "softwareVersion": "1.0.5",
+  "datePublished": "2026-07-27",
+  "dateModified": "2026-07-28",
+  "description": "A complete, self-hosted RAG (Retrieval-Augmented Generation) chatbot for WordPress. Ingest documents, links and posts; embed with OpenAI, Cloudflare or Ollama; retrieve with MySQL 9 native vector search or Cloudflare Vectorize; and answer visitor questions with citations, reasoning, streaming and MCP tool integration.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "license": "https://www.gnu.org/licenses/gpl-2.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Mahavir Vataliya",
+    "url": "https://github.com/mahavirvataliya"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Mahavir Vataliya",
+    "url": "https://github.com/mahavirvataliya"
+  }
+}
+</script>
+
 # OpenRag AI Chatbot
 {: .fs-9 }
 

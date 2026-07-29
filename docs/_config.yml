@@ -88,3 +88,23 @@ markdown: kramdown
 kramdown:
   parse_block_html: true
   syntax_highlighter: rouge
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SEO
+# ─────────────────────────────────────────────────────────────────────────────
+# jekyll-sitemap is on the GitHub Pages plugin whitelist; listing it here makes
+# Jekyll auto-generate /sitemap.xml on every build.
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Social preview image + large Twitter card (defaults applied to every page).
+# jekyll-seo-tag reads these and emits og:image / twitter:image automatically.
+logo: "/openrag-ai-chatbot/assets/icon.svg"
+defaults:
+  - scope:
+      path: "" # all files
+    values:
+      image: "/openrag-ai-chatbot/assets/og-image.png"
+      twitter:
+        card: summary_large_image
