@@ -1,0 +1,58 @@
+# OpenRag AI Chatbot
+
+> OpenRag AI Chatbot is a complete, self-hosted RAG (Retrieval-Augmented Generation) chatbot for WordPress. Ingest your own documents, links and posts, embed them with the provider of your choice, retrieve with native MySQL 9 vector search or Cloudflare Vectorize, and answer visitor questions with citations, reasoning, live streaming and MCP tool integration — all from a customizable, conflict-free chat widget.
+
+OpenRag AI Chatbot turns your WordPress site into a retrieval-augmented-generation assistant. Visitors ask questions through a customizable chat widget; the plugin retrieves the most relevant chunks from your knowledge base (documents, URLs, or your own posts and pages), feeds them to the LLM of your choice, and returns a grounded answer with citations. Unlike hosted chatbot SaaS plugins, it is fully self-hosted — you pick the LLM, the embedding model, and the vector database. No per-message fees, no third-party middleman.
+
+## Key features
+
+- Knowledge base ingestion: URLs (single or bulk, plain or `title,url` CSV), files (PDF via smalot/pdfparser, DOCX, TXT, Markdown), and WordPress posts/pages (auto re-index on save, auto-remove on trash).
+- Embeddings: OpenAI, OpenAI-compatible (Together/Azure/vLLM/LM Studio), Cloudflare Workers AI, Ollama. Sentence-aware chunker with configurable size/overlap/min length.
+- Vector stores: native MySQL 9 `VECTOR(n)` columns with cosine distance (JSON + PHP cosine fallback on older MySQL/MariaDB), or Cloudflare Vectorize (REST v2 client).
+- Chat: SSE streaming with `/chat/sync` fallback, citations as a deduplicated Sources list, reasoning/extended thinking (OpenAI reasoning_effort, Anthropic thinking.budget_tokens, DeepSeek/Ollama `<think>` blocks), tool calling, per-IP rate limiting, server-side + localStorage history.
+- LLM providers: OpenAI, OpenAI-compatible, Anthropic Claude, Cloudflare Workers AI, Groq, Ollama (local). Per-provider API key, base URL, model, Fetch models, Test connection.
+- MCP integration (client mode): connect to external MCP servers (streamable HTTP or SSE), discover/cache tool lists, expose tools via function calling with a bounded loop (max 5 iterations).
+- Conflict-free frontend widget: scoped under `#openrag-widget`, `openrag-` class prefix, `--openrag-*` custom properties; floating widget + `[openrag_chat]` shortcode; 4 preset themes (Light, Dark, Ocean, Sunset) + per-color overrides; vanilla JS, mobile-responsive, markdown rendering with HTML escaping.
+- Admin UI: Dashboard, Knowledge Base (Documents/Files, URLs, WordPress Content), Chats (search, date filter, detail modal, CSV export), Settings (8 tabs).
+- Background processing: Action Scheduler (one job per document/post, retry/backoff) + on-request (immediate AJAX) mode.
+- Privacy: no data sent to plugin authors; no telemetry; no call-home.
+
+## Requirements
+
+- PHP >= 8.0
+- WordPress >= 6.0
+- MySQL >= 5.7 (MySQL 9.0+ unlocks native VECTOR storage & search; otherwise a JSON + PHP fallback is used)
+- At least one embedding provider (OpenAI / OpenAI-compatible / Cloudflare Workers AI / Ollama)
+- At least one LLM provider (OpenAI / OpenAI-compatible / Anthropic / Cloudflare / Groq / Ollama)
+
+## Embed
+
+```text
+[openrag_chat]
+```
+
+Use the shortcode above for inline embedding, or enable the floating widget from Settings → Chat.
+
+## Links
+
+- [Home](https://mahavirvataliya.github.io/openrag-ai-chatbot/)
+- [Features](https://mahavirvataliya.github.io/openrag-ai-chatbot/features/)
+- [Installation](https://mahavirvataliya.github.io/openrag-ai-chatbot/installation/)
+- [Quick start](https://mahavirvataliya.github.io/openrag-ai-chatbot/quick-start/)
+- [Configuration](https://mahavirvataliya.github.io/openrag-ai-chatbot/configuration/)
+- [Providers](https://mahavirvataliya.github.io/openrag-ai-chatbot/providers/)
+- [Vector stores](https://mahavirvataliya.github.io/openrag-ai-chatbot/vector-stores/)
+- [REST API](https://mahavirvataliya.github.io/openrag-ai-chatbot/rest-api/)
+- [MCP integration](https://mahavirvataliya.github.io/openrag-ai-chatbot/mcp/)
+- [FAQ](https://mahavirvataliya.github.io/openrag-ai-chatbot/faq/)
+- [Screenshots](https://mahavirvataliya.github.io/openrag-ai-chatbot/screenshots/)
+- [Privacy](https://mahavirvataliya.github.io/openrag-ai-chatbot/privacy/)
+- [Changelog](https://mahavirvataliya.github.io/openrag-ai-chatbot/changelog/)
+
+## Optional
+
+- [GitHub repository](https://github.com/mahavirvataliya/openrag-ai-chatbot)
+- [GitHub Releases](https://github.com/mahavirvataliya/openrag-ai-chatbot/releases)
+- [README (source)](https://github.com/mahavirvataliya/openrag-ai-chatbot/blob/main/README.md)
+- [CHANGELOG (source)](https://github.com/mahavirvataliya/openrag-ai-chatbot/blob/main/CHANGELOG.md)
+- [License: GPL-2.0-or-later](https://github.com/mahavirvataliya/openrag-ai-chatbot/blob/main/LICENSE)

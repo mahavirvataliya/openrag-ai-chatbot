@@ -50,6 +50,33 @@ directly to the providers you configure.
 - **Conflict-free widget** — scoped under `#openrag-widget`, `openrag-` class
   prefix, four preset themes, fully customizable.
 
+## Screenshots
+
+<table class="openrag-screenshots" role="presentation">
+  <tr>
+    <td align="center">
+      <a href="{{ site.baseurl }}/screenshots/">
+        <img src="{{ site.baseurl }}/assets/screenshots/screenshot-1.png" alt="Dashboard" width="280"><br>
+        <sub>Dashboard</sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="{{ site.baseurl }}/screenshots/">
+        <img src="{{ site.baseurl }}/assets/screenshots/screenshot-2.png" alt="Knowledge Base" width="280"><br>
+        <sub>Knowledge Base</sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="{{ site.baseurl }}/screenshots/">
+        <img src="{{ site.baseurl }}/assets/screenshots/screenshot-14.png" alt="Frontend chat widget" width="280"><br>
+        <sub>Frontend chat widget</sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
+**[View all 14 screenshots →]({{ site.baseurl }}/screenshots/)**
+
 ## Quick start
 
 ```text
@@ -76,3 +103,17 @@ to get a working chatbot in under 5 minutes.
 - [Features]({{ site.baseurl }}/features/)
 - [Quick start]({{ site.baseurl }}/quick-start/)
 - [REST API]({{ site.baseurl }}/rest-api/)
+- [Screenshots]({{ site.baseurl }}/screenshots/)
+- [FAQ]({{ site.baseurl }}/faq/)
+- [Changelog]({{ site.baseurl }}/changelog/)
+
+---
+
+## For AI tools and agents
+
+This documentation is also available as a machine-readable index for LLMs and
+coding agents:
+
+**[llms.txt]({{ site.baseurl }}/llms.txt)** — a plain-text summary of the plugin
+with links to every page. Fetch `https://mahavirvataliya.github.io/openrag-ai-chatbot/llms.txt`
+to give an AI assistant a concise, structured overview of OpenRag AI Chatbot.

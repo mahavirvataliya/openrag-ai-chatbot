@@ -58,12 +58,14 @@ gh_edit_view_mode: "tree"
 gh_edit_source: "docs"
 
 # Page footer.
-footer_content: 'Copyright &copy; 2026 Mahavir Vataliya. Distributed under the <a href="https://www.gnu.org/licenses/gpl-2.0.html">GPL-2.0-or-later</a> license. Not affiliated with or endorsed by WordPress, OpenAI, Anthropic, Cloudflare, Groq, or Automattic.'
+footer_content: 'Copyright &copy; 2026 Mahavir Vataliya. Distributed under the <a href="https://www.gnu.org/licenses/gpl-2.0.html">GPL-2.0-or-later</a> license. Not affiliated with or endorsed by WordPress, OpenAI, Anthropic, Cloudflare, Groq, or Automattic. &middot; <a href="{{ site.baseurl }}/llms.txt">llms.txt</a>'
 
 # Jekyll collections: only process the docs/ markdown.
+# *.txt is included so docs/llms.txt is served as a static file (LLM index).
 include:
   - "*.md"
   - "*.html"
+  - "*.txt"
 
 exclude:
   - "PUBLISHING.md.tmp"
