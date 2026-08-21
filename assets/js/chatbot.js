@@ -1,5 +1,5 @@
 /**
- * OpenRag AI Chatbot chatbot widget — vanilla JS, no dependencies.
+ * ItihRag AI Chatbot chatbot widget — vanilla JS, no dependencies.
  *
  * - Streaming via fetch + ReadableStream (Server-Sent Events).
  * - Markdown rendered with a small inline parser that escapes HTML first (no XSS).
@@ -11,9 +11,10 @@
 ( function () {
 	'use strict';
 
-	var CFG = window.OpenRagConfig || {};
-	var REST = CFG.restUrl || '/wp-json/openrag/v1';
-	var SESSION_KEY = 'openrag_session';
+	var CFG = window.ItihRagConfig || {};
+	var REST = CFG.restUrl || '/wp-json/itih/v1';
+	var SESSION_KEY = 'itih_session';
+	var SECRET_KEY = 'itih_secret';
 
 	function $( sel, ctx ) { return ( ctx || document ).querySelector( sel ); }
 	function el( tag, attrs, kids ) {
@@ -75,6 +76,7 @@
 	var sessionId = getSession();
 	var history = [];
 	var streaming = null;
+	var historyLoaded = false;
 
 	function getSession() {
 		try {
@@ -84,6 +86,21 @@
 		var ns = 'sess_' + Math.random().toString( 36 ).slice( 2 ) + Date.now().toString( 36 );
 		try { localStorage.setItem( SESSION_KEY, ns ); } catch ( e ) {}
 		return ns;
+	}
+
+	function getSecret() {
+		try { return localStorage.getItem( SECRET_KEY ) || ''; } catch ( e ) { return ''; }
+	}
+	function setSecret( s ) {
+		try { localStorage.setItem( SECRET_KEY, s || '' ); } catch ( e ) {}
+	}
+
+	// Ownership headers sent on session-scoped mutations (/feedback, /history).
+	function sessionHeaders( extra ) {
+		var h = Object.assign( {}, extra || {} );
+		h['X-Itih-Session'] = sessionId;
+		h['X-Itih-Secret']  = getSecret();
+		return h;
 	}
 
 	/* ---------- Boot ---------- */
@@ -122,11 +139,6 @@
 			widget.classList.add( 'is-open' );
 			if ( window_ ) { window_.hidden = false; }
 		}
-
-		// Load prior history for this session.
-		if ( sessionId ) {
-			loadHistory();
-		}
 	}
 
 	function toggleOpen() {
@@ -134,6 +146,11 @@
 		if ( window_ ) { window_.hidden = ! open; }
 		if ( launcher ) { launcher.setAttribute( 'aria-expanded', open ? 'true' : 'false' ); }
 		if ( open ) {
+			// Deferred to first open: avoids a REST request on every page view.
+			if ( sessionId && ! historyLoaded ) {
+				historyLoaded = true;
+				loadHistory();
+			}
 			setTimeout( function () { input && input.focus(); scrollToBottom(); }, 50 );
 		}
 	}
@@ -263,6 +280,7 @@
 		switch ( evt.type ) {
 			case 'meta':
 				if ( evt.session_id ) { sessionId = evt.session_id; try { localStorage.setItem( SESSION_KEY, sessionId ); } catch ( e ) {} }
+				if ( evt.session_secret ) { setSecret( evt.session_secret ); }
 				break;
 			case 'delta':
 				appendContent( evt.content || '' );
@@ -341,8 +359,8 @@
 		if ( ! messageId ) { return; }
 		fetch( REST + '/feedback', {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': CFG.nonce || '' },
-			body: JSON.stringify( { message_id: parseInt( messageId, 10 ), feedback: feedback, comment: comment || '' } ),
+			headers: sessionHeaders( { 'Content-Type': 'application/json', 'X-WP-Nonce': CFG.nonce || '' } ),
+			body: JSON.stringify( { message_id: parseInt( messageId, 10 ), session_id: sessionId, feedback: feedback, comment: comment || '' } ),
 		} ).then( function () {
 			var siblings = btnEl.parentNode.querySelectorAll( '.openrag-feedback' );
 			siblings.forEach( function ( s ) { s.classList.remove( 'is-active' ); } );
@@ -357,7 +375,7 @@
 		var ta = el( 'textarea', { rows: 3, style: 'width:100%;border:1px solid #ccc;border-radius:8px;padding:8px;' } );
 		ta.setAttribute( 'placeholder', ( CFG.i18n && CFG.i18n.feedbackComment ) || '' );
 		var row = el( 'div', { style: 'display:flex;gap:8px;justify-content:flex-end;margin-top:10px;' } );
-		var cancel = el( 'button', { style: 'padding:6px 12px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;' }, [ 'Cancel' ] );
+		var cancel = el( 'button', { style: 'padding:6px 12px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;' }, [ ( CFG.i18n && CFG.i18n.cancel ) || 'Cancel' ] );
 		var send = el( 'button', { style: 'padding:6px 12px;border:none;border-radius:6px;background:var(--openrag-primary,#3b82f6);color:#fff;cursor:pointer;' }, [ ( CFG.i18n && CFG.i18n.send ) || 'Send' ] );
 		cancel.addEventListener( 'click', function () { document.body.removeChild( overlay ); } );
 		send.addEventListener( 'click', function () {
@@ -377,7 +395,7 @@
 	/* ---------- History ---------- */
 	function loadHistory() {
 		fetch( REST + '/history?session_id=' + encodeURIComponent( sessionId ) + '&limit=20', {
-			headers: { 'X-WP-Nonce': CFG.nonce || '' },
+			headers: sessionHeaders( { 'X-WP-Nonce': CFG.nonce || '' } ),
 		} )
 		.then( function ( r ) { return r.json(); } )
 		.then( function ( data ) {
@@ -407,7 +425,7 @@
 		if ( ! confirm( ( CFG.i18n && CFG.i18n.clearChat ) || 'Clear chat?' ) ) { return; }
 		fetch( REST + '/history?session_id=' + encodeURIComponent( sessionId ), {
 			method: 'DELETE',
-			headers: { 'X-WP-Nonce': CFG.nonce || '' },
+			headers: sessionHeaders( { 'X-WP-Nonce': CFG.nonce || '' } ),
 		} ).finally( function () {
 			messages.innerHTML = '';
 			history = [];
