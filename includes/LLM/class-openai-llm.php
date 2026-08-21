@@ -4,10 +4,10 @@
  *
  * All three share the same wire format; only base URL and credentials differ.
  *
- * @package OpenRag\LLM
+ * @package ItihRag\LLM
  */
 
-namespace OpenRag\LLM;
+namespace ItihRag\LLM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

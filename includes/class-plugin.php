@@ -2,21 +2,21 @@
 /**
  * Main plugin class — singleton that wires everything together.
  *
- * @package OpenRag
+ * @package ItihRag
  */
 
-namespace OpenRag;
+namespace ItihRag;
 
-use OpenRag\Admin\Admin_Menu;
-use OpenRag\Chat\Chat_Controller;
-use OpenRag\Chat\Rate_Limiter;
-use OpenRag\Embeddings\Embedding_Manager;
-use OpenRag\LLM\LLM_Manager;
-use OpenRag\VectorStores\Vector_Store_Manager;
-use OpenRag\Ingestion\Ingestion_Pipeline;
-use OpenRag\Queue\Background_Processor;
-use OpenRag\MCP\MCP_Manager;
-use OpenRag\Database\Schema;
+use ItihRag\Admin\Admin_Menu;
+use ItihRag\Chat\Chat_Controller;
+use ItihRag\Chat\Rate_Limiter;
+use ItihRag\Embeddings\Embedding_Manager;
+use ItihRag\LLM\LLM_Manager;
+use ItihRag\VectorStores\Vector_Store_Manager;
+use ItihRag\Ingestion\Ingestion_Pipeline;
+use ItihRag\Queue\Background_Processor;
+use ItihRag\MCP\MCP_Manager;
+use ItihRag\Database\Schema;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -64,20 +64,23 @@ class Plugin {
 	 * @return void
 	 */
 	private function register_hooks() {
-		// Ensure tables exist even if activation hook didn't run (multisite/composer installs).
-		add_action( 'admin_init', array( $this, 'maybe_create_schema' ) );
+		// Ensure tables exist and option migrations run even if the activation
+		// hook didn't fire (multisite/composer installs) — on init, not just
+		// admin_init, so frontend requests see migrated settings immediately.
+		add_action( 'init', array( $this, 'maybe_create_schema' ) );
 
 		// REST endpoints.
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 
 		// Eagerly bootstrap the background queue so its do_action handlers exist
-		// before any ingestion REST route calls do_action('openrag_schedule_document').
+		// before any ingestion REST route calls do_action('itih_schedule_document').
 		add_action( 'init', array( $this, 'prime_queue' ), 5 );
 
 		// Frontend widget + assets.
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
 		add_action( 'wp_footer', array( $this, 'maybe_render_widget' ) );
-		add_shortcode( 'openrag_chat', array( $this, 'render_inline_shortcode' ) );
+		add_shortcode( 'itih_chat', array( $this, 'render_inline_shortcode' ) );
+		add_shortcode( 'openrag_chat', array( $this, 'render_inline_shortcode' ) ); // Legacy alias.
 
 		// WP content auto-indexing.
 		add_action( 'save_post', array( $this, 'on_save_post' ), 20, 2 );
@@ -215,11 +218,33 @@ class Plugin {
 	 * @return void
 	 */
 	public function maybe_create_schema() {
-		$db_version = get_option( OPENRAG_OPTION_PREFIX . 'db_version' );
-		if ( OPENRAG_DB_VERSION !== $db_version ) {
+		$db_version = get_option( ITIH_OPTION_PREFIX . 'db_version' );
+		if ( ITIH_DB_VERSION !== $db_version ) {
+			$this->migrate_legacy_options();
 			$this->schema()->create();
-			update_option( OPENRAG_OPTION_PREFIX . 'db_version', OPENRAG_DB_VERSION );
+			update_option( ITIH_OPTION_PREFIX . 'db_version', ITIH_DB_VERSION );
 		}
+	}
+
+	/**
+	 * One-time migration: move pre-rename openrag_* options to itih_*.
+	 *
+	 * Runs inside the db-version-mismatch branch of maybe_create_schema(), which
+	 * is guaranteed to fire once after updating from a pre-1.1.1 install because
+	 * the option prefix changed.
+	 *
+	 * @return void
+	 */
+	private function migrate_legacy_options() {
+		$groups = array( 'general', 'chat', 'providers', 'embeddings', 'vector_store', 'indexing', 'appearance', 'mcp' );
+		foreach ( $groups as $group ) {
+			$legacy = get_option( 'openrag_' . $group );
+			if ( false !== $legacy && false === get_option( ITIH_OPTION_PREFIX . $group ) ) {
+				add_option( ITIH_OPTION_PREFIX . $group, $legacy );
+				delete_option( 'openrag_' . $group );
+			}
+		}
+		delete_option( 'openrag_db_version' );
 	}
 
 	/**
@@ -240,16 +265,16 @@ class Plugin {
 	 */
 	public function register_assets() {
 		wp_register_style(
-			'openrag-chatbot',
-			OPENRAG_URL . 'assets/css/chatbot.css',
+			'itih-chatbot',
+			ITIH_URL . 'assets/css/chatbot.css',
 			array(),
-			OPENRAG_VERSION
+			ITIH_VERSION
 		);
 		wp_register_script(
-			'openrag-chatbot',
-			OPENRAG_URL . 'assets/js/chatbot.js',
+			'itih-chatbot',
+			ITIH_URL . 'assets/js/chatbot.js',
 			array(),
-			OPENRAG_VERSION,
+			ITIH_VERSION,
 			true
 		);
 	}
@@ -285,16 +310,16 @@ class Plugin {
 	 * @return void
 	 */
 	private function render_widget( $inline ) {
-		wp_enqueue_style( 'openrag-chatbot' );
-		wp_enqueue_script( 'openrag-chatbot' );
+		wp_enqueue_style( 'itih-chatbot' );
+		wp_enqueue_script( 'itih-chatbot' );
 
 		$settings = Settings::all();
 		$cfg = array(
-			'restUrl'         => esc_url_raw( rest_url( OPENRAG_REST_NAMESPACE ) ),
+			'restUrl'         => esc_url_raw( rest_url( ITIH_REST_NAMESPACE ) ),
 			'nonce'           => wp_create_nonce( 'wp_rest' ),
 			'botName'         => $settings['chat']['bot_name'],
 			'welcome'         => $settings['chat']['welcome_message'],
-			'placeholder'     => __( 'Type your message…', 'openrag-ai-chatbot' ),
+			'placeholder'     => __( 'Type your message…', 'itih-ai-chatbot' ),
 			'position'        => $settings['chat']['launcher_position'],
 			'theme'           => $settings['appearance']['theme'],
 			'colors'          => $settings['appearance']['colors'],
@@ -302,34 +327,37 @@ class Plugin {
 			'avatar'          => $settings['appearance']['avatar'],
 			'showReasoning'   => ! empty( $settings['chat']['reasoning'] ),
 			'showCitations'   => ! empty( $settings['chat']['citations'] ),
+			'showCredit'      => ! empty( $settings['chat']['show_credit'] ),
 			'inline'          => $inline,
 			'i18n'            => array(
-				'thinking'        => __( 'Thinking…', 'openrag-ai-chatbot' ),
-				'sources'         => __( 'Sources', 'openrag-ai-chatbot' ),
-				'reasoning'       => __( 'Reasoning', 'openrag-ai-chatbot' ),
-				'askAgain'        => __( 'Ask again', 'openrag-ai-chatbot' ),
-				'clearChat'       => __( 'Clear chat', 'openrag-ai-chatbot' ),
-				'feedbackGood'    => __( 'Good response', 'openrag-ai-chatbot' ),
-				'feedbackBad'     => __( 'Needs improvement', 'openrag-ai-chatbot' ),
-				'feedbackComment' => __( 'Tell us more (optional)', 'openrag-ai-chatbot' ),
-				'send'            => __( 'Send', 'openrag-ai-chatbot' ),
-				'poweredBy'       => __( 'Powered by OpenRag AI Chatbot', 'openrag-ai-chatbot' ),
-				'errorMessage'    => __( 'Something went wrong. Please try again.', 'openrag-ai-chatbot' ),
-				'usingTool'       => __( 'Using tool', 'openrag-ai-chatbot' ),
+				'thinking'        => __( 'Thinking…', 'itih-ai-chatbot' ),
+				'sources'         => __( 'Sources', 'itih-ai-chatbot' ),
+				'reasoning'       => __( 'Reasoning', 'itih-ai-chatbot' ),
+				'askAgain'        => __( 'Ask again', 'itih-ai-chatbot' ),
+				'clearChat'       => __( 'Clear chat', 'itih-ai-chatbot' ),
+				'feedbackGood'    => __( 'Good response', 'itih-ai-chatbot' ),
+				'feedbackBad'     => __( 'Needs improvement', 'itih-ai-chatbot' ),
+				'feedbackComment' => __( 'Tell us more (optional)', 'itih-ai-chatbot' ),
+				'send'            => __( 'Send', 'itih-ai-chatbot' ),
+				'cancel'          => __( 'Cancel', 'itih-ai-chatbot' ),
+				'poweredBy'       => __( 'Powered by ItihRag AI Chatbot', 'itih-ai-chatbot' ),
+				'errorMessage'    => __( 'Something went wrong. Please try again.', 'itih-ai-chatbot' ),
+				'usingTool'       => __( 'Using tool', 'itih-ai-chatbot' ),
 			),
 		);
 
-		wp_localize_script( 'openrag-chatbot', 'OpenRagConfig', $cfg );
+		wp_localize_script( 'itih-chatbot', 'ItihRagConfig', $cfg );
 
-		// Inline appearance CSS variables (overrides theme preset). render_css_vars() escapes each value via esc_attr().
-		echo '<style id="openrag-theme-vars">' . Settings::render_css_vars( $settings['appearance'] ) . '</style>' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// Appearance CSS variables (override theme preset), enqueued as inline CSS
+		// attached to the widget stylesheet. render_css_vars() escapes each value.
+		wp_add_inline_style( 'itih-chatbot', Settings::render_css_vars( $settings['appearance'] ) );
 
 		// Expose config to the template as a local variable.
-		$GLOBALS['OpenRagConfig'] = $cfg;
+		$GLOBALS['ItihRagConfig'] = $cfg;
 
-		require OPENRAG_DIR . 'templates/chatbot-widget.php';
+		require ITIH_DIR . 'templates/chatbot-widget.php';
 
-		unset( $GLOBALS['OpenRagConfig'] );
+		unset( $GLOBALS['ItihRagConfig'] );
 	}
 
 	/**
@@ -338,8 +366,8 @@ class Plugin {
 	 * @return bool
 	 */
 	private function is_widget_enabled() {
-		$settings = Settings::all();
-		if ( empty( $settings['chat']['widget_enabled'] ) ) {
+		$chat = Settings::group( 'chat' );
+		if ( empty( $chat['widget_enabled'] ) ) {
 			return false;
 		}
 		return true;
@@ -385,7 +413,7 @@ class Plugin {
 		if ( class_exists( 'ActionScheduler' ) ) {
 			return; // Already initialized.
 		}
-		$as_path = OPENRAG_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
+		$as_path = ITIH_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
 		if ( file_exists( $as_path ) ) {
 			require_once $as_path;
 		}

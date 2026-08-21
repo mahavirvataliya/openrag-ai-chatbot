@@ -10,13 +10,13 @@
  *
  * Chunks table stores the text/metadata; Vectorize holds the vector + namespace.
  *
- * @package OpenRag\VectorStores
+ * @package ItihRag\VectorStores
  */
 
-namespace OpenRag\VectorStores;
+namespace ItihRag\VectorStores;
 
-use OpenRag\Database\Schema;
-use OpenRag\Settings;
+use ItihRag\Database\Schema;
+use ItihRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -44,7 +44,7 @@ class Cloudflare_Vectorize implements Vector_Store {
 	}
 
 	public function label() {
-		return __( 'Cloudflare Vectorize', 'openrag-ai-chatbot' );
+		return __( 'Cloudflare Vectorize', 'itih-ai-chatbot' );
 	}
 
 	public function is_configured() {
@@ -62,7 +62,7 @@ class Cloudflare_Vectorize implements Vector_Store {
 	}
 
 	protected function index() {
-		return rawurlencode( (string) ( $this->settings['cloudflare_index'] ?? 'openrag-ai-chatbot' ) );
+		return rawurlencode( (string) ( $this->settings['cloudflare_index'] ?? 'itih-ai-chatbot' ) );
 	}
 
 	protected function api_base() {

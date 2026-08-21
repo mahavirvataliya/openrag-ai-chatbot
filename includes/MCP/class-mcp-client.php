@@ -12,10 +12,10 @@
  * POST the request, then if Content-Type is text/event-stream we parse the
  * SSE event matching our request id; otherwise we read the JSON body.
  *
- * @package OpenRag\MCP
+ * @package ItihRag\MCP
  */
 
-namespace OpenRag\MCP;
+namespace ItihRag\MCP;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -70,8 +70,8 @@ class MCP_Client {
 				'protocolVersion' => '2024-11-05',
 				'capabilities'    => (object) array(),
 				'clientInfo'      => array(
-					'name'    => 'openrag-ai-chatbot',
-					'version' => OPENRAG_VERSION,
+					'name'    => 'itih-ai-chatbot',
+					'version' => ITIH_VERSION,
 				),
 			)
 		);

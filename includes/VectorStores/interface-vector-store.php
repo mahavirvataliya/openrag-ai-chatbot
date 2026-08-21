@@ -2,10 +2,10 @@
 /**
  * Vector store contract.
  *
- * @package OpenRag\VectorStores
+ * @package ItihRag\VectorStores
  */
 
-namespace OpenRag\VectorStores;
+namespace ItihRag\VectorStores;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

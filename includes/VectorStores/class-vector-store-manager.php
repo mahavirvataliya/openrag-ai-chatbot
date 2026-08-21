@@ -7,12 +7,12 @@
  *   - "mysql"      → MySQL store (always available)
  *   - "auto"       → Vectorize if configured, else MySQL
  *
- * @package OpenRag\VectorStores
+ * @package ItihRag\VectorStores
  */
 
-namespace OpenRag\VectorStores;
+namespace ItihRag\VectorStores;
 
-use OpenRag\Settings;
+use ItihRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -84,9 +84,9 @@ class Vector_Store_Manager {
 	 */
 	public function stores() {
 		return array(
-			'auto'       => __( 'Auto (Vectorize if configured, else MySQL)', 'openrag-ai-chatbot' ),
-			'mysql'      => __( 'MySQL', 'openrag-ai-chatbot' ),
-			'cloudflare' => __( 'Cloudflare Vectorize', 'openrag-ai-chatbot' ),
+			'auto'       => __( 'Auto (Vectorize if configured, else MySQL)', 'itih-ai-chatbot' ),
+			'mysql'      => __( 'MySQL', 'itih-ai-chatbot' ),
+			'cloudflare' => __( 'Cloudflare Vectorize', 'itih-ai-chatbot' ),
 		);
 	}
 }

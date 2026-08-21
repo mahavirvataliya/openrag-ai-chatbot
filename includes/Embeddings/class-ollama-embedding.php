@@ -4,10 +4,10 @@
  *
  * Endpoint: POST {base_url}/api/embed  Body: { "model": "...", "input": [...] }
  *
- * @package OpenRag\Embeddings
+ * @package ItihRag\Embeddings
  */
 
-namespace OpenRag\Embeddings;
+namespace ItihRag\Embeddings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -23,7 +23,7 @@ class Ollama_Embedding implements Embedding_Provider {
 	}
 
 	public function label() {
-		return __( 'Ollama (local)', 'openrag-ai-chatbot' );
+		return __( 'Ollama (local)', 'itih-ai-chatbot' );
 	}
 
 	public function is_configured() {

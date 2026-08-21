@@ -4,15 +4,15 @@
  *
  * Also exposes REST routes for the knowledge-base admin UI.
  *
- * @package OpenRag\Ingestion
+ * @package ItihRag\Ingestion
  */
 
-namespace OpenRag\Ingestion;
+namespace ItihRag\Ingestion;
 
-use OpenRag\Database\Schema;
-use OpenRag\Embeddings\Embedding_Manager;
-use OpenRag\Settings;
-use OpenRag\VectorStores\Vector_Store_Manager;
+use ItihRag\Database\Schema;
+use ItihRag\Embeddings\Embedding_Manager;
+use ItihRag\Settings;
+use ItihRag\VectorStores\Vector_Store_Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -121,7 +121,7 @@ class Ingestion_Pipeline {
 	 * Process a document end-to-end: load → chunk → embed → store.
 	 *
 	 * Designed to run within a single Action Scheduler job or an admin AJAX request.
-	 * Embedding is batched to avoid timeouts (calls embed() per chunk).
+	 * Embedding requests are batched (~100 texts per call) to avoid timeouts.
 	 *
 	 * @param int $document_id Document id.
 	 * @return array{ok:bool, chunks?:int, error?:string}
@@ -180,8 +180,34 @@ class Ingestion_Pipeline {
 			// Ensure embedding dimension migration if MySQL native vector and known dim.
 			$this->maybe_migrate_vector_dimension();
 
-			foreach ( $chunks as $chunk ) {
-				$vector = $this->embeddings->embed_one( $chunk['text'] );
+			// Batch-embed: one HTTP round trip per ~100 texts instead of one per
+			// chunk (a 100-chunk PDF was 100 sequential API calls).
+			$texts     = wp_list_pluck( $chunks, 'text' );
+			$vectors   = array();
+			$batch_sz  = 100;
+			for ( $i = 0, $total = count( $texts ); $i < $total; $i += $batch_sz ) {
+				$batch = array_slice( $texts, $i, $batch_sz );
+				try {
+					$batch_vectors = $this->embeddings->embed( $batch );
+				} catch ( \Throwable $e ) {
+					// Provider rejected the batch — fall back to per-text so one
+					// bad chunk doesn't fail the whole document.
+					$batch_vectors = array();
+					foreach ( $batch as $t ) {
+						try {
+							$batch_vectors[] = $this->embeddings->embed_one( $t );
+						} catch ( \Throwable $e2 ) {
+							$batch_vectors[] = array();
+						}
+					}
+				}
+				foreach ( $batch_vectors as $j => $v ) {
+					$vectors[ $i + $j ] = is_array( $v ) ? $v : array();
+				}
+			}
+
+			foreach ( $chunks as $idx => $chunk ) {
+				$vector = isset( $vectors[ $idx ] ) ? $vectors[ $idx ] : array();
 				if ( empty( $vector ) ) {
 					continue;
 				}
@@ -304,7 +330,7 @@ class Ingestion_Pipeline {
 	 */
 	protected function maybe_migrate_vector_dimension() {
 		$store = $this->vectors->store();
-		if ( ! ( $store instanceof \OpenRag\VectorStores\MySQL_Store ) || ! $store->is_native() ) {
+		if ( ! ( $store instanceof \ItihRag\VectorStores\MySQL_Store ) || ! $store->is_native() ) {
 			return;
 		}
 		$dim = $this->embeddings->dimensions();
@@ -319,7 +345,7 @@ class Ingestion_Pipeline {
 
 	public function register_routes() {
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/documents',
 			array(
 				array(
@@ -336,7 +362,7 @@ class Ingestion_Pipeline {
 		);
 
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/documents/(?P<id>\d+)',
 			array(
 				array(
@@ -353,7 +379,7 @@ class Ingestion_Pipeline {
 		);
 
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/documents/(?P<id>\d+)/process',
 			array(
 				'methods'             => 'POST',
@@ -363,7 +389,7 @@ class Ingestion_Pipeline {
 		);
 
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/posts/index',
 			array(
 				'methods'             => 'POST',
@@ -375,7 +401,7 @@ class Ingestion_Pipeline {
 
 	public function check_admin( \WP_REST_Request $request ) {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return new \WP_Error( 'rest_forbidden', __( 'Insufficient permissions.', 'openrag-ai-chatbot' ), array( 'status' => 403 ) );
+			return new \WP_Error( 'rest_forbidden', __( 'Insufficient permissions.', 'itih-ai-chatbot' ), array( 'status' => 403 ) );
 		}
 		return true;
 	}
@@ -418,8 +444,8 @@ class Ingestion_Pipeline {
 			)
 		);
 
-		if ( $queue && has_action( 'openrag_process_document' ) ) {
-			do_action( 'openrag_schedule_document', $doc_id );
+		if ( $queue && has_action( 'itih_process_document' ) ) {
+			do_action( 'itih_schedule_document', $doc_id );
 		}
 
 		return rest_ensure_response( array( 'id' => $doc_id, 'queued' => $queue ) );
@@ -432,7 +458,7 @@ class Ingestion_Pipeline {
 			$wpdb->prepare( 'SELECT * FROM `' . $this->schema->table( 'documents' ) . '` WHERE id = %d', $id ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
 		if ( ! $doc ) {
-			return new \WP_Error( 'not_found', __( 'Document not found.', 'openrag-ai-chatbot' ), array( 'status' => 404 ) );
+			return new \WP_Error( 'not_found', __( 'Document not found.', 'itih-ai-chatbot' ), array( 'status' => 404 ) );
 		}
 		$chunks = $wpdb->get_results( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			$wpdb->prepare(
@@ -455,8 +481,8 @@ class Ingestion_Pipeline {
 		$general = Settings::group( 'general' );
 		$mode    = $mode ?: (string) ( $general['processing_mode'] ?? 'background' );
 
-		if ( 'background' === $mode && has_action( 'openrag_schedule_document' ) ) {
-			do_action( 'openrag_schedule_document', $id );
+		if ( 'background' === $mode && has_action( 'itih_schedule_document' ) ) {
+			do_action( 'itih_schedule_document', $id );
 			return rest_ensure_response( array( 'id' => $id, 'queued' => true ) );
 		}
 
@@ -485,8 +511,8 @@ class Ingestion_Pipeline {
 
 		$queued = 0;
 		foreach ( $query->posts as $post_id ) {
-			if ( has_action( 'openrag_schedule_post' ) ) {
-				do_action( 'openrag_schedule_post', $post_id );
+			if ( has_action( 'itih_schedule_post' ) ) {
+				do_action( 'itih_schedule_post', $post_id );
 				$queued++;
 			}
 		}

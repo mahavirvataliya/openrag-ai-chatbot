@@ -2,10 +2,10 @@
 /**
  * Generic OpenAI-compatible embedding provider (LM Studio, Together, vLLM, etc.).
  *
- * @package OpenRag\Embeddings
+ * @package ItihRag\Embeddings
  */
 
-namespace OpenRag\Embeddings;
+namespace ItihRag\Embeddings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -18,7 +18,7 @@ class Compatible_Embedding extends OpenAI_Embedding {
 	}
 
 	public function label() {
-		return __( 'OpenAI-compatible', 'openrag-ai-chatbot' );
+		return __( 'OpenAI-compatible', 'itih-ai-chatbot' );
 	}
 
 	public function is_configured() {

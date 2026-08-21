@@ -2,12 +2,12 @@
 /**
  * Rate limiter — per-IP request counters using transients.
  *
- * @package OpenRag\Chat
+ * @package ItihRag\Chat
  */
 
-namespace OpenRag\Chat;
+namespace ItihRag\Chat;
 
-use OpenRag\Settings;
+use ItihRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -27,7 +27,7 @@ class Rate_Limiter {
 		$window   = max( 5, (int) ( $settings['rate_limit_window'] ?? 60 ) );
 		$max      = max( 1, (int) ( $settings['rate_limit_max'] ?? 15 ) );
 
-		$key   = 'openrag_rl_' . md5( $ip );
+		$key   = 'itih_rl_' . md5( $ip );
 		$count = (int) get_transient( $key );
 		if ( $count >= $max ) {
 			return false;
@@ -38,28 +38,47 @@ class Rate_Limiter {
 	}
 
 	/**
-	 * Get the requestor's IP (best-effort).
+	 * Get the requestor's IP address.
+	 *
+	 * Uses REMOTE_ADDR as the source of truth. Client-supplied forwarded
+	 * headers (X-Forwarded-For, X-Real-IP, CF-Connecting-IP) are NOT trusted by
+	 * default because they are trivially spoofable and would let an attacker
+	 * bypass the per-IP rate limit. A site behind a trusted proxy/CDN may opt in
+	 * via the `itih_trust_forwarded_ip` filter:
+	 *
+	 *     add_filter( 'itih_trust_forwarded_ip', '__return_true' );
+	 *
+	 * Only enable that filter when you are certain every request reaches WordPress
+	 * through a proxy that overwrites these headers.
 	 *
 	 * @return string
 	 */
 	public function client_ip() {
-		// Read each header with a fixed string key so the input sniffs can verify
-		// unslash + sanitization. filter_var() below then validates a real IP.
-		$candidates = array(
-			isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) : '',
-			isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : '',
-			isset( $_SERVER['HTTP_X_REAL_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ) ) : '',
-			isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '',
-		);
-		foreach ( $candidates as $raw ) {
-			if ( '' === $raw ) {
-				continue;
-			}
-			$ip = filter_var( trim( explode( ',', $raw )[0] ), FILTER_VALIDATE_IP );
-			if ( false !== $ip ) {
-				return $ip;
+		$remote = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		if ( filter_var( trim( $remote ), FILTER_VALIDATE_IP ) ) {
+			return trim( $remote );
+		}
+
+		// Opt-in: honor forwarded headers only behind a known trusted proxy/CDN.
+		if ( apply_filters( 'itih_trust_forwarded_ip', false ) ) {
+			// Read each header with a fixed string key so the input sniffs can
+			// verify unslash + sanitization. filter_var() then validates a real IP.
+			$candidates = array(
+				isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) : '',
+				isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : '',
+				isset( $_SERVER['HTTP_X_REAL_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ) ) : '',
+			);
+			foreach ( $candidates as $raw ) {
+				if ( '' === $raw ) {
+					continue;
+				}
+				$ip = filter_var( trim( explode( ',', $raw )[0] ), FILTER_VALIDATE_IP );
+				if ( false !== $ip ) {
+					return $ip;
+				}
 			}
 		}
+
 		return '0.0.0.0';
 	}
 

@@ -2,8 +2,8 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenRag AI Chatbot 1.0.0\n"
-"Report-Msgid-Bugs-To: https://github.com/mahavirvataliya/openrag-ai-chatbot/issues\n"
+"Project-Id-Version: ItihRag AI Chatbot 1.1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/mahavirvataliya/itih-ai-chatbot/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,36 +12,36 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
-"X-Domain: openrag-ai-chatbot\n"
+"X-Domain: itih-ai-chatbot\n"
 
 #. Plugin Name of the plugin
-#: openrag-ai-chatbot.php
+#: itih-ai-chatbot.php
 #: includes/Admin/class-admin-menu.php:49
-msgid "OpenRag AI Chatbot"
+msgid "ItihRag AI Chatbot"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: openrag-ai-chatbot.php
-msgid "https://github.com/mahavirvataliya/openrag-ai-chatbot"
+#: itih-ai-chatbot.php
+msgid "https://github.com/mahavirvataliya/itih-ai-chatbot"
 msgstr ""
 
 #. Description of the plugin
-#: openrag-ai-chatbot.php
+#: itih-ai-chatbot.php
 msgid "RAG-powered chatbot for WordPress — ingest PDFs, DOCX, URLs & your own posts/pages, embed them with OpenAI/Cloudflare/Ollama, retrieve via MySQL 9 native VECTOR or Cloudflare Vectorize, and answer questions with citations, reasoning, streaming & MCP tool integration."
 msgstr ""
 
 #. Author of the plugin
-#: openrag-ai-chatbot.php
+#: itih-ai-chatbot.php
 msgid "Mahavir Vataliya"
 msgstr ""
 
 #. Author URI of the plugin
-#: openrag-ai-chatbot.php
+#: itih-ai-chatbot.php
 msgid "https://github.com/mahavirvataliya"
 msgstr ""
 
 #: includes/Admin/class-admin-menu.php:49
-msgid "OpenRag"
+msgid "ItihRag"
 msgstr ""
 
 #: includes/Admin/class-admin-menu.php:51
@@ -55,7 +55,7 @@ msgstr ""
 
 #: includes/Admin/class-admin-menu.php:53
 #: includes/Admin/class-chats-page.php:78
-#: includes/Admin/class-dashboard-page.php:65
+#: includes/Admin/class-dashboard-page.php:70
 msgid "Chats"
 msgstr ""
 
@@ -63,31 +63,31 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/Admin/class-admin-menu.php:83
+#: includes/Admin/class-admin-menu.php:84
 msgid "Saving…"
 msgstr ""
 
-#: includes/Admin/class-admin-menu.php:84
+#: includes/Admin/class-admin-menu.php:85
 msgid "Saved"
 msgstr ""
 
-#: includes/Admin/class-admin-menu.php:85
+#: includes/Admin/class-admin-menu.php:86
 msgid "Processing…"
 msgstr ""
 
-#: includes/Admin/class-admin-menu.php:86
+#: includes/Admin/class-admin-menu.php:87
 msgid "Delete this item?"
 msgstr ""
 
-#: includes/Admin/class-admin-menu.php:87
+#: includes/Admin/class-admin-menu.php:88
 msgid "Fetching…"
 msgstr ""
 
-#: includes/Admin/class-admin-menu.php:88
+#: includes/Admin/class-admin-menu.php:89
 msgid "Discovering tools…"
 msgstr ""
 
-#: includes/Admin/class-admin-menu.php:89
+#: includes/Admin/class-admin-menu.php:90
 msgid "Queued for indexing"
 msgstr ""
 
@@ -118,7 +118,7 @@ msgid "Filter"
 msgstr ""
 
 #: includes/Admin/class-chats-page.php:91
-#: includes/Admin/class-dashboard-page.php:113
+#: includes/Admin/class-dashboard-page.php:125
 msgid "When"
 msgstr ""
 
@@ -132,90 +132,103 @@ msgid "Device"
 msgstr ""
 
 #: includes/Admin/class-chats-page.php:94
-#: includes/Admin/class-dashboard-page.php:69
-msgid "Feedback"
+msgid "Tokens"
 msgstr ""
 
 #: includes/Admin/class-chats-page.php:95
+#: includes/Admin/class-dashboard-page.php:74
+msgid "Feedback"
+msgstr ""
+
+#: includes/Admin/class-chats-page.php:96
 #: includes/Admin/class-kb-page.php:137
 #: includes/Admin/class-kb-page.php:195
-#: includes/Admin/class-settings-page.php:609
+#: includes/Admin/class-settings-page.php:611
 msgid "Actions"
 msgstr ""
 
-#: includes/Admin/class-chats-page.php:100
+#: includes/Admin/class-chats-page.php:101
 msgid "No chats found."
 msgstr ""
 
-#: includes/Admin/class-chats-page.php:111
+#: includes/Admin/class-chats-page.php:119
 msgid "View"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:52
-msgid "OpenRag AI Chatbot — Dashboard"
+#: includes/Admin/class-dashboard-page.php:57
+msgid "ItihRag AI Chatbot — Dashboard"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:57
+#: includes/Admin/class-dashboard-page.php:62
 #: includes/Admin/class-kb-page.php:129
 msgid "Documents"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:61
+#: includes/Admin/class-dashboard-page.php:66
 #: includes/Admin/class-kb-page.php:135
 #: includes/Admin/class-kb-page.php:152
 #: includes/Admin/class-kb-page.php:193
 msgid "Chunks"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:75
+#: includes/Admin/class-dashboard-page.php:79
+msgid "Tokens Used"
+msgstr ""
+
+#. translators: 1: prompt tokens, 2: completion tokens
+#: includes/Admin/class-dashboard-page.php:80
+msgid "%1$s prompt · %2$s completion"
+msgstr ""
+
+#: includes/Admin/class-dashboard-page.php:87
 msgid "System Status"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:79
-#: includes/Admin/class-settings-page.php:289
+#: includes/Admin/class-dashboard-page.php:91
+#: includes/Admin/class-settings-page.php:290
 msgid "LLM Provider"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:82
-#: includes/Admin/class-dashboard-page.php:89
+#: includes/Admin/class-dashboard-page.php:94
+#: includes/Admin/class-dashboard-page.php:101
 msgid "Configured"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:82
-#: includes/Admin/class-dashboard-page.php:89
+#: includes/Admin/class-dashboard-page.php:94
+#: includes/Admin/class-dashboard-page.php:101
 msgid "Not configured"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:86
-#: includes/Admin/class-settings-page.php:337
+#: includes/Admin/class-dashboard-page.php:98
+#: includes/Admin/class-settings-page.php:338
 msgid "Embedding Provider"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:93
+#: includes/Admin/class-dashboard-page.php:105
 msgid "Vector Store"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:98
+#: includes/Admin/class-dashboard-page.php:110
 msgid "MySQL 9 native VECTOR"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:100
+#: includes/Admin/class-dashboard-page.php:112
 msgid "MySQL (JSON fallback)"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:110
+#: includes/Admin/class-dashboard-page.php:122
 msgid "Recent Activity"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:113
+#: includes/Admin/class-dashboard-page.php:125
 msgid "Role"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:113
+#: includes/Admin/class-dashboard-page.php:125
 msgid "Excerpt"
 msgstr ""
 
-#: includes/Admin/class-dashboard-page.php:117
+#: includes/Admin/class-dashboard-page.php:129
 msgid "No activity yet."
 msgstr ""
 
@@ -291,7 +304,7 @@ msgstr ""
 
 #: includes/Admin/class-kb-page.php:153
 #: includes/Admin/class-kb-page.php:209
-#: includes/Admin/class-settings-page.php:626
+#: includes/Admin/class-settings-page.php:628
 msgid "Delete"
 msgstr ""
 
@@ -313,8 +326,8 @@ msgid "Indexed URLs"
 msgstr ""
 
 #: includes/Admin/class-kb-page.php:192
-#: includes/Admin/class-settings-page.php:609
-#: includes/Admin/class-settings-page.php:637
+#: includes/Admin/class-settings-page.php:611
+#: includes/Admin/class-settings-page.php:639
 msgid "URL"
 msgstr ""
 
@@ -331,7 +344,7 @@ msgid "Choose which content types to make available to the chatbot. Indexed post
 msgstr ""
 
 #: includes/Admin/class-kb-page.php:234
-#: includes/Admin/class-settings-page.php:476
+#: includes/Admin/class-settings-page.php:477
 msgid "Post types to index"
 msgstr ""
 
@@ -371,467 +384,484 @@ msgstr ""
 msgid "When a post is trashed, its chunks are removed automatically."
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:170
+#: includes/Admin/class-settings-page.php:171
 msgid "Settings saved."
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:176
-#: includes/Admin/class-settings-page.php:257
+#: includes/Admin/class-settings-page.php:177
+#: includes/Admin/class-settings-page.php:258
 msgid "General"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:177
+#: includes/Admin/class-settings-page.php:178
 msgid "LLM Providers"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:178
+#: includes/Admin/class-settings-page.php:179
 msgid "Embeddings"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:179
-#: includes/Admin/class-settings-page.php:413
+#: includes/Admin/class-settings-page.php:180
+#: includes/Admin/class-settings-page.php:414
 msgid "Vector Database"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:180
-#: includes/Admin/class-settings-page.php:461
+#: includes/Admin/class-settings-page.php:181
+#: includes/Admin/class-settings-page.php:462
 msgid "Indexing"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:181
-#: includes/Admin/class-settings-page.php:494
+#: includes/Admin/class-settings-page.php:182
+#: includes/Admin/class-settings-page.php:495
 msgid "Chat"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:182
-#: includes/Admin/class-settings-page.php:534
+#: includes/Admin/class-settings-page.php:183
+#: includes/Admin/class-settings-page.php:538
 msgid "Appearance"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:183
+#: includes/Admin/class-settings-page.php:184
 msgid "MCP"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:189
-msgid "OpenRag AI Chatbot Settings"
+#: includes/Admin/class-settings-page.php:190
+msgid "ItihRag AI Chatbot Settings"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:234
+#: includes/Admin/class-settings-page.php:235
 msgid "Save Settings"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:260
+#: includes/Admin/class-settings-page.php:261
 msgid "Enable plugin"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:261
-msgid "Enable OpenRag AI Chatbot"
+#: includes/Admin/class-settings-page.php:262
+msgid "Enable ItihRag AI Chatbot"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:264
+#: includes/Admin/class-settings-page.php:265
 msgid "Processing mode"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:267
+#: includes/Admin/class-settings-page.php:268
 msgid "Background (Action Scheduler)"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:268
+#: includes/Admin/class-settings-page.php:269
 msgid "On request (admin AJAX)"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:270
+#: includes/Admin/class-settings-page.php:271
 msgid "Background is recommended for large files. On-request processes immediately in the browser."
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:274
+#: includes/Admin/class-settings-page.php:275
 msgid "Debug logging"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:275
+#: includes/Admin/class-settings-page.php:276
 msgid "Log to error_log"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:278
+#: includes/Admin/class-settings-page.php:279
 msgid "Remove data on uninstall"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:279
+#: includes/Admin/class-settings-page.php:280
 msgid "Delete all tables and options when the plugin is uninstalled"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:292
-#: includes/Admin/class-settings-page.php:340
+#: includes/Admin/class-settings-page.php:293
+#: includes/Admin/class-settings-page.php:341
 msgid "Active provider"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:299
+#: includes/Admin/class-settings-page.php:300
 msgid "Fetch models"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:300
+#: includes/Admin/class-settings-page.php:301
 msgid "Test connection"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:307
+#: includes/Admin/class-settings-page.php:308
 #: includes/Embeddings/class-openai-embedding.php:31
 #: includes/LLM/class-llm-manager.php:82
 #: includes/LLM/class-llm-manager.php:102
 msgid "OpenAI"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:308
+#: includes/Admin/class-settings-page.php:309
 #: includes/LLM/class-llm-manager.php:40
 #: includes/LLM/class-llm-manager.php:106
 msgid "Groq"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:309
+#: includes/Admin/class-settings-page.php:310
 #: includes/Embeddings/class-compatible-embedding.php:21
 #: includes/LLM/class-llm-manager.php:52
 #: includes/LLM/class-llm-manager.php:103
 msgid "OpenAI-compatible"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:310
+#: includes/Admin/class-settings-page.php:311
 #: includes/LLM/class-anthropic-llm.php:26
 #: includes/LLM/class-llm-manager.php:104
 msgid "Anthropic Claude"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:311
+#: includes/Admin/class-settings-page.php:312
 #: includes/Embeddings/class-cloudflare-embedding.php:28
 #: includes/LLM/class-cloudflare-llm.php:31
 #: includes/LLM/class-llm-manager.php:105
 msgid "Cloudflare Workers AI"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:312
+#: includes/Admin/class-settings-page.php:313
 #: includes/Embeddings/class-ollama-embedding.php:26
 #: includes/LLM/class-llm-manager.php:107
 #: includes/LLM/class-ollama-llm.php:26
 msgid "Ollama (local)"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:361
+#: includes/Admin/class-settings-page.php:362
 msgid "Dimensions override"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:364
+#: includes/Admin/class-settings-page.php:365
 msgid "0 = auto-detect from the model. Set explicitly if your provider does not report dimensions."
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:416
+#: includes/Admin/class-settings-page.php:417
 msgid "MySQL capability"
 msgstr ""
 
 #. translators: %s: MySQL version number.
-#: includes/Admin/class-settings-page.php:420
+#: includes/Admin/class-settings-page.php:421
 msgid "MySQL %s — native VECTOR type available"
 msgstr ""
 
 #. translators: %s: MySQL version number.
-#: includes/Admin/class-settings-page.php:423
+#: includes/Admin/class-settings-page.php:424
 msgid "MySQL %s — using JSON fallback"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:428
+#: includes/Admin/class-settings-page.php:429
 msgid "Engine"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:438
+#: includes/Admin/class-settings-page.php:439
 msgid "Cloudflare account ID"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:442
+#: includes/Admin/class-settings-page.php:443
 msgid "Cloudflare API token"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:446
+#: includes/Admin/class-settings-page.php:447
 msgid "Vectorize index name"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:449
+#: includes/Admin/class-settings-page.php:450
 msgid "Create / verify index"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:450
+#: includes/Admin/class-settings-page.php:451
 msgid "The index is created with the dimension of your active embedding model."
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:464
+#: includes/Admin/class-settings-page.php:465
 msgid "Chunk size (chars)"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:468
+#: includes/Admin/class-settings-page.php:469
 msgid "Chunk overlap (chars)"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:472
+#: includes/Admin/class-settings-page.php:473
 msgid "Minimum chunk length"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:484
+#: includes/Admin/class-settings-page.php:485
 msgid "Auto-index on save"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:485
+#: includes/Admin/class-settings-page.php:486
 msgid "Re-index posts automatically when published/updated"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:496
+#: includes/Admin/class-settings-page.php:497
 msgid "Show widget"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:496
+#: includes/Admin/class-settings-page.php:497
 msgid "Display floating chatbot on the site"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:497
+#: includes/Admin/class-settings-page.php:498
 msgid "Bot name"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:498
+#: includes/Admin/class-settings-page.php:499
 msgid "Welcome message"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:499
+#: includes/Admin/class-settings-page.php:500
 msgid "Launcher position"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:501
+#: includes/Admin/class-settings-page.php:502
 msgid "Bottom right"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:502
+#: includes/Admin/class-settings-page.php:503
 msgid "Bottom left"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:505
+#: includes/Admin/class-settings-page.php:506
 msgid "System prompt"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:506
+#: includes/Admin/class-settings-page.php:507
 msgid "Temperature"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:507
+#: includes/Admin/class-settings-page.php:508
 msgid "Max tokens"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:508
+#: includes/Admin/class-settings-page.php:509
 msgid "History turns"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:509
+#: includes/Admin/class-settings-page.php:510
 msgid "Citations"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:509
+#: includes/Admin/class-settings-page.php:510
 msgid "Show source citations with answers"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:510
-#: includes/class-plugin.php:319
-msgid "Reasoning"
+#: includes/Admin/class-settings-page.php:511
+msgid "Credit link"
 msgstr ""
 
 #: includes/Admin/class-settings-page.php:511
-msgid "Enable reasoning / extended thinking"
+msgid "Show a \"Powered by ItihRAG AI Chatbot\" link under the widget"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:513
-msgid "Low"
+#: includes/Admin/class-settings-page.php:512
+msgid "Off by default. Attribution is only shown when you explicitly enable it."
 msgstr ""
 
 #: includes/Admin/class-settings-page.php:514
-msgid "Medium"
+#: includes/class-plugin.php:310
+msgid "Reasoning"
 msgstr ""
 
 #: includes/Admin/class-settings-page.php:515
-msgid "High"
+msgid "Enable reasoning / extended thinking"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:516
-msgid "Max"
+#: includes/Admin/class-settings-page.php:517
+msgid "Low"
+msgstr ""
+
+#: includes/Admin/class-settings-page.php:518
+msgid "Medium"
 msgstr ""
 
 #: includes/Admin/class-settings-page.php:519
-msgid "Top K results"
+msgid "High"
 msgstr ""
 
 #: includes/Admin/class-settings-page.php:520
-msgid "Minimum similarity"
+msgid "Max"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:521
-msgid "Rate limit (window / max)"
-msgstr ""
-
-#: includes/Admin/class-settings-page.php:522
-msgid "seconds"
+#: includes/Admin/class-settings-page.php:523
+msgid "Top K results"
 msgstr ""
 
 #: includes/Admin/class-settings-page.php:524
+msgid "Minimum similarity"
+msgstr ""
+
+#: includes/Admin/class-settings-page.php:525
+msgid "Rate limit (window / max)"
+msgstr ""
+
+#: includes/Admin/class-settings-page.php:526
+msgid "seconds"
+msgstr ""
+
+#: includes/Admin/class-settings-page.php:528
 msgid "requests"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:537
+#: includes/Admin/class-settings-page.php:541
 msgid "Theme preset"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:544
+#: includes/Admin/class-settings-page.php:548
 msgid "Apply preset"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:548
+#: includes/Admin/class-settings-page.php:552
 msgid "Logo URL"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:551
-#: includes/Admin/class-settings-page.php:558
+#: includes/Admin/class-settings-page.php:555
+#: includes/Admin/class-settings-page.php:562
 msgid "Choose"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:555
+#: includes/Admin/class-settings-page.php:559
 msgid "Bot avatar URL"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:563
+#: includes/Admin/class-settings-page.php:567
 msgid "Custom colors"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:567
+#: includes/Admin/class-settings-page.php:571
 msgid "Primary"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:568
+#: includes/Admin/class-settings-page.php:572
 msgid "Header background"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:569
+#: includes/Admin/class-settings-page.php:573
 msgid "Header text"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:570
+#: includes/Admin/class-settings-page.php:574
 msgid "Chat background"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:571
+#: includes/Admin/class-settings-page.php:575
 msgid "Body text"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:572
+#: includes/Admin/class-settings-page.php:576
 msgid "User bubble"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:573
+#: includes/Admin/class-settings-page.php:577
 msgid "User text"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:574
+#: includes/Admin/class-settings-page.php:578
 msgid "Bot bubble"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:575
+#: includes/Admin/class-settings-page.php:579
 msgid "Bot text"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:576
+#: includes/Admin/class-settings-page.php:580
 msgid "Launcher"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:577
+#: includes/Admin/class-settings-page.php:581
 msgid "Launcher icon"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:600
+#: includes/Admin/class-settings-page.php:602
 msgid "MCP (Model Context Protocol)"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:601
+#: includes/Admin/class-settings-page.php:603
 msgid "Connect the chatbot to external MCP servers. Their tools become available to the LLM via function calling."
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:603
+#: includes/Admin/class-settings-page.php:605
 msgid "Enable MCP"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:603
+#: includes/Admin/class-settings-page.php:605
 msgid "Expose MCP tools to the chatbot"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:606
+#: includes/Admin/class-settings-page.php:608
 msgid "Servers"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:609
-#: includes/Admin/class-settings-page.php:636
+#: includes/Admin/class-settings-page.php:611
+#: includes/Admin/class-settings-page.php:638
 msgid "Name"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:609
-#: includes/Admin/class-settings-page.php:638
+#: includes/Admin/class-settings-page.php:611
+#: includes/Admin/class-settings-page.php:640
 msgid "Transport"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:609
+#: includes/Admin/class-settings-page.php:611
 msgid "Enabled"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:609
+#: includes/Admin/class-settings-page.php:611
 msgid "Tools"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:613
+#: includes/Admin/class-settings-page.php:615
 msgid "No MCP servers configured."
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:624
+#: includes/Admin/class-settings-page.php:626
 msgid "Discover"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:625
+#: includes/Admin/class-settings-page.php:627
 msgid "Disable"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:625
+#: includes/Admin/class-settings-page.php:627
 msgid "Enable"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:634
-#: includes/Admin/class-settings-page.php:645
+#: includes/Admin/class-settings-page.php:636
+#: includes/Admin/class-settings-page.php:647
 msgid "Add server"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:640
+#: includes/Admin/class-settings-page.php:642
 msgid "Streamable HTTP"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:641
+#: includes/Admin/class-settings-page.php:643
 msgid "SSE"
 msgstr ""
 
-#: includes/Admin/class-settings-page.php:644
+#: includes/Admin/class-settings-page.php:646
 msgid "Authorization header"
 msgstr ""
 
-#: includes/Chat/class-chat-controller.php:168
-#: includes/Chat/class-chat-controller.php:231
+#: includes/Chat/class-chat-controller.php:169
+#: includes/Chat/class-chat-controller.php:235
 msgid "Too many requests. Please slow down."
 msgstr ""
 
 #: includes/Chat/class-chat-controller.php:176
-#: includes/Chat/class-chat-controller.php:240
+#: includes/Chat/class-chat-controller.php:243
 msgid "Message is required."
 msgstr ""
 
-#: includes/Chat/class-chat-controller.php:419
+#: includes/Chat/class-chat-controller.php:426
 msgid "Invalid feedback value."
 msgstr ""
 
-#: includes/Chat/class-chat-controller.php:486
+#: includes/Chat/class-chat-controller.php:644
 msgid "session_id is required."
+msgstr ""
+
+#: includes/Chat/class-chat-controller.php:652
+#: includes/Chat/class-chat-controller.php:657
+msgid "Session not found or not owned by you."
 msgstr ""
 
 #: includes/Chat/class-rag-engine.php:131
@@ -846,54 +876,54 @@ msgstr ""
 msgid "Use the following knowledge base context when relevant:"
 msgstr ""
 
-#: includes/class-plugin.php:307
+#: includes/class-plugin.php:297
 #: templates/chatbot-widget.php:75
 msgid "Type your message…"
 msgstr ""
 
-#: includes/class-plugin.php:317
+#: includes/class-plugin.php:308
 msgid "Thinking…"
 msgstr ""
 
-#: includes/class-plugin.php:318
+#: includes/class-plugin.php:309
 msgid "Sources"
 msgstr ""
 
-#: includes/class-plugin.php:320
+#: includes/class-plugin.php:311
 msgid "Ask again"
 msgstr ""
 
-#: includes/class-plugin.php:321
+#: includes/class-plugin.php:312
 #: templates/chatbot-widget.php:54
 msgid "Clear chat"
 msgstr ""
 
-#: includes/class-plugin.php:322
+#: includes/class-plugin.php:313
 msgid "Good response"
 msgstr ""
 
-#: includes/class-plugin.php:323
+#: includes/class-plugin.php:314
 msgid "Needs improvement"
 msgstr ""
 
-#: includes/class-plugin.php:324
+#: includes/class-plugin.php:315
 msgid "Tell us more (optional)"
 msgstr ""
 
-#: includes/class-plugin.php:325
+#: includes/class-plugin.php:316
 #: templates/chatbot-widget.php:78
 msgid "Send"
 msgstr ""
 
-#: includes/class-plugin.php:326
-msgid "Powered by OpenRag AI Chatbot"
+#: includes/class-plugin.php:317
+msgid "Powered by ItihRag AI Chatbot"
 msgstr ""
 
-#: includes/class-plugin.php:327
+#: includes/class-plugin.php:318
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: includes/class-plugin.php:328
+#: includes/class-plugin.php:319
 msgid "Using tool"
 msgstr ""
 
@@ -910,19 +940,19 @@ msgstr ""
 msgid "You are a helpful assistant answering questions using the provided knowledge base. When relevant context is given, base your answer on it and cite sources by their number (e.g. [1]). Be concise and accurate. If the answer is not in the context, say so."
 msgstr ""
 
-#: includes/class-settings.php:248
+#: includes/class-settings.php:249
 msgid "Light"
 msgstr ""
 
-#: includes/class-settings.php:264
+#: includes/class-settings.php:265
 msgid "Dark"
 msgstr ""
 
-#: includes/class-settings.php:280
+#: includes/class-settings.php:281
 msgid "Ocean"
 msgstr ""
 
-#: includes/class-settings.php:296
+#: includes/class-settings.php:297
 msgid "Sunset"
 msgstr ""
 

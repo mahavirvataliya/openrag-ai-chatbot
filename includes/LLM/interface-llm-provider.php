@@ -2,10 +2,10 @@
 /**
  * LLM provider contract.
  *
- * @package OpenRag\LLM
+ * @package ItihRag\LLM
  */
 
-namespace OpenRag\LLM;
+namespace ItihRag\LLM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

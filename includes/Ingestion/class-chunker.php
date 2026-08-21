@@ -6,12 +6,12 @@
  * and have no overlap, this preserves formatting and slides a window over
  * sentences so that adjacent chunks share context.
  *
- * @package OpenRag\Ingestion
+ * @package ItihRag\Ingestion
  */
 
-namespace OpenRag\Ingestion;
+namespace ItihRag\Ingestion;
 
-use OpenRag\Settings;
+use ItihRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

@@ -2,13 +2,13 @@
 /**
  * PSR-4 fallback autoloader.
  *
- * Used when composer autoloader is not dumped. Maps OpenRag\<Sub>\<Name>
+ * Used when composer autoloader is not dumped. Maps ItihRag\<Sub>\<Name>
  * to includes/<Sub>/class-name.php (WordPress file naming convention).
  *
- * @package OpenRag
+ * @package ItihRag
  */
 
-namespace OpenRag;
+namespace ItihRag;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -32,7 +32,7 @@ class Autoloader {
 	 * @return void
 	 */
 	public static function autoload( $class ) {
-		$prefix = 'OpenRag\\';
+		$prefix = 'ItihRag\\';
 		if ( 0 !== strpos( $class, $prefix ) ) {
 			return;
 		}
@@ -42,7 +42,7 @@ class Autoloader {
 		$name     = array_pop( $parts );
 		$path     = implode( '/', $parts );
 
-		$dir      = OPENRAG_DIR . 'includes/' . ( $path ? $path . '/' : '' );
+		$dir      = ITIH_DIR . 'includes/' . ( $path ? $path . '/' : '' );
 		$kebab    = self::kebab( $name );
 
 		// Try a small set of filename candidates — the kebab form, plus an

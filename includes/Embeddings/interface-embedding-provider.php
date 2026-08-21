@@ -2,10 +2,10 @@
 /**
  * Embedding provider contract.
  *
- * @package OpenRag\Embeddings
+ * @package ItihRag\Embeddings
  */
 
-namespace OpenRag\Embeddings;
+namespace ItihRag\Embeddings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

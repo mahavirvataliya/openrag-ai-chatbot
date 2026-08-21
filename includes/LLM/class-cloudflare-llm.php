@@ -9,10 +9,10 @@
  *   POST https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/{model}
  *   Body: { messages: [...], stream: true|false }
  *
- * @package OpenRag\LLM
+ * @package ItihRag\LLM
  */
 
-namespace OpenRag\LLM;
+namespace ItihRag\LLM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -28,7 +28,7 @@ class Cloudflare_LLM implements LLM_Provider {
 	}
 
 	public function label() {
-		return __( 'Cloudflare Workers AI', 'openrag-ai-chatbot' );
+		return __( 'Cloudflare Workers AI', 'itih-ai-chatbot' );
 	}
 
 	public function is_configured() {

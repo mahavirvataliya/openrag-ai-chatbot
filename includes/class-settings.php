@@ -2,10 +2,10 @@
 /**
  * Centralized settings access and defaults.
  *
- * @package OpenRag
+ * @package ItihRag
  */
 
-namespace OpenRag;
+namespace ItihRag;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -30,7 +30,7 @@ class Settings {
 	/**
 	 * Get all defaults in the storage shape.
 	 *
-	 * Each top-level key is an option name (stored as openrag_<key>) whose value
+	 * Each top-level key is an option name (stored as itih_<key>) whose value
 	 * is an associative array of group settings. The "all()" method merges these.
 	 *
 	 * @return array<string,array<string,mixed>>
@@ -52,16 +52,17 @@ class Settings {
 
 			'chat' => array(
 				'widget_enabled'    => '1',
-				'bot_name'          => __( 'Assistant', 'openrag-ai-chatbot' ),
-				'welcome_message'   => __( "Hi! I'm an AI assistant. Ask me anything about the content on this site.", 'openrag-ai-chatbot' ),
+				'bot_name'          => __( 'Assistant', 'itih-ai-chatbot' ),
+				'welcome_message'   => __( "Hi! I'm an AI assistant. Ask me anything about the content on this site.", 'itih-ai-chatbot' ),
 				'launcher_position' => 'bottom-right',
-				'system_prompt'     => __( 'You are a helpful assistant answering questions using the provided knowledge base. When relevant context is given, base your answer on it and cite sources by their number (e.g. [1]). Be concise and accurate. If the answer is not in the context, say so.', 'openrag-ai-chatbot' ),
+				'system_prompt'     => __( 'You are a helpful assistant answering questions using the provided knowledge base. When relevant context is given, base your answer on it and cite sources by their number (e.g. [1]). Be concise and accurate. If the answer is not in the context, say so.', 'itih-ai-chatbot' ),
 				'temperature'       => '0.3',
 				'max_tokens'        => '800',
 				'history_turns'     => '6',
 				'citations'         => '1',
 				'reasoning'         => '0',
 				'reasoning_effort'  => 'medium',
+				'show_credit'       => '0',
 				'rate_limit_window' => '60',
 				'rate_limit_max'    => '15',
 				'top_k'             => '5',
@@ -108,7 +109,7 @@ class Settings {
 				'mysql_native_vector'  => '',     // detected at runtime, '' until probed.
 				'cloudflare_account'   => '',
 				'cloudflare_token'     => '',
-				'cloudflare_index'     => 'openrag-ai-chatbot',
+				'cloudflare_index'     => 'itih-ai-chatbot',
 			),
 
 			'indexing' => array(
@@ -155,15 +156,19 @@ class Settings {
 	 * @return array<string,mixed>
 	 */
 	public static function group( $group ) {
+		if ( isset( self::$cache[ $group ] ) ) {
+			return self::$cache[ $group ];
+		}
 		$defaults = self::defaults();
-		$stored   = get_option( OPENRAG_OPTION_PREFIX . $group, array() );
+		$stored   = get_option( ITIH_OPTION_PREFIX . $group, array() );
 		if ( ! is_array( $stored ) ) {
 			$stored = array();
 		}
 		if ( ! isset( $defaults[ $group ] ) ) {
 			return $stored;
 		}
-		return wp_parse_args( $stored, $defaults[ $group ] );
+		self::$cache[ $group ] = wp_parse_args( $stored, $defaults[ $group ] );
+		return self::$cache[ $group ];
 	}
 
 	/**
@@ -193,7 +198,7 @@ class Settings {
 		if ( ! is_array( $values ) ) {
 			$values = array();
 		}
-		update_option( OPENRAG_OPTION_PREFIX . $group, $values );
+		update_option( ITIH_OPTION_PREFIX . $group, $values );
 		self::$cache = null;
 	}
 
@@ -245,7 +250,7 @@ class Settings {
 	public static function theme_presets() {
 		return array(
 			'light' => array(
-				'label'   => __( 'Light', 'openrag-ai-chatbot' ),
+				'label'   => __( 'Light', 'itih-ai-chatbot' ),
 				'colors'  => array(
 					'primary'      => '#3b82f6',
 					'header_bg'    => '#1e293b',
@@ -261,7 +266,7 @@ class Settings {
 				),
 			),
 			'dark' => array(
-				'label'   => __( 'Dark', 'openrag-ai-chatbot' ),
+				'label'   => __( 'Dark', 'itih-ai-chatbot' ),
 				'colors'  => array(
 					'primary'      => '#60a5fa',
 					'header_bg'    => '#0f172a',
@@ -277,7 +282,7 @@ class Settings {
 				),
 			),
 			'ocean' => array(
-				'label'   => __( 'Ocean', 'openrag-ai-chatbot' ),
+				'label'   => __( 'Ocean', 'itih-ai-chatbot' ),
 				'colors'  => array(
 					'primary'      => '#0891b2',
 					'header_bg'    => '#155e75',
@@ -293,7 +298,7 @@ class Settings {
 				),
 			),
 			'sunset' => array(
-				'label'   => __( 'Sunset', 'openrag-ai-chatbot' ),
+				'label'   => __( 'Sunset', 'itih-ai-chatbot' ),
 				'colors'  => array(
 					'primary'      => '#ea580c',
 					'header_bg'    => '#7c2d12',

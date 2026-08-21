@@ -2,12 +2,12 @@
 /**
  * LLM manager — factory + cached active provider.
  *
- * @package OpenRag\LLM
+ * @package ItihRag\LLM
  */
 
-namespace OpenRag\LLM;
+namespace ItihRag\LLM;
 
-use OpenRag\Settings;
+use ItihRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -37,7 +37,7 @@ class LLM_Manager {
 			case 'groq':
 				$this->provider = new OpenAI_LLM(
 					'groq',
-					__( 'Groq', 'openrag-ai-chatbot' ),
+					__( 'Groq', 'itih-ai-chatbot' ),
 					array(
 						'base_url' => $settings['groq_base_url'] ?? 'https://api.groq.com/openai/v1',
 						'api_key'  => $settings['groq_api_key'] ?? '',
@@ -49,7 +49,7 @@ class LLM_Manager {
 			case 'openai-compatible':
 				$this->provider = new OpenAI_LLM(
 					'openai-compatible',
-					__( 'OpenAI-compatible', 'openrag-ai-chatbot' ),
+					__( 'OpenAI-compatible', 'itih-ai-chatbot' ),
 					array(
 						'base_url' => $settings['compatible_base_url'] ?? '',
 						'api_key'  => $settings['compatible_api_key'] ?? '',
@@ -79,7 +79,7 @@ class LLM_Manager {
 			default:
 				$this->provider = new OpenAI_LLM(
 					'openai',
-					__( 'OpenAI', 'openrag-ai-chatbot' ),
+					__( 'OpenAI', 'itih-ai-chatbot' ),
 					array(
 						'base_url' => $settings['openai_base_url'] ?? 'https://api.openai.com/v1',
 						'api_key'  => $settings['openai_api_key'] ?? '',
@@ -99,12 +99,12 @@ class LLM_Manager {
 	 */
 	public function providers() {
 		return array(
-			'openai'            => __( 'OpenAI', 'openrag-ai-chatbot' ),
-			'openai-compatible' => __( 'OpenAI-compatible', 'openrag-ai-chatbot' ),
-			'anthropic'         => __( 'Anthropic Claude', 'openrag-ai-chatbot' ),
-			'cloudflare'        => __( 'Cloudflare Workers AI', 'openrag-ai-chatbot' ),
-			'groq'              => __( 'Groq', 'openrag-ai-chatbot' ),
-			'ollama'            => __( 'Ollama (local)', 'openrag-ai-chatbot' ),
+			'openai'            => __( 'OpenAI', 'itih-ai-chatbot' ),
+			'openai-compatible' => __( 'OpenAI-compatible', 'itih-ai-chatbot' ),
+			'anthropic'         => __( 'Anthropic Claude', 'itih-ai-chatbot' ),
+			'cloudflare'        => __( 'Cloudflare Workers AI', 'itih-ai-chatbot' ),
+			'groq'              => __( 'Groq', 'itih-ai-chatbot' ),
+			'ollama'            => __( 'Ollama (local)', 'itih-ai-chatbot' ),
 		);
 	}
 

@@ -2,12 +2,12 @@
 /**
  * Embedding manager — factory + cached active provider.
  *
- * @package OpenRag\Embeddings
+ * @package ItihRag\Embeddings
  */
 
-namespace OpenRag\Embeddings;
+namespace ItihRag\Embeddings;
 
-use OpenRag\Settings;
+use ItihRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -97,7 +97,7 @@ class Embedding_Manager {
 		}
 
 		// Probe with a short string to learn the dimension.
-		$cached = get_transient( 'openrag_embedding_dim' );
+		$cached = get_transient( 'itih_embedding_dim' );
 		if ( false !== $cached && (int) $cached > 0 ) {
 			return (int) $cached;
 		}
@@ -106,7 +106,7 @@ class Embedding_Manager {
 			$vectors = $this->embed( 'dimension probe' );
 			$dim     = isset( $vectors[0] ) ? count( $vectors[0] ) : 0;
 			if ( $dim > 0 ) {
-				set_transient( 'openrag_embedding_dim', $dim, DAY_IN_SECONDS );
+				set_transient( 'itih_embedding_dim', $dim, DAY_IN_SECONDS );
 			}
 		} catch ( \Throwable $e ) {
 			$dim = 0;

@@ -2,17 +2,17 @@
 /**
  * Admin-only REST routes: model list, connection test, vector index creation.
  *
- * @package OpenRag\Admin
+ * @package ItihRag\Admin
  */
 
-namespace OpenRag\Admin;
+namespace ItihRag\Admin;
 
-use OpenRag\Database\Schema;
-use OpenRag\Embeddings\Embedding_Manager;
-use OpenRag\LLM\LLM_Manager;
-use OpenRag\Plugin;
-use OpenRag\VectorStores\Vector_Store_Manager;
-use OpenRag\VectorStores\Cloudflare_Vectorize;
+use ItihRag\Database\Schema;
+use ItihRag\Embeddings\Embedding_Manager;
+use ItihRag\LLM\LLM_Manager;
+use ItihRag\Plugin;
+use ItihRag\VectorStores\Vector_Store_Manager;
+use ItihRag\VectorStores\Cloudflare_Vectorize;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -44,7 +44,7 @@ class Admin_REST {
 
 	public function register() {
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/admin/models',
 			array(
 				'methods'             => 'GET',
@@ -53,7 +53,7 @@ class Admin_REST {
 			)
 		);
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/admin/test',
 			array(
 				'methods'             => 'POST',
@@ -62,7 +62,7 @@ class Admin_REST {
 			)
 		);
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/vector-store/create-index',
 			array(
 				'methods'             => 'POST',
@@ -74,7 +74,7 @@ class Admin_REST {
 
 	public function check_admin() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return new \WP_Error( 'rest_forbidden', __( 'Insufficient permissions.', 'openrag-ai-chatbot' ), array( 'status' => 403 ) );
+			return new \WP_Error( 'rest_forbidden', __( 'Insufficient permissions.', 'itih-ai-chatbot' ), array( 'status' => 403 ) );
 		}
 		return true;
 	}
@@ -132,12 +132,12 @@ class Admin_REST {
 	public function create_index( \WP_REST_Request $request ) {
 		$dim = (int) ( $request->get_param( 'dimensions' ) ?: $this->plugin->embeddings()->dimensions() );
 		if ( $dim <= 0 ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => __( 'Could not determine embedding dimensions. Configure an embedding provider first.', 'openrag-ai-chatbot' ) ) );
+			return rest_ensure_response( array( 'ok' => false, 'error' => __( 'Could not determine embedding dimensions. Configure an embedding provider first.', 'itih-ai-chatbot' ) ) );
 		}
 
 		$cf = new Cloudflare_Vectorize();
 		if ( ! $cf->is_configured() ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => __( 'Cloudflare Vectorize is not configured.', 'openrag-ai-chatbot' ) ) );
+			return rest_ensure_response( array( 'ok' => false, 'error' => __( 'Cloudflare Vectorize is not configured.', 'itih-ai-chatbot' ) ) );
 		}
 
 		try {

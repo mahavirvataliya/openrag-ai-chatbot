@@ -2,12 +2,12 @@
 /**
  * Activation / deactivation handler.
  *
- * @package OpenRag
+ * @package ItihRag
  */
 
-namespace OpenRag;
+namespace ItihRag;
 
-use OpenRag\Database\Schema;
+use ItihRag\Database\Schema;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -26,18 +26,13 @@ class Activator {
 
 		// Store default options only if not present (idempotent activation).
 		foreach ( Settings::defaults() as $key => $value ) {
-			$opt = OPENRAG_OPTION_PREFIX . $key;
+			$opt = ITIH_OPTION_PREFIX . $key;
 			if ( false === get_option( $opt ) ) {
 				add_option( $opt, $value );
 			}
 		}
 
-		update_option( OPENRAG_OPTION_PREFIX . 'db_version', OPENRAG_DB_VERSION );
-
-		// Schedule a periodic re-check cron for stale schema (every 12h).
-		if ( ! wp_next_scheduled( 'openrag_health_check' ) ) {
-			wp_schedule_event( time() + HOUR_IN_SECONDS, 'twicedaily', 'openrag_health_check' );
-		}
+		update_option( ITIH_OPTION_PREFIX . 'db_version', ITIH_DB_VERSION );
 
 		flush_rewrite_rules();
 	}
@@ -48,10 +43,6 @@ class Activator {
 	 * @return void
 	 */
 	public static function deactivate() {
-		$ts = wp_next_scheduled( 'openrag_health_check' );
-		if ( $ts ) {
-			wp_unschedule_event( $ts, 'openrag_health_check' );
-		}
 		flush_rewrite_rules();
 	}
 }
