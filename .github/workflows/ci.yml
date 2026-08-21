@@ -52,30 +52,30 @@ jobs:
 
       - name: Autoload smoke test
         env:
-          OPENRAG_VERSION: '1.0.0'
-          OPENRAG_FILE: 'openrag-ai-chatbot.php'
+          ITIH_VERSION: '1.0.0'
+          ITIH_FILE: 'itih-ai-chatbot.php'
         run: |
           php -r '
           define("ABSPATH", "/tmp/");
-          define("OPENRAG_VERSION", "1.0.0");
-          define("OPENRAG_FILE", __FILE__);
-          define("OPENRAG_DIR", getcwd() . "/");
-          define("OPENRAG_URL", "");
-          define("OPENRAG_BASENAME", "openrag-ai-chatbot/openrag-ai-chatbot.php");
-          define("OPENRAG_DB_VERSION", "1.0.0");
-          define("OPENRAG_REST_NAMESPACE", "openrag/v1");
-          define("OPENRAG_OPTION_PREFIX", "openrag_");
-          require OPENRAG_DIR . "includes/class-autoloader.php";
-          OpenRag\Autoloader::register();
+          define("ITIH_VERSION", "1.0.0");
+          define("ITIH_FILE", __FILE__);
+          define("ITIH_DIR", getcwd() . "/");
+          define("ITIH_URL", "");
+          define("ITIH_BASENAME", "itih-ai-chatbot/itih-ai-chatbot.php");
+          define("ITIH_DB_VERSION", "1.0.0");
+          define("ITIH_REST_NAMESPACE", "itih/v1");
+          define("ITIH_OPTION_PREFIX", "openrag_");
+          require ITIH_DIR . "includes/class-autoloader.php";
+          ItihRag\Autoloader::register();
           $classes = [
-            "OpenRag\\Plugin","OpenRag\\Activator","OpenRag\\Settings",
-            "OpenRag\\Database\\Schema",
-            "OpenRag\\Embeddings\\Embedding_Manager","OpenRag\\Embeddings\\OpenAI_Embedding",
-            "OpenRag\\LLM\\LLM_Manager","OpenRag\\LLM\\OpenAI_LLM","OpenRag\\LLM\\Anthropic_LLM",
-            "OpenRag\\VectorStores\\MySQL_Store","OpenRag\\VectorStores\\Cloudflare_Vectorize",
-            "OpenRag\\Ingestion\\Ingestion_Pipeline","OpenRag\\Queue\\Background_Processor",
-            "OpenRag\\Chat\\Chat_Controller","OpenRag\\MCP\\MCP_Manager",
-            "OpenRag\\Admin\\Admin_Menu","OpenRag\\Admin\\Settings_Page",
+            "ItihRag\\Plugin","ItihRag\\Activator","ItihRag\\Settings",
+            "ItihRag\\Database\\Schema",
+            "ItihRag\\Embeddings\\Embedding_Manager","ItihRag\\Embeddings\\OpenAI_Embedding",
+            "ItihRag\\LLM\\LLM_Manager","ItihRag\\LLM\\OpenAI_LLM","ItihRag\\LLM\\Anthropic_LLM",
+            "ItihRag\\VectorStores\\MySQL_Store","ItihRag\\VectorStores\\Cloudflare_Vectorize",
+            "ItihRag\\Ingestion\\Ingestion_Pipeline","ItihRag\\Queue\\Background_Processor",
+            "ItihRag\\Chat\\Chat_Controller","ItihRag\\MCP\\MCP_Manager",
+            "ItihRag\\Admin\\Admin_Menu","ItihRag\\Admin\\Settings_Page",
           ];
           $missing = [];
           foreach ($classes as $c) {

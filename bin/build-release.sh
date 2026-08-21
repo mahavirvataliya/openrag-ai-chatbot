@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
-# Build a distributable OpenRag AI Chatbot plugin ZIP.
+# Build a distributable ItihRag AI Chatbot plugin ZIP.
 #
 # Usage:
 #   ./bin/build-release.sh [version]
 #
-# - Default version is read from openrag-ai-chatbot.php (OPENRAG_VERSION constant).
-# - Produces dist/openrag-ai-chatbot-{version}.zip containing the plugin with vendor/
+# - Default version is read from itih-ai-chatbot.php (ITIH_VERSION constant).
+# - Produces dist/itih-ai-chatbot-{version}.zip containing the plugin with vendor/
 #   pre-built, no dev dependencies, no dev tooling.
 # - Requires: bash 4+, php, composer, zip.
 #
@@ -22,9 +22,9 @@ cd "${ROOT_DIR}"
 # ---- Determine version ------------------------------------------------------
 VERSION="${1:-}"
 if [[ -z "${VERSION}" ]]; then
-    VERSION="$(grep -E "OPENRAG_VERSION" openrag-ai-chatbot.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)"
+    VERSION="$(grep -E "ITIH_VERSION" itih-ai-chatbot.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)"
     if [[ -z "${VERSION}" ]]; then
-        echo "ERROR: could not detect version from openrag-ai-chatbot.php" >&2
+        echo "ERROR: could not detect version from itih-ai-chatbot.php" >&2
         exit 1
     fi
 fi
@@ -53,7 +53,7 @@ fi
 STAGE="$(mktemp -d)"
 trap 'rm -rf "${STAGE}"' EXIT
 
-PKG_DIR="${STAGE}/openrag-ai-chatbot"
+PKG_DIR="${STAGE}/itih-ai-chatbot"
 mkdir -p "${PKG_DIR}"
 
 echo "==> Copying source files"
@@ -67,6 +67,7 @@ rsync -a \
     --exclude='.git' \
     --exclude='.github' \
     --exclude='.zcode' \
+    --exclude='.omo' \
     --exclude='.wordpress-org' \
     --exclude='bin' \
     --exclude='docs' \
@@ -86,6 +87,8 @@ rsync -a \
     --exclude='ehthumbs.db' \
     --exclude='desktop.ini' \
     --exclude='CHAT_HISTORY.md' \
+    --exclude='itih-ai-chatbot-itih-ai-chatbot-php-*.md' \
+    --exclude='itih-ai-chatbot-php-*.md' \
     --exclude='openrag-ai-chatbot-openrag-ai-chatbot-php-*.md' \
     --exclude='openrag-ai-chatbot-php-*.md' \
     ./ "${PKG_DIR}/"
@@ -121,12 +124,12 @@ if [[ -n "${LEAKS}" ]]; then
 fi
 
 # ---- Package ----------------------------------------------------------------
-echo "==> Packaging dist/openrag-ai-chatbot-${VERSION}.zip"
+echo "==> Packaging dist/itih-ai-chatbot-${VERSION}.zip"
 mkdir -p "${DIST_DIR}"
-OUT="${DIST_DIR}/openrag-ai-chatbot-${VERSION}.zip"
+OUT="${DIST_DIR}/itih-ai-chatbot-${VERSION}.zip"
 rm -f "${OUT}"
 # zip with -x as a final guard: skip any dotfile even if rsync/find missed it.
-( cd "${STAGE}" && zip -qr "${OUT}" openrag-ai-chatbot -x '*/.*' '*/.*/' '*.DS_Store' )
+( cd "${STAGE}" && zip -qr "${OUT}" itih-ai-chatbot -x '*/.*' '*/.*/' '*.DS_Store' )
 
 # ---- Report -----------------------------------------------------------------
 SIZE="$(du -h "${OUT}" | cut -f1)"

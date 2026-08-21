@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# Deploy OpenRag AI Chatbot to the WordPress.org plugin SVN repository.
+# Deploy ItihRag AI Chatbot to the WordPress.org plugin SVN repository.
 #
 # This is the canonical release mechanism for WordPress.org. After your
-# plugin is approved (you've received the "openrag-ai-chatbot" slug and SVN URL),
+# plugin is approved (you've received the "itih-ai-chatbot" slug and SVN URL),
 # this script:
 #
 #   1. Stages a clean build (composer install --no-dev).
@@ -20,7 +20,7 @@
 #
 # Usage
 # -----
-#   bin/deploy-wordpress-org.sh                       # uses OPENRAG_VERSION
+#   bin/deploy-wordpress-org.sh                       # uses ITIH_VERSION
 #   bin/deploy-wordpress-org.sh 1.0.0                 # explicit version
 #   bin/deploy-wordpress-org.sh 1.0.0 --tag           # also creates /tags/1.0.0
 #   bin/deploy-wordpress-org.sh 1.0.0 --tag --dry-run # no svn commit
@@ -29,7 +29,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-SLUG="openrag-ai-chatbot"
+SLUG="itih-ai-chatbot"
 SVN_URL="https://plugins.svn.wordpress.org/${SLUG}"
 
 # ---- Parse args -------------------------------------------------------------
@@ -49,7 +49,7 @@ done
 
 # ---- Resolve version --------------------------------------------------------
 if [[ -z "${VERSION}" ]]; then
-    VERSION="$(grep -E "OPENRAG_VERSION" openrag-ai-chatbot.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)"
+    VERSION="$(grep -E "ITIH_VERSION" itih-ai-chatbot.php | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | head -1)"
 fi
 if [[ -z "${VERSION}" ]]; then
     echo "ERROR: could not determine version" >&2; exit 1
@@ -80,6 +80,8 @@ rsync -a \
     --exclude='composer.lock' --exclude='*.zip' --exclude='.DS_Store' \
     --exclude='.*.swp' --exclude='.*.swo' --exclude='Thumbs.db' \
     --exclude='CHAT_HISTORY.md' \
+    --exclude='itih-ai-chatbot-itih-ai-chatbot-php-*.md' \
+    --exclude='itih-ai-chatbot-php-*.md' \
     --exclude='openrag-ai-chatbot-openrag-ai-chatbot-php-*.md' \
     --exclude='openrag-ai-chatbot-php-*.md' \
     "${ROOT_DIR}/" "${BUILD_DIR}/"
