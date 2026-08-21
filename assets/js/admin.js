@@ -1,11 +1,11 @@
 /**
- * OpenRag AI Chatbot admin JS (jQuery-based; WP ships jQuery).
+ * ItihRag AI Chatbot admin JS (jQuery-based; WP ships jQuery).
  */
 ( function ( $ ) {
 	'use strict';
 
-	var A = window.OpenRagAdmin || {};
-	var REST = A.restUrl || '/wp-json/openrag/v1';
+	var A = window.ItihRagAdmin || {};
+	var REST = A.restUrl || '/wp-json/itih/v1';
 	var HEADERS = function () {
 		return {
 			'Content-Type': 'application/json',
@@ -170,7 +170,7 @@
 		/* KB: index WP content now */
 		$( '#openrag-index-now' ).on( 'click', function () {
 			restPost( '/posts/index', {} ).done( function ( r ) {
-				$( '#openrag-index-now-msg' ).text( 'Queued ' + ( r.queued || 0 ) + ' posts.' );
+				$( '#openrag-index-now-msg' ).text( ( A.i18n.queuedPosts || 'Queued %d posts.' ).replace( '%d', r.queued || 0 ) );
 			} );
 		} );
 
@@ -203,7 +203,7 @@
 		/* Appearance: apply preset */
 		$( '#openrag-apply-preset' ).on( 'click', function () {
 			var preset = $( '#openrag-theme-preset' ).val();
-			var data = ( window.openragThemePresets || {} )[ preset ];
+			var data = ( A.themePresets || {} )[ preset ];
 			if ( ! data || ! data.colors ) { return; }
 			Object.keys( data.colors ).forEach( function ( k ) {
 				$( '.openrag-color-picker[data-key="' + k + '"]' ).val( data.colors[ k ] );
@@ -243,45 +243,44 @@
 			restPost( '/mcp/servers/' + id, { enabled: false } ).done( function () { location.reload(); } );
 		} );
 
-		/* Chats: view detail */
+		/* Chats: view detail — rendered from row data attributes (no extra REST call) */
+		function esc( s ) { return $( '<div>' ).text( s == null ? '' : String( s ) ).html(); }
 		$( document ).on( 'click', '.openrag-view-chat', function () {
-			var id = $( this ).data( 'id' );
-			$.getJSON( REST + '/history?limit=200' ).done( function ( data ) {
-				var turns = ( data.turns || [] );
-				// Find the user turn with this id and surrounding assistant reply.
-				var idx = -1;
-				for ( var i = 0; i < turns.length; i++ ) { if ( parseInt( turns[i].id, 10 ) === id ) { idx = i; break; } }
-				var html = '';
-				if ( idx >= 0 ) {
-					for ( var j = Math.max(0, idx - 1); j <= Math.min( turns.length - 1, idx + 1 ); j++ ) {
-						var t = turns[j];
-						html += '<div class="openrag-chat-msg openrag-chat-msg-' + t.role + '">';
-						html += '<strong>' + t.role.toUpperCase() + '</strong><div style="white-space:pre-wrap;margin-top:4px;">' + $( '<div>' ).text( t.content ).html() + '</div>';
-						if ( t.reasoning ) {
-							html += '<details class="openrag-chat-reasoning"><summary>Reasoning</summary>' + $( '<div>' ).text( t.reasoning ).html() + '</details>';
-						}
-						if ( t.citations && t.citations.length ) {
-							html += '<div class="openrag-chat-citations"><strong>Sources:</strong> ';
-							t.citations.forEach( function ( c ) {
-								html += '<a href="' + c.url + '" target="_blank">' + c.title + '</a>';
-							} );
-							html += '</div>';
-						}
-						html += '<div class="openrag-chat-msg-meta">' + ( function () {
-							var metaParts = [ t.createdAt ];
-							if ( t.model ) { metaParts.push( t.model ); }
-							var tot = ( t.promptTokens || 0 ) + ( t.completionTokens || 0 );
-							if ( t.role === 'assistant' && tot > 0 ) { metaParts.push( tot + ' tokens' ); }
-							if ( t.role === 'assistant' && t.responseTimeMs ) { metaParts.push( t.responseTimeMs + ' ms' ); }
-							if ( t.feedback ) { metaParts.push( t.feedback ); }
-							return metaParts.join( ' · ' );
-						}() ) + '</div>';
-						html += '</div>';
-					}
+			var $b = $( this );
+			var citations = [];
+			try { citations = JSON.parse( $b.attr( 'data-citations' ) || '[]' ) || []; } catch ( e ) { citations = []; }
+			var html = '';
+			html += '<div class="openrag-chat-msg openrag-chat-msg-user">';
+			html += '<strong>USER</strong><div style="white-space:pre-wrap;margin-top:4px;">' + esc( $b.attr( 'data-content' ) ) + '</div>';
+			html += '<div class="openrag-chat-msg-meta">' + esc( $b.attr( 'data-created-at' ) ) + '</div>';
+			html += '</div>';
+			if ( $b.attr( 'data-reply' ) ) {
+				html += '<div class="openrag-chat-msg openrag-chat-msg-assistant">';
+				html += '<strong>ASSISTANT</strong><div style="white-space:pre-wrap;margin-top:4px;">' + esc( $b.attr( 'data-reply' ) ) + '</div>';
+				if ( $b.attr( 'data-reasoning' ) ) {
+					html += '<details class="openrag-chat-reasoning"><summary>' + esc( A.i18n.reasoning || 'Reasoning' ) + '</summary>' + esc( $b.attr( 'data-reasoning' ) ) + '</details>';
 				}
-				$( '#openrag-chat-detail' ).html( html || 'No data.' );
-				$( '#openrag-chat-modal' ).show();
-			} );
+				if ( citations.length ) {
+					html += '<div class="openrag-chat-citations"><strong>' + esc( A.i18n.sources || 'Sources:' ) + '</strong> ';
+					citations.forEach( function ( c ) {
+						html += '<a href="' + esc( c.url ) + '" target="_blank" rel="noopener">' + esc( c.title ) + '</a> ';
+					} );
+					html += '</div>';
+				}
+				var metaParts = [];
+				if ( $b.attr( 'data-model' ) ) { metaParts.push( esc( $b.attr( 'data-model' ) ) ); }
+				var tot = parseInt( $b.attr( 'data-tokens' ), 10 ) || 0;
+				if ( tot > 0 ) { metaParts.push( ( A.i18n.tokens || '%d tokens' ).replace( '%d', tot ) ); }
+				var ms = parseInt( $b.attr( 'data-response-ms' ), 10 ) || 0;
+				if ( ms > 0 ) { metaParts.push( ( A.i18n.ms || '%d ms' ).replace( '%d', ms ) ); }
+				if ( $b.attr( 'data-feedback' ) ) { metaParts.push( esc( $b.attr( 'data-feedback' ) ) ); }
+				if ( metaParts.length ) {
+					html += '<div class="openrag-chat-msg-meta">' + metaParts.join( ' · ' ) + '</div>';
+				}
+				html += '</div>';
+			}
+			$( '#openrag-chat-detail' ).html( html || ( A.i18n.noData || 'No data.' ) );
+			$( '#openrag-chat-modal' ).show();
 		} );
 
 		/* Modal close */

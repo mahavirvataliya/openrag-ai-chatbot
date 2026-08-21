@@ -2,12 +2,12 @@
 /**
  * Chats admin page — list all conversations, feedback, detail modal, CSV export.
  *
- * @package OpenRag\Admin
+ * @package ItihRag\Admin
  */
 
-namespace OpenRag\Admin;
+namespace ItihRag\Admin;
 
-use OpenRag\Database\Schema;
+use ItihRag\Database\Schema;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -56,14 +56,18 @@ class Chats_Page {
 		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		$total = (int) ( $params ? $wpdb->get_var( $wpdb->prepare( $count_sql, $params ) ) : $wpdb->get_var( $count_sql ) );
 
-		// Rows (user turns + their assistant replies joined).
+		// Rows (user turns + their assistant replies joined). The correlated
+		// MIN(a2.id) subquery picks exactly the NEXT assistant turn — the old
+		// open-ended self-join materialized every later reply per user turn.
+		$chats = $schema->table( 'chats' );
 		$sql = 'SELECT u.id, u.session_id, u.content AS user_message, u.created_at, u.device, u.user_ip,
 				a.id AS assistant_id, a.content AS reply, a.citations, a.reasoning, a.model, a.feedback, a.feedback_comment, a.response_time_ms, a.prompt_tokens, a.completion_tokens
-				FROM `' . $schema->table( 'chats' ) . '` u
-				LEFT JOIN `' . $schema->table( 'chats' ) . '` a
-				  ON a.session_id = u.session_id AND a.role = "assistant" AND a.id > u.id
+				FROM `' . $chats . '` u
+				LEFT JOIN `' . $chats . '` a ON a.id = (
+					SELECT MIN( a2.id ) FROM `' . $chats . '` a2
+					WHERE a2.session_id = u.session_id AND a2.role = "assistant" AND a2.id > u.id
+				)
 				' . $where . '
-				GROUP BY u.id
 				ORDER BY u.id DESC
 				LIMIT %d OFFSET %d';
 		$params[] = $per_page;
@@ -75,30 +79,30 @@ class Chats_Page {
 		$base_url   = admin_url( 'admin.php?page=' . Admin_Menu::SLUG . '-chats' );
 		?>
 		<div class="wrap openrag-admin-wrap">
-			<h1><?php esc_html_e( 'Chats', 'openrag-ai-chatbot' ); ?> <a class="page-title-action" href="<?php echo esc_url( add_query_arg( 'export', '1', $base_url ) ); ?>"><?php esc_html_e( 'Export CSV', 'openrag-ai-chatbot' ); ?></a></h1>
+			<h1><?php esc_html_e( 'Chats', 'itih-ai-chatbot' ); ?> <a class="page-title-action" href="<?php echo esc_url( add_query_arg( 'export', '1', $base_url ) ); ?>"><?php esc_html_e( 'Export CSV', 'itih-ai-chatbot' ); ?></a></h1>
 
 			<form method="get" class="openrag-filter-row">
 				<input type="hidden" name="page" value="<?php echo esc_attr( Admin_Menu::SLUG ); ?>-chats" />
-				<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'Search messages…', 'openrag-ai-chatbot' ); ?>" />
+				<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'Search messages…', 'itih-ai-chatbot' ); ?>" />
 				<input type="date" name="from" value="<?php echo esc_attr( $from ); ?>" />
 				<input type="date" name="to" value="<?php echo esc_attr( $to ); ?>" />
-				<button class="button"><?php esc_html_e( 'Filter', 'openrag-ai-chatbot' ); ?></button>
+				<button class="button"><?php esc_html_e( 'Filter', 'itih-ai-chatbot' ); ?></button>
 			</form>
 
 			<table class="widefat striped">
 				<thead>
 				<tr>
-					<th style="width:90px"><?php esc_html_e( 'When', 'openrag-ai-chatbot' ); ?></th>
-					<th><?php esc_html_e( 'Message', 'openrag-ai-chatbot' ); ?></th>
-					<th style="width:70px"><?php esc_html_e( 'Device', 'openrag-ai-chatbot' ); ?></th>
-					<th style="width:80px"><?php esc_html_e( 'Tokens', 'openrag-ai-chatbot' ); ?></th>
-					<th style="width:80px"><?php esc_html_e( 'Feedback', 'openrag-ai-chatbot' ); ?></th>
-					<th style="width:90px"><?php esc_html_e( 'Actions', 'openrag-ai-chatbot' ); ?></th>
+					<th style="width:90px"><?php esc_html_e( 'When', 'itih-ai-chatbot' ); ?></th>
+					<th><?php esc_html_e( 'Message', 'itih-ai-chatbot' ); ?></th>
+					<th style="width:70px"><?php esc_html_e( 'Device', 'itih-ai-chatbot' ); ?></th>
+					<th style="width:80px"><?php esc_html_e( 'Tokens', 'itih-ai-chatbot' ); ?></th>
+					<th style="width:80px"><?php esc_html_e( 'Feedback', 'itih-ai-chatbot' ); ?></th>
+					<th style="width:90px"><?php esc_html_e( 'Actions', 'itih-ai-chatbot' ); ?></th>
 				</tr>
 				</thead>
 				<tbody>
 				<?php if ( empty( $rows ) ) : ?>
-					<tr><td colspan="6"><?php esc_html_e( 'No chats found.', 'openrag-ai-chatbot' ); ?></td></tr>
+					<tr><td colspan="6"><?php esc_html_e( 'No chats found.', 'itih-ai-chatbot' ); ?></td></tr>
 				<?php else : ?>
 					<?php foreach ( $rows as $row ) : ?>
 						<tr>
@@ -116,7 +120,18 @@ class Chats_Page {
 								<?php if ( 'up' === $row->feedback ) : ?>👍<?php elseif ( 'down' === $row->feedback ) : ?>👎<?php else : ?>—<?php endif; ?>
 							</td>
 							<td>
-								<button class="button button-small openrag-view-chat" data-id="<?php echo esc_attr( $row->id ); ?>"><?php esc_html_e( 'View', 'openrag-ai-chatbot' ); ?></button>
+								<button type="button" class="button button-small openrag-view-chat"
+									data-id="<?php echo esc_attr( $row->id ); ?>"
+									data-created-at="<?php echo esc_attr( $row->created_at ); ?>"
+									data-content="<?php echo esc_attr( $row->user_message ); ?>"
+									data-reply="<?php echo esc_attr( $row->reply ?? '' ); ?>"
+									data-reasoning="<?php echo esc_attr( $row->reasoning ?? '' ); ?>"
+									data-citations="<?php echo esc_attr( $row->citations ?? '' ); ?>"
+									data-model="<?php echo esc_attr( $row->model ?? '' ); ?>"
+									data-feedback="<?php echo esc_attr( $row->feedback ?? '' ); ?>"
+									data-tokens="<?php echo esc_attr( (int) ( $row->prompt_tokens ?? 0 ) + (int) ( $row->completion_tokens ?? 0 ) ); ?>"
+									data-response-ms="<?php echo esc_attr( $row->response_time_ms ?? '' ); ?>"
+								><?php esc_html_e( 'View', 'itih-ai-chatbot' ); ?></button>
 							</td>
 						</tr>
 					<?php endforeach; ?>
@@ -158,43 +173,55 @@ class Chats_Page {
 	protected function export_csv() {
 		global $wpdb;
 		$schema = new Schema();
+		$chats  = $schema->table( 'chats' );
 
-		$sql = 'SELECT u.id, u.session_id, u.content AS user_message, u.created_at, u.device, u.user_ip,
+		// Keyset-paginated batches keep memory flat on large chat tables.
+		$base_sql = 'SELECT u.id, u.session_id, u.content AS user_message, u.created_at, u.device, u.user_ip,
 				a.content AS reply, a.citations, a.model, a.feedback, a.feedback_comment, a.response_time_ms, a.prompt_tokens, a.completion_tokens
-				FROM `' . $schema->table( 'chats' ) . '` u
-				LEFT JOIN `' . $schema->table( 'chats' ) . '` a
-				  ON a.session_id = u.session_id AND a.role = "assistant" AND a.id > u.id
-				WHERE u.role = "user"
-				GROUP BY u.id
-				ORDER BY u.id DESC';
+				FROM `' . $chats . '` u
+				LEFT JOIN `' . $chats . '` a ON a.id = (
+					SELECT MIN( a2.id ) FROM `' . $chats . '` a2
+					WHERE a2.session_id = u.session_id AND a2.role = "assistant" AND a2.id > u.id
+				)
+				WHERE u.role = "user" AND u.id > %d
+				ORDER BY u.id ASC
+				LIMIT 1000';
 
 		nocache_headers();
 		header( 'Content-Type: text/csv; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename="openrag-chats.csv"' );
+		header( 'Content-Disposition: attachment; filename="itih-chats.csv"' );
 
-		$out = fopen( 'php://output', 'w' );
+		$out    = fopen( 'php://output', 'w' );
 		fputcsv( $out, array( 'id', 'created_at', 'session_id', 'ip', 'device', 'user_message', 'reply', 'model', 'response_ms', 'prompt_tokens', 'completion_tokens', 'feedback', 'feedback_comment' ) );
 
-		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
-		foreach ( $wpdb->get_results( $sql ) as $row ) {
-			fputcsv(
-				$out,
-				array(
-					$row->id,
-					$row->created_at,
-					$row->session_id,
-					$row->user_ip,
-					$row->device,
-					$row->user_message,
-					$row->reply,
-					$row->model,
-					$row->response_time_ms,
-					$row->prompt_tokens,
-					$row->completion_tokens,
-					$row->feedback,
-					$row->feedback_comment,
-				)
-			);
+		$last_id = 0;
+		while ( true ) {
+			// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
+			$rows = $wpdb->get_results( $wpdb->prepare( $base_sql, $last_id ) );
+			if ( empty( $rows ) ) {
+				break;
+			}
+			foreach ( $rows as $row ) {
+				fputcsv(
+					$out,
+					array(
+						$row->id,
+						$row->created_at,
+						$row->session_id,
+						$row->user_ip,
+						$row->device,
+						$row->user_message,
+						$row->reply,
+						$row->model,
+						$row->response_time_ms,
+						$row->prompt_tokens,
+						$row->completion_tokens,
+						$row->feedback,
+						$row->feedback_comment,
+					)
+				);
+			}
+			$last_id = (int) end( $rows )->id;
 		}
 		fclose( $out ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- php://output streams must be closed with fclose(); WP_Filesystem cannot stream to the browser.
 		exit;

@@ -2,13 +2,13 @@
 /**
  * Admin menu + page routing + asset enqueue.
  *
- * @package OpenRag\Admin
+ * @package ItihRag\Admin
  */
 
-namespace OpenRag\Admin;
+namespace ItihRag\Admin;
 
-use OpenRag\Plugin;
-use OpenRag\Settings;
+use ItihRag\Plugin;
+use ItihRag\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Admin_Menu {
 
 	const CAPABILITY = 'manage_options';
-	const SLUG       = 'openrag-ai-chatbot';
+	const SLUG       = 'itih-ai-chatbot';
 
 	/**
 	 * @var Plugin
@@ -46,12 +46,12 @@ class Admin_Menu {
 
 	public function menu() {
 		$icon = 'dashicons-format-chat';
-		add_menu_page( __( 'OpenRag AI Chatbot', 'openrag-ai-chatbot' ), __( 'OpenRag', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG, array( $this, 'render_dashboard' ), $icon, 26 );
+		add_menu_page( __( 'ItihRag AI Chatbot', 'itih-ai-chatbot' ), __( 'ItihRag', 'itih-ai-chatbot' ), self::CAPABILITY, self::SLUG, array( $this, 'render_dashboard' ), $icon, 26 );
 
-		add_submenu_page( self::SLUG, __( 'Dashboard', 'openrag-ai-chatbot' ), __( 'Dashboard', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG, array( $this, 'render_dashboard' ) );
-		add_submenu_page( self::SLUG, __( 'Knowledge Base', 'openrag-ai-chatbot' ), __( 'Knowledge Base', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG . '-kb', array( $this, 'render_kb' ) );
-		add_submenu_page( self::SLUG, __( 'Chats', 'openrag-ai-chatbot' ), __( 'Chats', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG . '-chats', array( $this, 'render_chats' ) );
-		add_submenu_page( self::SLUG, __( 'Settings', 'openrag-ai-chatbot' ), __( 'Settings', 'openrag-ai-chatbot' ), self::CAPABILITY, self::SLUG . '-settings', array( $this, 'render_settings' ) );
+		add_submenu_page( self::SLUG, __( 'Dashboard', 'itih-ai-chatbot' ), __( 'Dashboard', 'itih-ai-chatbot' ), self::CAPABILITY, self::SLUG, array( $this, 'render_dashboard' ) );
+		add_submenu_page( self::SLUG, __( 'Knowledge Base', 'itih-ai-chatbot' ), __( 'Knowledge Base', 'itih-ai-chatbot' ), self::CAPABILITY, self::SLUG . '-kb', array( $this, 'render_kb' ) );
+		add_submenu_page( self::SLUG, __( 'Chats', 'itih-ai-chatbot' ), __( 'Chats', 'itih-ai-chatbot' ), self::CAPABILITY, self::SLUG . '-chats', array( $this, 'render_chats' ) );
+		add_submenu_page( self::SLUG, __( 'Settings', 'itih-ai-chatbot' ), __( 'Settings', 'itih-ai-chatbot' ), self::CAPABILITY, self::SLUG . '-settings', array( $this, 'render_settings' ) );
 	}
 
 	public function assets( $hook ) {
@@ -59,34 +59,44 @@ class Admin_Menu {
 			return;
 		}
 		wp_enqueue_style(
-			'openrag-admin',
-			OPENRAG_URL . 'assets/css/admin.css',
+			'itih-admin',
+			ITIH_URL . 'assets/css/admin.css',
 			array(),
-			OPENRAG_VERSION
+			ITIH_VERSION
 		);
 		wp_enqueue_script(
-			'openrag-admin',
-			OPENRAG_URL . 'assets/js/admin.js',
+			'itih-admin',
+			ITIH_URL . 'assets/js/admin.js',
 			array( 'jquery', 'wp-util' ),
-			OPENRAG_VERSION,
+			ITIH_VERSION,
 			true
 		);
 		wp_enqueue_media();
 
 		wp_localize_script(
-			'openrag-admin',
-			'OpenRagAdmin',
+			'itih-admin',
+			'ItihRagAdmin',
 			array(
-				'restUrl' => esc_url_raw( rest_url( OPENRAG_REST_NAMESPACE ) ),
-				'nonce'   => wp_create_nonce( 'wp_rest' ),
-				'i18n'    => array(
-					'saving'        => __( 'Saving…', 'openrag-ai-chatbot' ),
-					'saved'         => __( 'Saved', 'openrag-ai-chatbot' ),
-					'processing'    => __( 'Processing…', 'openrag-ai-chatbot' ),
-					'delete'        => __( 'Delete this item?', 'openrag-ai-chatbot' ),
-					'fetching'      => __( 'Fetching…', 'openrag-ai-chatbot' ),
-					'discovering'   => __( 'Discovering tools…', 'openrag-ai-chatbot' ),
-					'indexing'      => __( 'Queued for indexing', 'openrag-ai-chatbot' ),
+				'restUrl'      => esc_url_raw( rest_url( ITIH_REST_NAMESPACE ) ),
+				'nonce'        => wp_create_nonce( 'wp_rest' ),
+				'themePresets' => Settings::theme_presets(),
+				'i18n'         => array(
+					'saving'        => __( 'Saving…', 'itih-ai-chatbot' ),
+					'saved'         => __( 'Saved', 'itih-ai-chatbot' ),
+					'processing'    => __( 'Processing…', 'itih-ai-chatbot' ),
+					'delete'        => __( 'Delete this item?', 'itih-ai-chatbot' ),
+					'fetching'      => __( 'Fetching…', 'itih-ai-chatbot' ),
+					'discovering'   => __( 'Discovering tools…', 'itih-ai-chatbot' ),
+					'indexing'      => __( 'Queued for indexing', 'itih-ai-chatbot' ),
+					/* translators: %d: number of posts queued. */
+					'queuedPosts'   => __( 'Queued %d posts.', 'itih-ai-chatbot' ),
+					'reasoning'     => __( 'Reasoning', 'itih-ai-chatbot' ),
+					'sources'       => __( 'Sources:', 'itih-ai-chatbot' ),
+					'noData'        => __( 'No data.', 'itih-ai-chatbot' ),
+					/* translators: %d: token count. */
+					'tokens'        => __( '%d tokens', 'itih-ai-chatbot' ),
+					/* translators: %d: response time in milliseconds. */
+					'ms'            => __( '%d ms', 'itih-ai-chatbot' ),
 				),
 			)
 		);
