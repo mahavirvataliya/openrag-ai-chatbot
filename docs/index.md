@@ -9,11 +9,11 @@ description: Self-hosted RAG chatbot for WordPress. Ingest PDFs, DOCX & URLs, em
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "OpenRag AI Chatbot",
+  "name": "ItihRag AI Chatbot",
   "applicationCategory": "WordPressPlugin",
   "operatingSystem": "WordPress 6.0+, PHP 8.0+, MySQL 5.7+",
-  "url": "https://mahavirvataliya.github.io/openrag-ai-chatbot/",
-  "downloadUrl": "https://github.com/mahavirvataliya/openrag-ai-chatbot/releases",
+  "url": "https://mahavirvataliya.github.io/itih-ai-chatbot/",
+  "downloadUrl": "https://github.com/mahavirvataliya/itih-ai-chatbot/releases",
   "softwareVersion": "1.0.5",
   "datePublished": "2026-07-27",
   "dateModified": "2026-07-28",
@@ -37,7 +37,7 @@ description: Self-hosted RAG chatbot for WordPress. Ingest PDFs, DOCX & URLs, em
 }
 </script>
 
-# OpenRag AI Chatbot
+# ItihRag AI Chatbot
 {: .fs-9 }
 
 A complete, **self-hosted RAG (Retrieval-Augmented Generation) chatbot** for
@@ -49,19 +49,19 @@ conflict-free chat widget.
 {: .fs-6 .fw-300 }
 
 [Get started]({{ site.baseurl }}/quick-start/){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[View on GitHub](https://github.com/mahavirvataliya/openrag-ai-chatbot){: .btn .fs-5 .mb-4 .mb-md-0 }
+[View on GitHub](https://github.com/mahavirvataliya/itih-ai-chatbot){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ---
 
 ## What it does
 
-OpenRag AI Chatbot turns your WordPress site into a retrieval-augmented-generation
+ItihRag AI Chatbot turns your WordPress site into a retrieval-augmented-generation
 (RAG) assistant. Visitors ask questions through a customizable chat widget; the
 plugin retrieves the most relevant chunks from your knowledge base (documents,
 URLs, or your own posts and pages), feeds them to the LLM of your choice, and
 returns a grounded answer with citations.
 
-Unlike hosted chatbot SaaS plugins, OpenRag AI Chatbot is **fully self-hosted**.
+Unlike hosted chatbot SaaS plugins, ItihRag AI Chatbot is **fully self-hosted**.
 You pick the LLM, the embedding model, and the vector database. There are
 **no per-message fees** and **no third-party middleman** — your server talks
 directly to the providers you configure.
@@ -148,5 +148,5 @@ This documentation is also available as a machine-readable index for LLMs and
 coding agents:
 
 **[llms.txt]({{ site.baseurl }}/llms.txt)** — a plain-text summary of the plugin
-with links to every page. Fetch `https://mahavirvataliya.github.io/openrag-ai-chatbot/llms.txt`
-to give an AI assistant a concise, structured overview of OpenRag AI Chatbot.
+with links to every page. Fetch `https://mahavirvataliya.github.io/itih-ai-chatbot/llms.txt`
+to give an AI assistant a concise, structured overview of ItihRag AI Chatbot.

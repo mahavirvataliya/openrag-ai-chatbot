@@ -1,14 +1,14 @@
 ---
 title: REST API
 nav_order: 8
-description: The openrag/v1 REST namespace — endpoints, methods, and auth.
+description: The itih/v1 REST namespace — endpoints, methods, and auth.
 ---
 
 # REST API
 {: .fs-9 }
 
 {: .fw-300 }
-Namespace: `openrag/v1` — base URL: `/wp-json/openrag/v1`.
+Namespace: `itih/v1` — base URL: `/wp-json/itih/v1`.
 
 ---
 

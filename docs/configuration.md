@@ -8,7 +8,7 @@ description: The eight settings tabs and what each one controls.
 {: .fs-9 }
 
 {: .fw-300 }
-OpenRag AI Chatbot is configured from **OpenRag → Settings**, organized into
+ItihRag AI Chatbot is configured from **ItihRag → Settings**, organized into
 eight tabs. All forms are nonce-protected and every field is sanitized on save.
 
 ---

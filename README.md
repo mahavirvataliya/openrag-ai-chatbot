@@ -1,4 +1,4 @@
-# OpenRag AI Chatbot
+# ItihRag AI Chatbot
 
 > A complete, self-hosted **RAG (Retrieval-Augmented Generation) chatbot** for WordPress.
 > Ingest your own documents, links and posts, embed them with the provider of your choice,
@@ -11,11 +11,11 @@
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.0-777bb4.svg)](https://www.php.net/)
 [![WordPress](https://img.shields.io/badge/WordPress-%3E%3D%206.0-21759b.svg)](https://wordpress.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-5.7+%20(%E2%9C%A8%209+%20native%20VECTOR)-4479a1.svg)](https://www.mysql.com/)
-[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blueviolet.svg)](https://mahavirvataliya.github.io/openrag-ai-chatbot/)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blueviolet.svg)](https://mahavirvataliya.github.io/itih-ai-chatbot/)
 
 ---
 
-> 📚 **Full documentation:** <https://mahavirvataliya.github.io/openrag-ai-chatbot/>
+> 📚 **Full documentation:** <https://mahavirvataliya.github.io/itih-ai-chatbot/>
 
 ---
 
@@ -99,24 +99,24 @@ OpenAI · OpenAI-compatible · **Anthropic Claude** · **Cloudflare Workers AI**
 
 ### From a release ZIP (recommended for most users)
 
-1. Download the latest `openrag-ai-chatbot-{version}.zip` from the
-   [**Releases** page](https://github.com/mahavirvataliya/openrag-ai-chatbot/releases).
+1. Download the latest `itih-ai-chatbot-{version}.zip` from the
+   [**Releases** page](https://github.com/mahavirvataliya/itih-ai-chatbot/releases).
    *(Release ZIPs ship with `vendor/` pre-built — no Composer required.)*
 2. In WordPress: **Plugins → Add New → Upload Plugin → Choose File** → select the ZIP →
    **Install Now**.
-3. Activate **OpenRag AI Chatbot**.
-4. Go to **OpenRag → Settings** and configure at least one LLM provider and one embedding
+3. Activate **ItihRag AI Chatbot**.
+4. Go to **ItihRag → Settings** and configure at least one LLM provider and one embedding
    provider.
 
 ### From source (for developers)
 
 ```bash
-git clone https://github.com/mahavirvataliya/openrag-ai-chatbot.git openrag-ai-chatbot
-cd openrag-ai-chatbot
+git clone https://github.com/mahavirvataliya/itih-ai-chatbot.git itih-ai-chatbot
+cd itih-ai-chatbot
 composer install --no-dev
 ```
 
-Then copy/symlink the `openrag-ai-chatbot` folder into `wp-content/plugins/` and activate it.
+Then copy/symlink the `itih-ai-chatbot` folder into `wp-content/plugins/` and activate it.
 
 ### Requirements
 
@@ -132,15 +132,15 @@ Then copy/symlink the `openrag-ai-chatbot` folder into `wp-content/plugins/` and
 
 ## 🚀 Quick start
 
-1. **OpenRag → Settings → LLM Providers** — pick a provider, paste your key, choose a model.
+1. **ItihRag → Settings → LLM Providers** — pick a provider, paste your key, choose a model.
    Click **Test connection** to verify.
-2. **OpenRag → Settings → Embeddings** — do the same for embeddings.
+2. **ItihRag → Settings → Embeddings** — do the same for embeddings.
    (Cloudflare's free-tier Workers AI works for both.)
-3. **OpenRag → Settings → Vector Database** — review the detected capability and pick an
+3. **ItihRag → Settings → Vector Database** — review the detected capability and pick an
    engine (or leave on **Auto**). If using Cloudflare Vectorize, click **Create / verify index**.
-4. **OpenRag → Knowledge Base** — add a URL or upload a PDF, or use the
+4. **ItihRag → Knowledge Base** — add a URL or upload a PDF, or use the
    **WordPress Content** tab to index your existing posts/pages.
-5. **OpenRag → Settings → Chat** — confirm the bot name, welcome message and launcher position.
+5. **ItihRag → Settings → Chat** — confirm the bot name, welcome message and launcher position.
 6. Visit your site — the chat bubble appears in the corner.
 
 Embed your chatbot inline anywhere with the shortcode:
@@ -153,7 +153,7 @@ Embed your chatbot inline anywhere with the shortcode:
 
 ## 🔌 REST API
 
-Namespace: `openrag/v1` — base URL: `/wp-json/openrag/v1`.
+Namespace: `itih/v1` — base URL: `/wp-json/itih/v1`.
 
 | Method | Path | Auth | Purpose |
 |--------|------|------|---------|
@@ -285,8 +285,8 @@ reasoning panel, citations/sources list, and thumbs-up/down feedback.
 ## 🏗 Architecture
 
 ```
-openrag-ai-chatbot/
-├── openrag-ai-chatbot.php              # Headers, constants, bootstrap
+itih-ai-chatbot/
+├── itih-ai-chatbot.php              # Headers, constants, bootstrap
 ├── uninstall.php               # Opt-in full cleanup
 ├── composer.json
 ├── includes/
@@ -315,7 +315,7 @@ A one-file release script is included for maintainers:
 
 ```bash
 ./bin/build-release.sh 1.0.0
-# → produces dist/openrag-ai-chatbot-1.0.0.zip with vendor/ included
+# → produces dist/itih-ai-chatbot-1.0.0.zip with vendor/ included
 ```
 
 GitHub Actions workflow (`.github/workflows/release.yml`) is provided so tagged pushes

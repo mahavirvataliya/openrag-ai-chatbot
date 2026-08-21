@@ -8,7 +8,7 @@ description: Configuring LLM and embedding providers.
 {: .fs-9 }
 
 {: .fw-300 }
-OpenRag AI Chatbot talks directly to the providers you configure. Pick one LLM
+ItihRag AI Chatbot talks directly to the providers you configure. Pick one LLM
 provider for chat and one embedding provider for vectors — they don't have to
 be the same.
 

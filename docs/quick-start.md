@@ -14,17 +14,17 @@ Configure providers, ingest some content, and put the chat widget on your site.
 
 ## 1. Configure an LLM provider
 
-**OpenRag → Settings → LLM Providers** — pick a provider, paste your key,
+**ItihRag → Settings → LLM Providers** — pick a provider, paste your key,
 choose a model. Click **Test connection** to verify.
 
 ## 2. Configure an embedding provider
 
-**OpenRag → Settings → Embeddings** — do the same for embeddings.
+**ItihRag → Settings → Embeddings** — do the same for embeddings.
 (Cloudflare's free-tier Workers AI works for both.)
 
 ## 3. Choose a vector database
 
-**OpenRag → Settings → Vector Database** — review the detected capability and
+**ItihRag → Settings → Vector Database** — review the detected capability and
 pick an engine (or leave on **Auto**). If using Cloudflare Vectorize, click
 **Create / verify index**.
 
@@ -32,12 +32,12 @@ See [Vector stores]({{ site.baseurl }}/vector-stores/) for the trade-offs.
 
 ## 4. Add content to your knowledge base
 
-**OpenRag → Knowledge Base** — add a URL or upload a PDF, or use the
+**ItihRag → Knowledge Base** — add a URL or upload a PDF, or use the
 **WordPress Content** tab to index your existing posts/pages.
 
 ## 5. Personalize the chat
 
-**OpenRag → Settings → Chat** — confirm the bot name, welcome message and
+**ItihRag → Settings → Chat** — confirm the bot name, welcome message and
 launcher position.
 
 ## 6. Visit your site

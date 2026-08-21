@@ -1,8 +1,8 @@
-# OpenRag AI Chatbot
+# ItihRag AI Chatbot
 
-> OpenRag AI Chatbot is a complete, self-hosted RAG (Retrieval-Augmented Generation) chatbot for WordPress. Ingest your own documents, links and posts, embed them with the provider of your choice, retrieve with native MySQL 9 vector search or Cloudflare Vectorize, and answer visitor questions with citations, reasoning, live streaming and MCP tool integration — all from a customizable, conflict-free chat widget.
+> ItihRag AI Chatbot is a complete, self-hosted RAG (Retrieval-Augmented Generation) chatbot for WordPress. Ingest your own documents, links and posts, embed them with the provider of your choice, retrieve with native MySQL 9 vector search or Cloudflare Vectorize, and answer visitor questions with citations, reasoning, live streaming and MCP tool integration — all from a customizable, conflict-free chat widget.
 
-OpenRag AI Chatbot turns your WordPress site into a retrieval-augmented-generation assistant. Visitors ask questions through a customizable chat widget; the plugin retrieves the most relevant chunks from your knowledge base (documents, URLs, or your own posts and pages), feeds them to the LLM of your choice, and returns a grounded answer with citations. Unlike hosted chatbot SaaS plugins, it is fully self-hosted — you pick the LLM, the embedding model, and the vector database. No per-message fees, no third-party middleman.
+ItihRag AI Chatbot turns your WordPress site into a retrieval-augmented-generation assistant. Visitors ask questions through a customizable chat widget; the plugin retrieves the most relevant chunks from your knowledge base (documents, URLs, or your own posts and pages), feeds them to the LLM of your choice, and returns a grounded answer with citations. Unlike hosted chatbot SaaS plugins, it is fully self-hosted — you pick the LLM, the embedding model, and the vector database. No per-message fees, no third-party middleman.
 
 ## Key features
 
@@ -35,24 +35,24 @@ Use the shortcode above for inline embedding, or enable the floating widget from
 
 ## Links
 
-- [Home](https://mahavirvataliya.github.io/openrag-ai-chatbot/)
-- [Features](https://mahavirvataliya.github.io/openrag-ai-chatbot/features/)
-- [Installation](https://mahavirvataliya.github.io/openrag-ai-chatbot/installation/)
-- [Quick start](https://mahavirvataliya.github.io/openrag-ai-chatbot/quick-start/)
-- [Configuration](https://mahavirvataliya.github.io/openrag-ai-chatbot/configuration/)
-- [Providers](https://mahavirvataliya.github.io/openrag-ai-chatbot/providers/)
-- [Vector stores](https://mahavirvataliya.github.io/openrag-ai-chatbot/vector-stores/)
-- [REST API](https://mahavirvataliya.github.io/openrag-ai-chatbot/rest-api/)
-- [MCP integration](https://mahavirvataliya.github.io/openrag-ai-chatbot/mcp/)
-- [FAQ](https://mahavirvataliya.github.io/openrag-ai-chatbot/faq/)
-- [Screenshots](https://mahavirvataliya.github.io/openrag-ai-chatbot/screenshots/)
-- [Privacy](https://mahavirvataliya.github.io/openrag-ai-chatbot/privacy/)
-- [Changelog](https://mahavirvataliya.github.io/openrag-ai-chatbot/changelog/)
+- [Home](https://mahavirvataliya.github.io/itih-ai-chatbot/)
+- [Features](https://mahavirvataliya.github.io/itih-ai-chatbot/features/)
+- [Installation](https://mahavirvataliya.github.io/itih-ai-chatbot/installation/)
+- [Quick start](https://mahavirvataliya.github.io/itih-ai-chatbot/quick-start/)
+- [Configuration](https://mahavirvataliya.github.io/itih-ai-chatbot/configuration/)
+- [Providers](https://mahavirvataliya.github.io/itih-ai-chatbot/providers/)
+- [Vector stores](https://mahavirvataliya.github.io/itih-ai-chatbot/vector-stores/)
+- [REST API](https://mahavirvataliya.github.io/itih-ai-chatbot/rest-api/)
+- [MCP integration](https://mahavirvataliya.github.io/itih-ai-chatbot/mcp/)
+- [FAQ](https://mahavirvataliya.github.io/itih-ai-chatbot/faq/)
+- [Screenshots](https://mahavirvataliya.github.io/itih-ai-chatbot/screenshots/)
+- [Privacy](https://mahavirvataliya.github.io/itih-ai-chatbot/privacy/)
+- [Changelog](https://mahavirvataliya.github.io/itih-ai-chatbot/changelog/)
 
 ## Optional
 
-- [GitHub repository](https://github.com/mahavirvataliya/openrag-ai-chatbot)
-- [GitHub Releases](https://github.com/mahavirvataliya/openrag-ai-chatbot/releases)
-- [README (source)](https://github.com/mahavirvataliya/openrag-ai-chatbot/blob/main/README.md)
-- [CHANGELOG (source)](https://github.com/mahavirvataliya/openrag-ai-chatbot/blob/main/CHANGELOG.md)
-- [License: GPL-2.0-or-later](https://github.com/mahavirvataliya/openrag-ai-chatbot/blob/main/LICENSE)
+- [GitHub repository](https://github.com/mahavirvataliya/itih-ai-chatbot)
+- [GitHub Releases](https://github.com/mahavirvataliya/itih-ai-chatbot/releases)
+- [README (source)](https://github.com/mahavirvataliya/itih-ai-chatbot/blob/main/README.md)
+- [CHANGELOG (source)](https://github.com/mahavirvataliya/itih-ai-chatbot/blob/main/CHANGELOG.md)
+- [License: GPL-2.0-or-later](https://github.com/mahavirvataliya/itih-ai-chatbot/blob/main/LICENSE)

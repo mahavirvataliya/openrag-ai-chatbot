@@ -1,8 +1,8 @@
-# OpenRag AI Chatbot — documentation site
+# ItihRag AI Chatbot — documentation site
 # Built by GitHub Pages' native Jekyll (Deploy from a branch → main / /docs).
 # Theme: just-the-docs (loaded via remote_theme, supported on classic GitHub Pages).
 
-title: OpenRag AI Chatbot
+title: ItihRag AI Chatbot
 description: >-
   A complete, self-hosted RAG chatbot for WordPress. Ingest your own documents,
   links and posts, embed them, retrieve with native MySQL 9 vector search or
@@ -11,10 +11,10 @@ description: >-
 
 # Project-page URLs: baseurl is the subpath, url is the host.
 url: "https://mahavirvataliya.github.io"
-baseurl: "/openrag-ai-chatbot"
+baseurl: "/itih-ai-chatbot"
 
 # Repository links (used for "Edit this page" and the header link).
-repository: "mahavirvataliya/openrag-ai-chatbot"
+repository: "mahavirvataliya/itih-ai-chatbot"
 
 # Theme — just-the-docs via remote_theme (whitelisted on GitHub Pages).
 remote_theme: just-the-docs/just-the-docs
@@ -22,9 +22,9 @@ permalink: pretty
 
 # Branding / chrome.
 # NOTE: paths are baseurl-relative — jekyll-seo-tag prepends baseurl for us, so
-# including it here would double it (.../openrag-ai-chatbot/openrag-ai-chatbot/...).
+# including it here would double it (.../itih-ai-chatbot/itih-ai-chatbot/...).
 logo: "/assets/icon.svg"
-favicon_ico: "/openrag-ai-chatbot/assets/icon.svg"
+favicon_ico: "/itih-ai-chatbot/assets/icon.svg"
 
 # Search, navigation and readability.
 search_enabled: true
@@ -47,14 +47,14 @@ color_scheme: light
 # Top-right header links.
 aux_links:
   "View on GitHub":
-    - "https://github.com/mahavirvataliya/openrag-ai-chatbot"
+    - "https://github.com/mahavirvataliya/itih-ai-chatbot"
 
 # "Edit this page" → opens the source markdown on the main branch.
 aux_links_new_tab: true
 
 gh_edit_link: true
 gh_edit_link_text: "Edit this page on GitHub"
-gh_edit_repository: "https://github.com/mahavirvataliya/openrag-ai-chatbot"
+gh_edit_repository: "https://github.com/mahavirvataliya/itih-ai-chatbot"
 gh_edit_branch: "main"
 gh_edit_view_mode: "tree"
 gh_edit_source: "docs"

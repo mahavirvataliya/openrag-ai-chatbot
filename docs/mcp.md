@@ -39,7 +39,7 @@ so both streamable-HTTP and SSE transports work.
 
 ## Adding a server
 
-1. Go to **OpenRag → Settings → MCP**.
+1. Go to **ItihRag → Settings → MCP**.
 2. Click **Add server** and enter the server's URL (and any auth required).
 3. Click **Discover** to fetch and cache the tool list.
 4. Enable the server. Its tools are now available to the chatbot.

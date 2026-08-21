@@ -1,7 +1,7 @@
 ---
 title: Installation
 nav_order: 3
-description: Install OpenRag AI Chatbot from a release ZIP, the WordPress.org directory, or from source.
+description: Install ItihRag AI Chatbot from a release ZIP, the WordPress.org directory, or from source.
 ---
 
 # Installation
@@ -14,31 +14,31 @@ Three ways to install. The release ZIP is recommended for most users.
 
 ## From a release ZIP (recommended)
 
-1. Download the latest `openrag-ai-chatbot-{version}.zip` from the
-   [**Releases** page](https://github.com/mahavirvataliya/openrag-ai-chatbot/releases).
+1. Download the latest `itih-ai-chatbot-{version}.zip` from the
+   [**Releases** page](https://github.com/mahavirvataliya/itih-ai-chatbot/releases).
    *(Release ZIPs ship with `vendor/` pre-built — no Composer required.)*
 2. In WordPress: **Plugins → Add New → Upload Plugin → Choose File** → select
    the ZIP → **Install Now**.
-3. Activate **OpenRag AI Chatbot**.
-4. Go to **OpenRag → Settings** and configure at least one LLM provider and
+3. Activate **ItihRag AI Chatbot**.
+4. Go to **ItihRag → Settings** and configure at least one LLM provider and
    one embedding provider.
 
 ## From the WordPress.org plugin directory
 
-1. Go to **Plugins → Add New** and search for "OpenRag AI Chatbot".
+1. Go to **Plugins → Add New** and search for "ItihRag AI Chatbot".
 2. Click **Install Now**, then **Activate**.
-3. Go to **OpenRag → Settings** and configure at least one LLM provider and
+3. Go to **ItihRag → Settings** and configure at least one LLM provider and
    one embedding provider.
 
 ## From source (for developers)
 
 ```bash
-git clone https://github.com/mahavirvataliya/openrag-ai-chatbot.git openrag-ai-chatbot
-cd openrag-ai-chatbot
+git clone https://github.com/mahavirvataliya/itih-ai-chatbot.git itih-ai-chatbot
+cd itih-ai-chatbot
 composer install --no-dev
 ```
 
-Then copy/symlink the `openrag-ai-chatbot` folder into
+Then copy/symlink the `itih-ai-chatbot` folder into
 `wp-content/plugins/` and activate it.
 
 ## Requirements

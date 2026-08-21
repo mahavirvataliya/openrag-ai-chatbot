@@ -1,7 +1,7 @@
 ---
 title: Features
 nav_order: 2
-description: Everything OpenRag AI Chatbot can do.
+description: Everything ItihRag AI Chatbot can do.
 ---
 
 # Features

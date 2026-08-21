@@ -1,13 +1,36 @@
 # Changelog
 
-All notable changes to **OpenRag AI Chatbot** are documented in this file.
+All notable changes to **ItihRag AI Chatbot** are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-_Nothing yet._
+## [1.1.1] — 2026-08-21
+
+Rename completion, WordPress.org compliance hardening, and performance release.
+
+### Changed
+- **Rename completion** — all registration-level identifiers now use the `itih_` prefix: options (`itih_general`, …), Action Scheduler hooks (`itih_process_document`, `itih_index_post`, `itih_schedule_document`, `itih_schedule_post`), transients (`itih_rl_*`, `itih_q_*`, `itih_embedding_dim`), localStorage keys (`itih_session`, `itih_secret`), and the shortcode (now `[itih_chat]`, with `[openrag_chat]` kept as a legacy alias). Existing settings migrate automatically on update. The internal database table prefix (`openrag_`) and CSS scoping prefix are unchanged so data is preserved.
+- **Dead cron removed** — the `openrag_health_check` event had no handler; scheduling dropped.
+
+### Security
+- Admin settings and knowledge-base forms verify nonces before reading any `$_POST` input (Plugin Check nonce-verification order).
+- Local file ingestion is restricted to the uploads directory.
+- Chat streaming errors no longer expose raw provider exception messages to visitors; logged server-side only when debug logging is enabled.
+- Admin chat-detail modal output is fully escaped (role, citation URLs/titles, model, feedback).
+- LICENSE copyright holder corrected to the plugin author.
+
+### Performance
+- Cached the MySQL VECTOR capability probe — no more CREATE/DROP TABLE DDL on every request.
+- Batched embedding API calls during ingestion (~100 texts per request instead of one per chunk) with per-chunk fallback.
+- JSON-fallback vector search rewritten: keyset-paginated batches of id+embedding only (~20× less memory), normalized query vector, top-k hydration in a single query. Older chunks are no longer silently excluded past 5,000 rows.
+- Frontend history REST call deferred until the widget is first opened (no request per page view).
+- Chats admin list uses a deterministic next-reply join (ONLY_FULL_GROUP_BY-safe); CSV export streams in 1,000-row batches.
+- Dashboard stats collapsed into one aggregate query cached for 60s; added `role` and `(session_id, id)` indexes to chats.
+- Composer autoloading switched from a broken PSR-4 mapping to an optimized classmap.
+- Per-group memoization in the settings layer.
 
 ---
 
@@ -85,7 +108,7 @@ The first stable, public release.
   it in a collapsible panel.
 
 #### Chat
-- **REST namespace `openrag/v1`**: `POST /chat` (SSE), `POST /chat/sync`, `POST /feedback`,
+- **REST namespace `itih/v1`**: `POST /chat` (SSE), `POST /chat/sync`, `POST /feedback`,
   `GET/DELETE /history`.
 - **RAG pipeline**: query embedding (cached) → vector store `query(top_k, min_score)` →
   numbered context block → optional tools → bounded tool-call loop (max 5 iterations) →
@@ -157,6 +180,6 @@ The first stable, public release.
 - WordPress 6.0 – 6.8
 - MySQL 5.7 / 8.x / 9.x, MariaDB 10.x
 
-[Unreleased]: https://github.com/mahavirvataliya/openrag-ai-chatbot/compare/v1.0.5...HEAD
-[1.0.5]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.5
-[1.0.0]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.0
+[Unreleased]: https://github.com/mahavirvataliya/itih-ai-chatbot/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/mahavirvataliya/itih-ai-chatbot/releases/tag/v1.0.5
+[1.0.0]: https://github.com/mahavirvataliya/itih-ai-chatbot/releases/tag/v1.0.0

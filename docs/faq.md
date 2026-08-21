@@ -1,7 +1,7 @@
 ---
 title: FAQ
 nav_order: 10
-description: Frequently asked questions about OpenRag AI Chatbot.
+description: Frequently asked questions about ItihRag AI Chatbot.
 ---
 
 <script type="application/ld+json">
@@ -11,7 +11,7 @@ description: Frequently asked questions about OpenRag AI Chatbot.
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Do I need MySQL 9 to use OpenRag AI Chatbot?",
+      "name": "Do I need MySQL 9 to use ItihRag AI Chatbot?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "No. MySQL 9 unlocks native VECTOR storage and fast cosine-distance search. On older MySQL or MariaDB, the plugin automatically falls back to storing embeddings as JSON and scoring them in PHP. The Settings → Vector Database screen shows which mode is active."
@@ -19,7 +19,7 @@ description: Frequently asked questions about OpenRag AI Chatbot.
     },
     {
       "@type": "Question",
-      "name": "Do I need to pay for anything to use OpenRag AI Chatbot?",
+      "name": "Do I need to pay for anything to use ItihRag AI Chatbot?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "You need an account with at least one LLM or embedding provider. OpenAI, Anthropic, Groq, and Cloudflare are paid (with free tiers); Ollama is fully free and runs locally. Cloudflare Workers AI includes a generous free tier and can serve both embeddings and chat."
@@ -27,7 +27,7 @@ description: Frequently asked questions about OpenRag AI Chatbot.
     },
     {
       "@type": "Question",
-      "name": "Can I run OpenRag AI Chatbot fully local or offline?",
+      "name": "Can I run ItihRag AI Chatbot fully local or offline?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Yes. Point both the LLM and embedding providers at a local Ollama instance and use the MySQL vector store. No external requests are made."
@@ -67,7 +67,7 @@ description: Frequently asked questions about OpenRag AI Chatbot.
     },
     {
       "@type": "Question",
-      "name": "Does OpenRag AI Chatbot work on WordPress multisite?",
+      "name": "Does ItihRag AI Chatbot work on WordPress multisite?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "The plugin activates per-site. Network activation is supported but each site maintains its own knowledge base."

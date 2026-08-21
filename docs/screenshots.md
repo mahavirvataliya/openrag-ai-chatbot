@@ -1,7 +1,7 @@
 ---
 title: Screenshots
 nav_order: 11
-description: Every screen of the OpenRag AI Chatbot admin and widget.
+description: Every screen of the ItihRag AI Chatbot admin and widget.
 ---
 
 # Screenshots

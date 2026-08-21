@@ -1,7 +1,7 @@
 ---
 title: Changelog
 nav_order: 13
-description: Release history for OpenRag AI Chatbot.
+description: Release history for ItihRag AI Chatbot.
 ---
 
 # Changelog
@@ -9,7 +9,7 @@ description: Release history for OpenRag AI Chatbot.
 
 {: .fw-300 }
 All notable changes. The canonical source is
-[CHANGELOG.md](https://github.com/mahavirvataliya/openrag-ai-chatbot/blob/main/CHANGELOG.md)
+[CHANGELOG.md](https://github.com/mahavirvataliya/itih-ai-chatbot/blob/main/CHANGELOG.md)
 in the repository.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
@@ -101,7 +101,7 @@ The first stable, public release.
 
 #### Chat
 
-- REST namespace `openrag/v1`: `POST /chat` (SSE), `POST /chat/sync`,
+- REST namespace `itih/v1`: `POST /chat` (SSE), `POST /chat/sync`,
   `POST /feedback`, `GET/DELETE /history`.
 - RAG pipeline with a bounded tool-call loop (max 5 iterations).
 - Citations (deduplicated by URL), per-IP rate limiting, sessions.
@@ -149,6 +149,6 @@ The first stable, public release.
 
 ---
 
-[Unreleased]: https://github.com/mahavirvataliya/openrag-ai-chatbot/compare/v1.0.5...HEAD
-[1.0.5]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.5
-[1.0.0]: https://github.com/mahavirvataliya/openrag-ai-chatbot/releases/tag/v1.0.0
+[Unreleased]: https://github.com/mahavirvataliya/itih-ai-chatbot/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/mahavirvataliya/itih-ai-chatbot/releases/tag/v1.0.5
+[1.0.0]: https://github.com/mahavirvataliya/itih-ai-chatbot/releases/tag/v1.0.0
