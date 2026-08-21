@@ -45,7 +45,7 @@ class KB_Page {
 		$post_types = isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array();
 		$auto       = empty( $_POST['auto_index'] ) ? '0' : '1';
 
-		$indexing = \ItihRag\Settings::group( 'indexing' );
+		$indexing               = \ItihRag\Settings::group( 'indexing' );
 		$indexing['post_types'] = $post_types;
 		$indexing['auto_index'] = $auto;
 		\ItihRag\Settings::save_group( 'indexing', $indexing );
@@ -94,7 +94,7 @@ class KB_Page {
 	protected function render_documents_tab() {
 		global $wpdb;
 		$schema = new Schema();
-		$rows   = $wpdb->get_results( "SELECT * FROM `" . $schema->table( 'documents' ) . "` WHERE type IN ('pdf','docx','txt') ORDER BY created_at DESC" ); // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
+		$rows   = $wpdb->get_results( 'SELECT * FROM `' . $schema->table( 'documents' ) . "` WHERE type IN ('pdf','docx','txt') ORDER BY created_at DESC" ); // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		$upload = wp_upload_dir();
 		?>
 		<div class="openrag-kb-grid">
@@ -144,7 +144,7 @@ class KB_Page {
 					<?php else : ?>
 						<?php foreach ( $rows as $row ) : ?>
 							<tr data-id="<?php echo esc_attr( $row->id ); ?>">
-								<td><?php echo esc_html( $row->title ?: basename( $row->source_url ?: $row->file_path ) ); ?></td>
+								<td><?php echo esc_html( $row->title ? $row->title : basename( $row->source_url ? $row->source_url : $row->file_path ) ); ?></td>
 								<td><?php echo esc_html( strtoupper( $row->type ) ); ?></td>
 								<td><?php echo esc_html( $row->chunk_count ); ?></td>
 								<td><?php echo '<span class="openrag-status openrag-status-' . esc_attr( $row->status ) . '">' . esc_html( $row->status ) . '</span>'; ?></td>
@@ -166,7 +166,7 @@ class KB_Page {
 	protected function render_links_tab() {
 		global $wpdb;
 		$schema = new Schema();
-		$rows   = $wpdb->get_results( "SELECT * FROM `" . $schema->table( 'documents' ) . "` WHERE type = 'url' ORDER BY created_at DESC" ); // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
+		$rows   = $wpdb->get_results( 'SELECT * FROM `' . $schema->table( 'documents' ) . "` WHERE type = 'url' ORDER BY created_at DESC" ); // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		?>
 		<div class="openrag-kb-grid">
 			<div>
@@ -202,7 +202,7 @@ class KB_Page {
 					<?php else : ?>
 						<?php foreach ( $rows as $row ) : ?>
 							<tr data-id="<?php echo esc_attr( $row->id ); ?>">
-								<td><a href="<?php echo esc_url( $row->source_url ); ?>" target="_blank"><?php echo esc_html( $row->title ?: $row->source_url ); ?></a></td>
+								<td><a href="<?php echo esc_url( $row->source_url ); ?>" target="_blank"><?php echo esc_html( $row->title ? $row->title : $row->source_url ); ?></a></td>
 								<td><?php echo esc_html( $row->chunk_count ); ?></td>
 								<td><?php echo '<span class="openrag-status openrag-status-' . esc_attr( $row->status ) . '">' . esc_html( $row->status ) . '</span>'; ?></td>
 								<td>
@@ -220,9 +220,9 @@ class KB_Page {
 	}
 
 	protected function render_wp_tab() {
-		$indexing  = Settings::group( 'indexing' );
+		$indexing   = Settings::group( 'indexing' );
 		$post_types = (array) ( $indexing['post_types'] ?? array( 'post', 'page' ) );
-		$types     = get_post_types( array( 'public' => true ), 'objects' );
+		$types      = get_post_types( array( 'public' => true ), 'objects' );
 		?>
 		<div class="openrag-kb-grid">
 			<div>

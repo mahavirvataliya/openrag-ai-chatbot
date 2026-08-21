@@ -81,22 +81,22 @@ class Admin_Menu {
 				'nonce'        => wp_create_nonce( 'wp_rest' ),
 				'themePresets' => Settings::theme_presets(),
 				'i18n'         => array(
-					'saving'        => __( 'Saving…', 'itih-ai-chatbot' ),
-					'saved'         => __( 'Saved', 'itih-ai-chatbot' ),
-					'processing'    => __( 'Processing…', 'itih-ai-chatbot' ),
-					'delete'        => __( 'Delete this item?', 'itih-ai-chatbot' ),
-					'fetching'      => __( 'Fetching…', 'itih-ai-chatbot' ),
-					'discovering'   => __( 'Discovering tools…', 'itih-ai-chatbot' ),
-					'indexing'      => __( 'Queued for indexing', 'itih-ai-chatbot' ),
+					'saving'      => __( 'Saving…', 'itih-ai-chatbot' ),
+					'saved'       => __( 'Saved', 'itih-ai-chatbot' ),
+					'processing'  => __( 'Processing…', 'itih-ai-chatbot' ),
+					'delete'      => __( 'Delete this item?', 'itih-ai-chatbot' ),
+					'fetching'    => __( 'Fetching…', 'itih-ai-chatbot' ),
+					'discovering' => __( 'Discovering tools…', 'itih-ai-chatbot' ),
+					'indexing'    => __( 'Queued for indexing', 'itih-ai-chatbot' ),
 					/* translators: %d: number of posts queued. */
-					'queuedPosts'   => __( 'Queued %d posts.', 'itih-ai-chatbot' ),
-					'reasoning'     => __( 'Reasoning', 'itih-ai-chatbot' ),
-					'sources'       => __( 'Sources:', 'itih-ai-chatbot' ),
-					'noData'        => __( 'No data.', 'itih-ai-chatbot' ),
+					'queuedPosts' => __( 'Queued %d posts.', 'itih-ai-chatbot' ),
+					'reasoning'   => __( 'Reasoning', 'itih-ai-chatbot' ),
+					'sources'     => __( 'Sources:', 'itih-ai-chatbot' ),
+					'noData'      => __( 'No data.', 'itih-ai-chatbot' ),
 					/* translators: %d: token count. */
-					'tokens'        => __( '%d tokens', 'itih-ai-chatbot' ),
+					'tokens'      => __( '%d tokens', 'itih-ai-chatbot' ),
 					/* translators: %d: response time in milliseconds. */
-					'ms'            => __( '%d ms', 'itih-ai-chatbot' ),
+					'ms'          => __( '%d ms', 'itih-ai-chatbot' ),
 				),
 			)
 		);

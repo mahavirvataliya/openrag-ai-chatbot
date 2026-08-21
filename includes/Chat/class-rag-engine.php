@@ -84,7 +84,7 @@ class Rag_Engine {
 	 * @return array<int,float>
 	 */
 	public function embed_query( $query ) {
-		$key = 'itih_q_' . md5( $query );
+		$key    = 'itih_q_' . md5( $query );
 		$cached = get_transient( $key );
 		if ( false !== $cached && is_array( $cached ) ) {
 			return $cached;
@@ -112,7 +112,7 @@ class Rag_Engine {
 		$seen      = array();
 
 		foreach ( $hits as $i => $hit ) {
-			$idx = $i + 1;
+			$idx     = $i + 1;
 			$content = trim( (string) ( $hit['content'] ?? '' ) );
 			if ( '' === $content ) {
 				continue;
@@ -122,7 +122,7 @@ class Rag_Engine {
 			$url   = (string) ( $hit['source_url'] ?? '' );
 			$title = (string) ( $hit['source_title'] ?? '' );
 			// Deduplicate citations by URL.
-			$ckey = $url ?: $title;
+			$ckey = $url ? $url : $title;
 			if ( isset( $seen[ $ckey ] ) ) {
 				continue;
 			}
@@ -155,13 +155,16 @@ class Rag_Engine {
 			$citation_instruction = $citations
 				? __( 'Cite sources using bracketed numbers like [1], [2] that correspond to the context blocks above.', 'itih-ai-chatbot' )
 				: '';
-			$system .= "\n\n" . __( 'Use the following knowledge base context when relevant:', 'itih-ai-chatbot' )
+			$system              .= "\n\n" . __( 'Use the following knowledge base context when relevant:', 'itih-ai-chatbot' )
 				. "\n\n" . $context
 				. ( '' !== $citation_instruction ? "\n\n" . $citation_instruction : '' );
 		}
 
 		$messages   = array();
-		$messages[] = array( 'role' => 'system', 'content' => $system );
+		$messages[] = array(
+			'role'    => 'system',
+			'content' => $system,
+		);
 
 		// Trim history to configured turns.
 		$turns = max( 0, (int) ( $settings['history_turns'] ?? 6 ) );
@@ -178,7 +181,10 @@ class Rag_Engine {
 			}
 		}
 
-		$messages[] = array( 'role' => 'user', 'content' => (string) $query );
+		$messages[] = array(
+			'role'    => 'user',
+			'content' => (string) $query,
+		);
 		return $messages;
 	}
 
@@ -224,13 +230,13 @@ class Rag_Engine {
 	 * @return array{content:string, reasoning:string, citations:array, tool_calls:array, usage:array, model:string}
 	 */
 	public function answer( $query, array $history = array() ) {
-		$settings  = Settings::group( 'chat' );
+		$settings          = Settings::group( 'chat' );
 		$citations_enabled = ! empty( $settings['citations'] );
 		$reasoning_enabled = ! empty( $settings['reasoning'] );
 
-		$hits    = $this->retrieve( $query );
-		$ctx     = $this->build_context( $hits );
-		$messages= $this->build_messages( $query, $ctx['context'], $history, $citations_enabled );
+		$hits     = $this->retrieve( $query );
+		$ctx      = $this->build_context( $hits );
+		$messages = $this->build_messages( $query, $ctx['context'], $history, $citations_enabled );
 
 		$opts = $this->llm_opts( $reasoning_enabled );
 
@@ -240,10 +246,10 @@ class Rag_Engine {
 		$iterations = 0;
 		$tool_log   = array();
 		while ( ! empty( $result['tool_calls'] ) && $iterations < 5 ) {
-			$iterations++;
+			++$iterations;
 			$messages[] = array(
 				'role'       => 'assistant',
-				'content'    => $result['content'] ?: '',
+				'content'    => $result['content'] ? $result['content'] : '',
 				'tool_calls' => $result['tool_calls'],
 			);
 			foreach ( $result['tool_calls'] as $tc ) {
@@ -253,7 +259,7 @@ class Rag_Engine {
 					'args'   => $tc['function']['arguments'] ?? '{}',
 					'result' => $tool_result,
 				);
-				$messages[] = array(
+				$messages[]  = array(
 					'role'    => 'tool',
 					'name'    => $tc['function']['name'] ?? '',
 					'content' => $tool_result,
@@ -263,15 +269,15 @@ class Rag_Engine {
 		}
 
 		return array(
-			'content'   => (string) $result['content'],
-			'reasoning' => (string) ( $result['reasoning'] ?? '' ),
-			'citations' => $citations_enabled ? $ctx['citations'] : array(),
-			'tool_calls'=> $tool_log,
-			'usage'     => array(
+			'content'    => (string) $result['content'],
+			'reasoning'  => (string) ( $result['reasoning'] ?? '' ),
+			'citations'  => $citations_enabled ? $ctx['citations'] : array(),
+			'tool_calls' => $tool_log,
+			'usage'      => array(
 				'prompt_tokens'     => (int) ( $result['prompt_tokens'] ?? 0 ),
 				'completion_tokens' => (int) ( $result['completion_tokens'] ?? 0 ),
 			),
-			'model'     => (string) ( $result['model'] ?? '' ),
+			'model'      => (string) ( $result['model'] ?? '' ),
 		);
 	}
 
@@ -283,7 +289,7 @@ class Rag_Engine {
 	 */
 	public function llm_opts( $reasoning ) {
 		$settings = Settings::group( 'chat' );
-		$opts = array(
+		$opts     = array(
 			'temperature' => (float) ( $settings['temperature'] ?? 0.3 ),
 			'max_tokens'  => (int) ( $settings['max_tokens'] ?? 800 ),
 		);

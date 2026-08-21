@@ -33,7 +33,7 @@ class Dashboard_Page {
 		$stats = get_transient( 'itih_dash_stats' );
 		if ( ! is_array( $stats ) ) {
 			// phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
-			$row = $wpdb->get_row( "SELECT COUNT(*) AS replies, COALESCE(SUM(feedback = 'up'),0) AS thumbs_up, COALESCE(SUM(feedback = 'down'),0) AS thumbs_down, COALESCE(SUM(CASE WHEN role = 'assistant' THEN prompt_tokens END),0) AS prompt_tokens, COALESCE(SUM(CASE WHEN role = 'assistant' THEN completion_tokens END),0) AS completion_tokens FROM `" . $schema->table( 'chats' ) . '`' );
+			$row   = $wpdb->get_row( "SELECT COUNT(*) AS replies, COALESCE(SUM(feedback = 'up'),0) AS thumbs_up, COALESCE(SUM(feedback = 'down'),0) AS thumbs_down, COALESCE(SUM(CASE WHEN role = 'assistant' THEN prompt_tokens END),0) AS prompt_tokens, COALESCE(SUM(CASE WHEN role = 'assistant' THEN completion_tokens END),0) AS completion_tokens FROM `" . $schema->table( 'chats' ) . '`' );
 			$stats = array(
 				'replies'           => (int) ( $row->replies ?? 0 ),
 				'thumbs_up'         => (int) ( $row->thumbs_up ?? 0 ),
@@ -43,8 +43,8 @@ class Dashboard_Page {
 			);
 			set_transient( 'itih_dash_stats', $stats, 60 );
 		}
-		$documents = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'documents' ) . '`' ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
-		$chunks    = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'chunks' ) . '`' ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
+		$documents   = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'documents' ) . '`' ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
+		$chunks      = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM `' . $schema->table( 'chunks' ) . '`' ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB
 		$chats       = $stats['replies'];
 		$thumbs_up   = $stats['thumbs_up'];
 		$thumbs_down = $stats['thumbs_down'];

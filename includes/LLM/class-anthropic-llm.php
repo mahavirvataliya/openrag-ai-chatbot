@@ -52,9 +52,9 @@ class Anthropic_LLM implements LLM_Provider {
 
 	protected function headers( $stream = false ) {
 		$h = array(
-			'Content-Type'    => 'application/json',
-			'x-api-key'       => (string) ( $this->settings['anthropic_api_key'] ?? '' ),
-			'anthropic-version'=> '2023-06-01',
+			'Content-Type'      => 'application/json',
+			'x-api-key'         => (string) ( $this->settings['anthropic_api_key'] ?? '' ),
+			'anthropic-version' => '2023-06-01',
 		);
 		if ( $stream ) {
 			$h['Accept'] = 'text/event-stream';
@@ -65,7 +65,10 @@ class Anthropic_LLM implements LLM_Provider {
 	public function list_models() {
 		$response = wp_remote_get(
 			$this->base_url() . '/models',
-			array( 'timeout' => 30, 'headers' => $this->headers() )
+			array(
+				'timeout' => 30,
+				'headers' => $this->headers(),
+			)
 		);
 		if ( is_wp_error( $response ) ) {
 			throw new \RuntimeException( $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
@@ -94,7 +97,12 @@ class Anthropic_LLM implements LLM_Provider {
 	protected function convert_messages( array $messages ) {
 		$system_parts = array();
 		$anth         = array();
-		$role_map     = array( 'assistant' => 'assistant', 'user' => 'user', 'system' => 'system', 'tool' => 'user' );
+		$role_map     = array(
+			'assistant' => 'assistant',
+			'user'      => 'user',
+			'system'    => 'system',
+			'tool'      => 'user',
+		);
 
 		foreach ( $messages as $m ) {
 			$role = $role_map[ $m['role'] ?? 'user' ] ?? 'user';
@@ -117,7 +125,10 @@ class Anthropic_LLM implements LLM_Provider {
 			if ( ! empty( $anth ) && $anth[ count( $anth ) - 1 ]['role'] === $role ) {
 				$anth[ count( $anth ) - 1 ]['content'] = array_merge( $anth[ count( $anth ) - 1 ]['content'], $content );
 			} else {
-				$anth[] = array( 'role' => $role, 'content' => $content );
+				$anth[] = array(
+					'role'    => $role,
+					'content' => $content,
+				);
 			}
 		}
 
@@ -128,10 +139,10 @@ class Anthropic_LLM implements LLM_Provider {
 		list( $system, $anth ) = $this->convert_messages( $messages );
 
 		$payload = array(
-			'model'      => $this->model( $opts ),
-			'max_tokens' => isset( $opts['max_tokens'] ) ? (int) $opts['max_tokens'] : 1024,
-			'temperature'=> isset( $opts['temperature'] ) ? (float) $opts['temperature'] : 0.3,
-			'messages'   => $anth,
+			'model'       => $this->model( $opts ),
+			'max_tokens'  => isset( $opts['max_tokens'] ) ? (int) $opts['max_tokens'] : 1024,
+			'temperature' => isset( $opts['temperature'] ) ? (float) $opts['temperature'] : 0.3,
+			'messages'    => $anth,
 		);
 		if ( '' !== $system ) {
 			$payload['system'] = $system;
@@ -142,9 +153,14 @@ class Anthropic_LLM implements LLM_Provider {
 
 		// Extended thinking (reasoning). Only enable on Claude 3.5+ models that support it.
 		if ( ! empty( $opts['reasoning'] ) && $this->supports_reasoning() ) {
-			$budget = isset( $opts['reasoning_effort'] ) ? $opts['reasoning_effort'] : 'medium';
-			$map    = array( 'low' => 1024, 'medium' => 4096, 'high' => 10000, 'max' => 20000 );
-			$tokens = $map[ $budget ] ?? 4096;
+			$budget              = isset( $opts['reasoning_effort'] ) ? $opts['reasoning_effort'] : 'medium';
+			$map                 = array(
+				'low'    => 1024,
+				'medium' => 4096,
+				'high'   => 10000,
+				'max'    => 20000,
+			);
+			$tokens              = $map[ $budget ] ?? 4096;
 			$payload['thinking'] = array(
 				'type'          => 'enabled',
 				'budget_tokens' => $tokens,
@@ -163,9 +179,9 @@ class Anthropic_LLM implements LLM_Provider {
 		$out = array();
 		foreach ( $tools as $t ) {
 			$out[] = array(
-				'name'        => $t['function']['name'] ?? $t['name'] ?? '',
-				'description' => $t['function']['description'] ?? $t['description'] ?? '',
-				'input_schema'=> $t['function']['parameters'] ?? $t['parameters'] ?? (object) array(),
+				'name'         => $t['function']['name'] ?? $t['name'] ?? '',
+				'description'  => $t['function']['description'] ?? $t['description'] ?? '',
+				'input_schema' => $t['function']['parameters'] ?? $t['parameters'] ?? (object) array(),
 			);
 		}
 		return $out;
@@ -175,7 +191,11 @@ class Anthropic_LLM implements LLM_Provider {
 		$payload  = $this->build_payload( $messages, $opts, false );
 		$response = wp_remote_post(
 			$this->base_url() . '/messages',
-			array( 'timeout' => 120, 'headers' => $this->headers(), 'body' => wp_json_encode( $payload ) )
+			array(
+				'timeout' => 120,
+				'headers' => $this->headers(),
+				'body'    => wp_json_encode( $payload ),
+			)
 		);
 		if ( is_wp_error( $response ) ) {
 			throw new \RuntimeException( 'Anthropic request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
@@ -221,7 +241,11 @@ class Anthropic_LLM implements LLM_Provider {
 		$payload  = $this->build_payload( $messages, $opts, true );
 		$response = wp_remote_post(
 			$this->base_url() . '/messages',
-			array( 'timeout' => 300, 'headers' => $this->headers( true ), 'body' => wp_json_encode( $payload ) )
+			array(
+				'timeout' => 300,
+				'headers' => $this->headers( true ),
+				'body'    => wp_json_encode( $payload ),
+			)
 		);
 		if ( is_wp_error( $response ) ) {
 			throw new \RuntimeException( 'Anthropic stream failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
@@ -235,9 +259,12 @@ class Anthropic_LLM implements LLM_Provider {
 	}
 
 	protected function parse_sse( $body, $model ) {
-		$lines         = preg_split( '/\r\n|\n|\r/', $body );
-		$usage         = array( 'prompt_tokens' => 0, 'completion_tokens' => 0 );
-		$current_tool  = null;
+		$lines        = preg_split( '/\r\n|\n|\r/', $body );
+		$usage        = array(
+			'prompt_tokens'     => 0,
+			'completion_tokens' => 0,
+		);
+		$current_tool = null;
 
 		foreach ( $lines as $line ) {
 			$line = trim( $line );
@@ -270,9 +297,15 @@ class Anthropic_LLM implements LLM_Provider {
 				case 'content_block_delta':
 					$delta = $json['delta'] ?? array();
 					if ( 'text_delta' === ( $delta['type'] ?? '' ) ) {
-						yield array( 'type' => 'delta', 'content' => (string) ( $delta['text'] ?? '' ) );
+						yield array(
+							'type'    => 'delta',
+							'content' => (string) ( $delta['text'] ?? '' ),
+						);
 					} elseif ( 'thinking_delta' === ( $delta['type'] ?? '' ) ) {
-						yield array( 'type' => 'reasoning', 'content' => (string) ( $delta['thinking'] ?? '' ) );
+						yield array(
+							'type'    => 'reasoning',
+							'content' => (string) ( $delta['thinking'] ?? '' ),
+						);
 					} elseif ( 'input_json_delta' === ( $delta['type'] ?? '' ) && $current_tool ) {
 						$current_tool['function']['arguments'] .= (string) ( $delta['partial_json'] ?? '' );
 					}
@@ -280,7 +313,10 @@ class Anthropic_LLM implements LLM_Provider {
 
 				case 'content_block_stop':
 					if ( $current_tool ) {
-						yield array( 'type' => 'tool_call', 'tool_call' => $current_tool );
+						yield array(
+							'type'      => 'tool_call',
+							'tool_call' => $current_tool,
+						);
 						$current_tool = null;
 					}
 					break;
@@ -299,6 +335,10 @@ class Anthropic_LLM implements LLM_Provider {
 			}
 		}
 
-		yield array( 'type' => 'done', 'usage' => $usage, 'model' => $model );
+		yield array(
+			'type'  => 'done',
+			'usage' => $usage,
+			'model' => $model,
+		);
 	}
 }

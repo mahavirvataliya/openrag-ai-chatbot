@@ -44,12 +44,12 @@ class Cloudflare_Embedding implements Embedding_Provider {
 
 	public function dimensions() {
 		$known = array(
-			'@cf/baai/bge-base-en-v1.5'   => 768,
-			'@cf/baai/bge-small-en-v1.5'  => 384,
-			'@cf/baai/bge-large-en-v1.5'  => 1024,
-			'@cf/baai/bge-m3'             => 1024,
+			'@cf/baai/bge-base-en-v1.5'  => 768,
+			'@cf/baai/bge-small-en-v1.5' => 384,
+			'@cf/baai/bge-large-en-v1.5' => 1024,
+			'@cf/baai/bge-m3'            => 1024,
 		);
-		$m = $this->model();
+		$m     = $this->model();
 		return $known[ $m ] ?? (int) ( $this->settings['dimensions'] ?? 0 );
 	}
 
@@ -74,14 +74,14 @@ class Cloudflare_Embedding implements Embedding_Provider {
 
 		$response = wp_remote_post( $url, $args );
 		if ( is_wp_error( $response ) ) {
-            throw new \RuntimeException( 'Cloudflare embedding request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+			throw new \RuntimeException( 'Cloudflare embedding request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 || empty( $json['success'] ) ) {
 			$errs = $json['errors'] ?? array();
 			$msg  = is_array( $errs ) && ! empty( $errs[0]['message'] ) ? $errs[0]['message'] : wp_remote_retrieve_body( $response );
-            throw new \RuntimeException( 'Cloudflare embedding API error (' . $code . '): ' . $msg ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+			throw new \RuntimeException( 'Cloudflare embedding API error (' . $code . '): ' . $msg ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$vectors = array();

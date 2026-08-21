@@ -57,10 +57,10 @@ class Embedding_Manager {
 	 */
 	public function providers() {
 		return array(
-			'openai'             => OpenAI_Embedding::class,
-			'openai-compatible'  => Compatible_Embedding::class,
-			'cloudflare'         => Cloudflare_Embedding::class,
-			'ollama'             => Ollama_Embedding::class,
+			'openai'            => OpenAI_Embedding::class,
+			'openai-compatible' => Compatible_Embedding::class,
+			'cloudflare'        => Cloudflare_Embedding::class,
+			'ollama'            => Ollama_Embedding::class,
 		);
 	}
 

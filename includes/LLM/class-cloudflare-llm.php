@@ -94,8 +94,8 @@ class Cloudflare_LLM implements LLM_Provider {
 	}
 
 	public function chat( array $messages, array $opts = array() ) {
-		$model  = $this->model( $opts );
-		$url    = $this->run_url( $model );
+		$model   = $this->model( $opts );
+		$url     = $this->run_url( $model );
 		$payload = array(
 			'messages'    => $messages,
 			'temperature' => isset( $opts['temperature'] ) ? (float) $opts['temperature'] : 0.3,
@@ -104,7 +104,11 @@ class Cloudflare_LLM implements LLM_Provider {
 
 		$response = wp_remote_post(
 			$url,
-			array( 'timeout' => 120, 'headers' => $this->headers(), 'body' => wp_json_encode( $payload ) )
+			array(
+				'timeout' => 120,
+				'headers' => $this->headers(),
+				'body'    => wp_json_encode( $payload ),
+			)
 		);
 		if ( is_wp_error( $response ) ) {
 			throw new \RuntimeException( 'Cloudflare LLM request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
@@ -118,7 +122,7 @@ class Cloudflare_LLM implements LLM_Provider {
 		}
 
 		// CF returns OpenAI-shaped "result" sometimes, plain "response" other times.
-		$result = $json['result'] ?? $json;
+		$result  = $json['result'] ?? $json;
 		$content = '';
 		if ( isset( $result['response'] ) ) {
 			$content = (string) $result['response'];
@@ -148,7 +152,11 @@ class Cloudflare_LLM implements LLM_Provider {
 
 		$response = wp_remote_post(
 			$url,
-			array( 'timeout' => 300, 'headers' => $this->headers( true ), 'body' => wp_json_encode( $payload ) )
+			array(
+				'timeout' => 300,
+				'headers' => $this->headers( true ),
+				'body'    => wp_json_encode( $payload ),
+			)
 		);
 		if ( is_wp_error( $response ) ) {
 			throw new \RuntimeException( 'Cloudflare LLM stream failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
@@ -180,13 +188,23 @@ class Cloudflare_LLM implements LLM_Provider {
 			}
 			$delta = $json['choices'][0]['delta'] ?? ( $json['delta'] ?? array() );
 			if ( isset( $delta['content'] ) && '' !== $delta['content'] ) {
-				yield array( 'type' => 'delta', 'content' => (string) $delta['content'] );
+				yield array(
+					'type'    => 'delta',
+					'content' => (string) $delta['content'],
+				);
 			} elseif ( isset( $json['response'] ) && '' !== $json['response'] ) {
 				// CF's plain response stream shape.
-				yield array( 'type' => 'delta', 'content' => (string) $json['response'] );
+				yield array(
+					'type'    => 'delta',
+					'content' => (string) $json['response'],
+				);
 			}
 		}
 
-		yield array( 'type' => 'done', 'usage' => $usage, 'model' => $model );
+		yield array(
+			'type'  => 'done',
+			'usage' => $usage,
+			'model' => $model,
+		);
 	}
 }

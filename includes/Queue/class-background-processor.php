@@ -29,9 +29,9 @@ class Background_Processor {
 	/**
 	 * Hook suffixes.
 	 */
-	const GROUP       = 'itih-ai-chatbot';
-	const HOOK_DOC    = 'itih_process_document';
-	const HOOK_POST   = 'itih_index_post';
+	const GROUP     = 'itih-ai-chatbot';
+	const HOOK_DOC  = 'itih_process_document';
+	const HOOK_POST = 'itih_index_post';
 
 	public function __construct( Ingestion_Pipeline $ingestion ) {
 		$this->ingestion = $ingestion;

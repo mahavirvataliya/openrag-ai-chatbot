@@ -22,7 +22,7 @@ class Rate_Limiter {
 	 * @return bool
 	 */
 	public function allow( $ip = '' ) {
-		$ip       = $ip ?: $this->client_ip();
+		$ip       = $ip ? $ip : $this->client_ip();
 		$settings = Settings::group( 'chat' );
 		$window   = max( 5, (int) ( $settings['rate_limit_window'] ?? 60 ) );
 		$max      = max( 1, (int) ( $settings['rate_limit_max'] ?? 15 ) );
@@ -32,7 +32,7 @@ class Rate_Limiter {
 		if ( $count >= $max ) {
 			return false;
 		}
-		$count++;
+		++$count;
 		set_transient( $key, $count, $window );
 		return true;
 	}
@@ -89,7 +89,7 @@ class Rate_Limiter {
 	 * @return string
 	 */
 	public function device( $ua = '' ) {
-		$ua = $ua ?: (string) ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '' );
+		$ua = $ua ? $ua : (string) ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '' );
 		if ( preg_match( '/android|iphone|ipad|mobile/i', $ua ) ) {
 			return 'mobile';
 		}

@@ -69,14 +69,14 @@ class Ingestion_Pipeline {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'type'        => 'url',
-				'title'       => '',
-				'source_url'  => '',
-				'file_path'   => '',
-				'post_id'     => null,
-				'mime_type'   => '',
-				'status'      => 'pending',
-				'content_hash'=> '',
+				'type'         => 'url',
+				'title'        => '',
+				'source_url'   => '',
+				'file_path'    => '',
+				'post_id'      => null,
+				'mime_type'    => '',
+				'status'       => 'pending',
+				'content_hash' => '',
 			)
 		);
 
@@ -109,7 +109,13 @@ class Ingestion_Pipeline {
 	 */
 	public function set_status( $document_id, $status, array $extra = array() ) {
 		global $wpdb;
-		$values = array_merge( array( 'status' => $status, 'updated_at' => current_time( 'mysql' ) ), $extra );
+		$values = array_merge(
+			array(
+				'status'     => $status,
+				'updated_at' => current_time( 'mysql' ),
+			),
+			$extra
+		);
 		$wpdb->update( // phpcs:ignore WordPress.DB
 			$this->schema->table( 'documents' ),
 			$values,
@@ -138,13 +144,16 @@ class Ingestion_Pipeline {
 		);
 
 		if ( ! $doc ) {
-			return array( 'ok' => false, 'error' => 'Document not found.' );
+			return array(
+				'ok'    => false,
+				'error' => 'Document not found.',
+			);
 		}
 
 		$this->set_status( $document_id, 'processing', array( 'processing_started_at' => current_time( 'mysql' ) ) );
 
 		try {
-			$source = $doc['file_path'] ?: $doc['source_url'];
+			$source = $doc['file_path'] ? $doc['file_path'] : $doc['source_url'];
 			if ( 'post' === $doc['type'] && ! empty( $doc['post_id'] ) ) {
 				$loaded = $this->load_post( (int) $doc['post_id'] );
 			} else {
@@ -182,9 +191,9 @@ class Ingestion_Pipeline {
 
 			// Batch-embed: one HTTP round trip per ~100 texts instead of one per
 			// chunk (a 100-chunk PDF was 100 sequential API calls).
-			$texts     = wp_list_pluck( $chunks, 'text' );
-			$vectors   = array();
-			$batch_sz  = 100;
+			$texts    = wp_list_pluck( $chunks, 'text' );
+			$vectors  = array();
+			$batch_sz = 100;
 			for ( $i = 0, $total = count( $texts ); $i < $total; $i += $batch_sz ) {
 				$batch = array_slice( $texts, $i, $batch_sz );
 				try {
@@ -219,7 +228,7 @@ class Ingestion_Pipeline {
 						'chunk_index'   => $chunk['index'],
 						'content'       => $chunk['text'],
 						'source_url'    => $source_url,
-						'source_title'  => $title ?: $doc['title'],
+						'source_title'  => $title ? $title : $doc['title'],
 						'token_count'   => $chunk['tokens'],
 						'embedding_dim' => count( $vector ),
 						'created_at'    => current_time( 'mysql' ),
@@ -234,10 +243,10 @@ class Ingestion_Pipeline {
 					array(
 						'document_id'  => $document_id,
 						'source_url'   => $source_url,
-						'source_title' => $title ?: $doc['title'],
+						'source_title' => $title ? $title : $doc['title'],
 					)
 				);
-				$created++;
+				++$created;
 			}
 
 			$this->set_status(
@@ -249,7 +258,10 @@ class Ingestion_Pipeline {
 				)
 			);
 
-			return array( 'ok' => true, 'chunks' => $created );
+			return array(
+				'ok'     => true,
+				'chunks' => $created,
+			);
 		} catch ( \Throwable $e ) {
 			$this->set_status(
 				$document_id,
@@ -259,7 +271,10 @@ class Ingestion_Pipeline {
 					'processing_completed_at' => current_time( 'mysql' ),
 				)
 			);
-			return array( 'ok' => false, 'error' => $e->getMessage() );
+			return array(
+				'ok'    => false,
+				'error' => $e->getMessage(),
+			);
 		}
 	}
 
@@ -272,9 +287,12 @@ class Ingestion_Pipeline {
 	public function load_post( $post_id ) {
 		$post = get_post( $post_id );
 		if ( ! $post ) {
-			return array( 'text' => '', 'title' => '' );
+			return array(
+				'text'  => '',
+				'title' => '',
+			);
 		}
-		$title = get_the_title( $post );
+		$title   = get_the_title( $post );
 		$content = $post->post_content;
 
 		// Apply shortcodes / blocks to render real content.
@@ -412,7 +430,7 @@ class Ingestion_Pipeline {
 		$where  = '';
 		$params = array();
 		if ( '' !== $type ) {
-			$where  = 'WHERE type = %s';
+			$where    = 'WHERE type = %s';
 			$params[] = $type;
 		}
 		$sql = 'SELECT * FROM `' . $this->schema->table( 'documents' ) . "` $where ORDER BY created_at DESC LIMIT 1000";
@@ -422,12 +440,12 @@ class Ingestion_Pipeline {
 	}
 
 	public function rest_create_document( \WP_REST_Request $request ) {
-		$type   = sanitize_key( (string) $request->get_param( 'type' ) );
-		$title  = sanitize_text_field( (string) $request->get_param( 'title' ) );
-		$url    = esc_url_raw( (string) $request->get_param( 'source_url' ) );
-		$path   = sanitize_text_field( (string) $request->get_param( 'file_path' ) );
-		$mime   = sanitize_text_field( (string) $request->get_param( 'mime_type' ) );
-		$queue  = (bool) $request->get_param( 'queue' );
+		$type  = sanitize_key( (string) $request->get_param( 'type' ) );
+		$title = sanitize_text_field( (string) $request->get_param( 'title' ) );
+		$url   = esc_url_raw( (string) $request->get_param( 'source_url' ) );
+		$path  = sanitize_text_field( (string) $request->get_param( 'file_path' ) );
+		$mime  = sanitize_text_field( (string) $request->get_param( 'mime_type' ) );
+		$queue = (bool) $request->get_param( 'queue' );
 
 		if ( ! in_array( $type, array( 'url', 'pdf', 'docx', 'txt', 'post' ), true ) ) {
 			$type = 'url';
@@ -448,12 +466,17 @@ class Ingestion_Pipeline {
 			do_action( 'itih_schedule_document', $doc_id );
 		}
 
-		return rest_ensure_response( array( 'id' => $doc_id, 'queued' => $queue ) );
+		return rest_ensure_response(
+			array(
+				'id'     => $doc_id,
+				'queued' => $queue,
+			)
+		);
 	}
 
 	public function rest_get_document( \WP_REST_Request $request ) {
 		global $wpdb;
-		$id = (int) $request['id'];
+		$id  = (int) $request['id'];
 		$doc = $wpdb->get_row( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			$wpdb->prepare( 'SELECT * FROM `' . $this->schema->table( 'documents' ) . '` WHERE id = %d', $id ) // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		);
@@ -466,7 +489,12 @@ class Ingestion_Pipeline {
 				$id
 			)
 		);
-		return rest_ensure_response( array( 'document' => $doc, 'chunks' => $chunks ) );
+		return rest_ensure_response(
+			array(
+				'document' => $doc,
+				'chunks'   => $chunks,
+			)
+		);
 	}
 
 	public function rest_delete_document( \WP_REST_Request $request ) {
@@ -479,11 +507,16 @@ class Ingestion_Pipeline {
 		$id      = (int) $request['id'];
 		$mode    = sanitize_key( (string) $request->get_param( 'mode' ) );
 		$general = Settings::group( 'general' );
-		$mode    = $mode ?: (string) ( $general['processing_mode'] ?? 'background' );
+		$mode    = $mode ? $mode : (string) ( $general['processing_mode'] ?? 'background' );
 
 		if ( 'background' === $mode && has_action( 'itih_schedule_document' ) ) {
 			do_action( 'itih_schedule_document', $id );
-			return rest_ensure_response( array( 'id' => $id, 'queued' => true ) );
+			return rest_ensure_response(
+				array(
+					'id'     => $id,
+					'queued' => true,
+				)
+			);
 		}
 
 		// On-request immediate processing.
@@ -495,7 +528,7 @@ class Ingestion_Pipeline {
 		$post_types = (array) $request->get_param( 'post_types' );
 		$post_types = array_map( 'sanitize_key', $post_types );
 		if ( empty( $post_types ) ) {
-			$indexing = Settings::group( 'indexing' );
+			$indexing   = Settings::group( 'indexing' );
 			$post_types = $indexing['post_types'] ?? array( 'post', 'page' );
 		}
 
@@ -513,10 +546,15 @@ class Ingestion_Pipeline {
 		foreach ( $query->posts as $post_id ) {
 			if ( has_action( 'itih_schedule_post' ) ) {
 				do_action( 'itih_schedule_post', $post_id );
-				$queued++;
+				++$queued;
 			}
 		}
 
-		return rest_ensure_response( array( 'queued' => $queued, 'total' => count( $query->posts ) ) );
+		return rest_ensure_response(
+			array(
+				'queued' => $queued,
+				'total'  => count( $query->posts ),
+			)
+		);
 	}
 }

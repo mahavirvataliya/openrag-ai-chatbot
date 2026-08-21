@@ -65,9 +65,18 @@ class Chat_Controller {
 				'callback'            => array( $this, 'handle_chat_stream' ),
 				'permission_callback' => $perm,
 				'args'                => array(
-					'message'   => array( 'type' => 'string', 'required' => true ),
-					'session_id'=> array( 'type' => 'string', 'required' => false ),
-					'history'   => array( 'type' => 'array', 'required' => false ),
+					'message'    => array(
+						'type'     => 'string',
+						'required' => true,
+					),
+					'session_id' => array(
+						'type'     => 'string',
+						'required' => false,
+					),
+					'history'    => array(
+						'type'     => 'array',
+						'required' => false,
+					),
 				),
 			)
 		);
@@ -80,9 +89,18 @@ class Chat_Controller {
 				'callback'            => array( $this, 'handle_chat_sync' ),
 				'permission_callback' => $perm,
 				'args'                => array(
-					'message'    => array( 'type' => 'string', 'required' => true ),
-					'session_id' => array( 'type' => 'string', 'required' => false ),
-					'history'    => array( 'type' => 'array', 'required' => false ),
+					'message'    => array(
+						'type'     => 'string',
+						'required' => true,
+					),
+					'session_id' => array(
+						'type'     => 'string',
+						'required' => false,
+					),
+					'history'    => array(
+						'type'     => 'array',
+						'required' => false,
+					),
 				),
 			)
 		);
@@ -95,14 +113,23 @@ class Chat_Controller {
 				'callback'            => array( $this, 'handle_feedback' ),
 				'permission_callback' => $perm,
 				'args'                => array(
-					'message_id' => array( 'type' => 'integer', 'required' => true ),
-					'session_id' => array( 'type' => 'string', 'required' => true ),
+					'message_id' => array(
+						'type'     => 'integer',
+						'required' => true,
+					),
+					'session_id' => array(
+						'type'     => 'string',
+						'required' => true,
+					),
 					'feedback'   => array(
 						'type'     => 'string',
 						'required' => true,
 						'enum'     => array( 'up', 'down' ),
 					),
-					'comment'    => array( 'type' => 'string', 'required' => false ),
+					'comment'    => array(
+						'type'     => 'string',
+						'required' => false,
+					),
 				),
 			)
 		);
@@ -116,8 +143,14 @@ class Chat_Controller {
 					'callback'            => array( $this, 'handle_get_history' ),
 					'permission_callback' => $perm,
 					'args'                => array(
-						'session_id' => array( 'type' => 'string', 'required' => true ),
-						'limit'      => array( 'type' => 'integer', 'default' => 50 ),
+						'session_id' => array(
+							'type'     => 'string',
+							'required' => true,
+						),
+						'limit'      => array(
+							'type'    => 'integer',
+							'default' => 50,
+						),
 					),
 				),
 				array(
@@ -125,7 +158,10 @@ class Chat_Controller {
 					'callback'            => array( $this, 'handle_clear_history' ),
 					'permission_callback' => $perm,
 					'args'                => array(
-						'session_id' => array( 'type' => 'string', 'required' => true ),
+						'session_id' => array(
+							'type'     => 'string',
+							'required' => true,
+						),
 					),
 				),
 			)
@@ -159,8 +195,8 @@ class Chat_Controller {
 			return new \WP_Error( 'rate_limited', __( 'Too many requests. Please slow down.', 'itih-ai-chatbot' ), array( 'status' => 429 ) );
 		}
 
-		$message   = sanitize_textarea_field( (string) $request->get_param( 'message' ) );
-		$history   = (array) $request->get_param( 'history' );
+		$message = sanitize_textarea_field( (string) $request->get_param( 'message' ) );
+		$history = (array) $request->get_param( 'history' );
 
 		if ( '' === $message ) {
 			return new \WP_Error( 'empty_message', __( 'Message is required.', 'itih-ai-chatbot' ), array( 'status' => 400 ) );
@@ -169,33 +205,33 @@ class Chat_Controller {
 		// Resolve (or create) the session and its ownership secret.
 		list( $session, $secret ) = $this->resolve_session( $request->get_param( 'session_id' ) );
 
-		$start = microtime( true );
+		$start  = microtime( true );
 		$answer = $this->rag->answer( $message, $history );
 		$ms     = (int) ( ( microtime( true ) - $start ) * 1000 );
 
 		$message_id = $this->persist_turn(
 			array(
-				'session_id'   => $session,
-				'role'         => 'user',
-				'content'      => $message,
-				'user_ip'      => $this->rate->client_ip(),
-				'device'       => $this->rate->device(),
+				'session_id' => $session,
+				'role'       => 'user',
+				'content'    => $message,
+				'user_ip'    => $this->rate->client_ip(),
+				'device'     => $this->rate->device(),
 			)
 		);
 		$this->persist_turn(
 			array(
-				'session_id'       => $session,
-				'role'             => 'assistant',
-				'content'          => $answer['content'],
-				'reasoning'        => $answer['reasoning'],
-				'citations'        => $answer['citations'],
-				'tool_calls'       => $answer['tool_calls'],
-				'model'            => $answer['model'],
-				'prompt_tokens'    => $answer['usage']['prompt_tokens'],
-				'completion_tokens'=> $answer['usage']['completion_tokens'],
-				'response_time_ms' => $ms,
-				'user_ip'          => $this->rate->client_ip(),
-				'device'           => $this->rate->device(),
+				'session_id'        => $session,
+				'role'              => 'assistant',
+				'content'           => $answer['content'],
+				'reasoning'         => $answer['reasoning'],
+				'citations'         => $answer['citations'],
+				'tool_calls'        => $answer['tool_calls'],
+				'model'             => $answer['model'],
+				'prompt_tokens'     => $answer['usage']['prompt_tokens'],
+				'completion_tokens' => $answer['usage']['completion_tokens'],
+				'response_time_ms'  => $ms,
+				'user_ip'           => $this->rate->client_ip(),
+				'device'            => $this->rate->device(),
 			)
 		);
 
@@ -236,7 +272,7 @@ class Chat_Controller {
 		// Resolve (or create) the session and its ownership secret.
 		list( $session, $secret ) = $this->resolve_session( $request->get_param( 'session_id' ) );
 
-		$settings = Settings::group( 'chat' );
+		$settings          = Settings::group( 'chat' );
 		$citations_enabled = ! empty( $settings['citations'] );
 		$reasoning_enabled = ! empty( $settings['reasoning'] );
 
@@ -264,12 +300,19 @@ class Chat_Controller {
 			flush();
 		};
 
-		$emit( 'meta', array( 'session_id' => $session, 'session_secret' => $secret, 'message_id' => $message_id ) );
+		$emit(
+			'meta',
+			array(
+				'session_id'     => $session,
+				'session_secret' => $secret,
+				'message_id'     => $message_id,
+			)
+		);
 
 		// Retrieve + build context.
-		$hits    = $this->rag->retrieve( $message );
-		$ctx     = $this->rag->build_context( $hits );
-		$messages= $this->rag->build_messages( $message, $ctx['context'], $history, $citations_enabled );
+		$hits     = $this->rag->retrieve( $message );
+		$ctx      = $this->rag->build_context( $hits );
+		$messages = $this->rag->build_messages( $message, $ctx['context'], $history, $citations_enabled );
 
 		$opts = array(
 			'temperature' => (float) ( $settings['temperature'] ?? 0.3 ),
@@ -287,14 +330,17 @@ class Chat_Controller {
 		$start       = microtime( true );
 		$content_acc = '';
 		$reason_acc  = '';
-		$usage       = array( 'prompt_tokens' => 0, 'completion_tokens' => 0 );
+		$usage       = array(
+			'prompt_tokens'     => 0,
+			'completion_tokens' => 0,
+		);
 		$model       = '';
 		$tool_log    = array();
 
 		try {
 			$iterations = 0;
 			while ( $iterations < 5 ) {
-				$iterations++;
+				++$iterations;
 				$had_tool_calls = false;
 
 				foreach ( $this->rag->stream( $messages, $opts ) as $event ) {
@@ -311,7 +357,7 @@ class Chat_Controller {
 
 						case 'tool_call':
 							$had_tool_calls = true;
-							$name = $event['tool_call']['function']['name'] ?? '';
+							$name           = $event['tool_call']['function']['name'] ?? '';
 							$emit( 'tool', array( 'name' => $name ) );
 							$tool_result = $this->rag->execute_tool( $event['tool_call'] );
 							$tool_log[]  = array(
@@ -324,7 +370,7 @@ class Chat_Controller {
 								'content'    => $content_acc,
 								'tool_calls' => array( $event['tool_call'] ),
 							);
-							$messages[] = array(
+							$messages[]  = array(
 								'role'    => 'tool',
 								'name'    => $name,
 								'content' => $tool_result,
@@ -359,7 +405,14 @@ class Chat_Controller {
 		if ( ! empty( $tool_log ) ) {
 			$emit( 'tools', array( 'calls' => $tool_log ) );
 		}
-		$emit( 'done', array( 'usage' => $usage, 'model' => $model, 'ms' => $ms ) );
+		$emit(
+			'done',
+			array(
+				'usage' => $usage,
+				'model' => $model,
+				'ms'    => $ms,
+			)
+		);
 
 		// Persist assistant turn.
 		$this->persist_turn(
@@ -462,7 +515,7 @@ class Chat_Controller {
 			return $owner;
 		}
 
-		$sql = 'SELECT id, session_id, role, content, citations, reasoning, model, feedback, created_at, prompt_tokens, completion_tokens, response_time_ms FROM `' . $this->schema->table( 'chats' ) . '`';
+		$sql    = 'SELECT id, session_id, role, content, citations, reasoning, model, feedback, created_at, prompt_tokens, completion_tokens, response_time_ms FROM `' . $this->schema->table( 'chats' ) . '`';
 		$sql   .= ' WHERE session_id = %s ORDER BY id DESC LIMIT %d';
 		$params = array( $session, $limit );
 

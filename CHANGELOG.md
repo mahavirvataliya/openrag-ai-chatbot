@@ -31,6 +31,7 @@ Rename completion, WordPress.org compliance hardening, and performance release.
 - Dashboard stats collapsed into one aggregate query cached for 60s; added `role` and `(session_id, id)` indexes to chats.
 - Composer autoloading switched from a broken PSR-4 mapping to an optimized classmap.
 - Per-group memoization in the settings layer.
+- **Code standards**: zero findings across the official Plugin Check PHPCS ruleset and full WordPress-Core (errors + warnings); added `.phpcs.xml.dist` so `phpcs -p .` reproduces the gate locally.
 
 ---
 

@@ -28,22 +28,22 @@ class Autoloader {
 	/**
 	 * Autoload a class.
 	 *
-	 * @param string $class FQCN.
+	 * @param string $class_name FQCN.
 	 * @return void
 	 */
-	public static function autoload( $class ) {
+	public static function autoload( $class_name ) {
 		$prefix = 'ItihRag\\';
-		if ( 0 !== strpos( $class, $prefix ) ) {
+		if ( 0 !== strpos( $class_name, $prefix ) ) {
 			return;
 		}
 
-		$relative = substr( $class, strlen( $prefix ) ); // e.g. "Chat\RagEngine" or "Plugin".
+		$relative = substr( $class_name, strlen( $prefix ) ); // e.g. "Chat\RagEngine" or "Plugin".
 		$parts    = explode( '\\', $relative );
 		$name     = array_pop( $parts );
 		$path     = implode( '/', $parts );
 
-		$dir      = ITIH_DIR . 'includes/' . ( $path ? $path . '/' : '' );
-		$kebab    = self::kebab( $name );
+		$dir   = ITIH_DIR . 'includes/' . ( $path ? $path . '/' : '' );
+		$kebab = self::kebab( $name );
 
 		// Try a small set of filename candidates — the kebab form, plus an
 		// acronym-collapsed variant — for both classes and interfaces.
@@ -79,14 +79,14 @@ class Autoloader {
 		// Last resort: glob the directory for class-*.php files and match the
 		// lowercased name loosely (handles acronym casing differences).
 		$lower = str_replace( '_', '-', strtolower( $name ) );
-		foreach ( ( glob( $dir . 'class-*.php' ) ?: array() ) as $candidate ) {
+		foreach ( (array) glob( $dir . 'class-*.php' ) as $candidate ) {
 			$base = str_replace( array( 'class-', '.php' ), '', basename( $candidate ) );
 			if ( $base === $lower || str_replace( '-', '', $base ) === str_replace( '-', '', $lower ) ) {
 				require_once $candidate;
 				return;
 			}
 		}
-		foreach ( ( glob( $dir . 'interface-*.php' ) ?: array() ) as $candidate ) {
+		foreach ( (array) glob( $dir . 'interface-*.php' ) as $candidate ) {
 			$base = str_replace( array( 'interface-', '.php' ), '', basename( $candidate ) );
 			if ( $base === $lower || str_replace( '-', '', $base ) === str_replace( '-', '', $lower ) ) {
 				require_once $candidate;

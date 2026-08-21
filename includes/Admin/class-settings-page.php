@@ -41,11 +41,11 @@ class Settings_Page {
 		Settings::save_group(
 			'general',
 			array(
-				'enabled'           => empty( $form['general']['enabled'] ) ? '0' : '1',
-				'default_chat_scope'=> sanitize_key( $form['general']['default_chat_scope'] ?? 'auto' ),
-				'processing_mode'   => sanitize_key( $form['general']['processing_mode'] ?? 'background' ),
-				'debug_logging'     => empty( $form['general']['debug_logging'] ) ? '0' : '1',
-				'wipe_on_uninstall' => empty( $form['general']['wipe_on_uninstall'] ) ? '0' : '1',
+				'enabled'            => empty( $form['general']['enabled'] ) ? '0' : '1',
+				'default_chat_scope' => sanitize_key( $form['general']['default_chat_scope'] ?? 'auto' ),
+				'processing_mode'    => sanitize_key( $form['general']['processing_mode'] ?? 'background' ),
+				'debug_logging'      => empty( $form['general']['debug_logging'] ) ? '0' : '1',
+				'wipe_on_uninstall'  => empty( $form['general']['wipe_on_uninstall'] ) ? '0' : '1',
 			)
 		);
 
@@ -77,24 +77,24 @@ class Settings_Page {
 		Settings::save_group(
 			'providers',
 			array(
-				'llm_provider'        => sanitize_key( $p['llm_provider'] ?? 'openai' ),
-				'openai_api_key'      => sanitize_text_field( $p['openai_api_key'] ?? '' ),
-				'openai_base_url'     => esc_url_raw( $p['openai_base_url'] ?? 'https://api.openai.com/v1' ),
-				'openai_model'        => sanitize_text_field( $p['openai_model'] ?? '' ),
-				'groq_api_key'        => sanitize_text_field( $p['groq_api_key'] ?? '' ),
-				'groq_base_url'       => esc_url_raw( $p['groq_base_url'] ?? 'https://api.groq.com/openai/v1' ),
-				'groq_model'          => sanitize_text_field( $p['groq_model'] ?? '' ),
-				'compatible_api_key'  => sanitize_text_field( $p['compatible_api_key'] ?? '' ),
-				'compatible_base_url' => esc_url_raw( $p['compatible_base_url'] ?? '' ),
-				'compatible_model'    => sanitize_text_field( $p['compatible_model'] ?? '' ),
-				'anthropic_api_key'   => sanitize_text_field( $p['anthropic_api_key'] ?? '' ),
-				'anthropic_base_url'  => esc_url_raw( $p['anthropic_base_url'] ?? 'https://api.anthropic.com/v1' ),
-				'anthropic_model'     => sanitize_text_field( $p['anthropic_model'] ?? '' ),
-				'cloudflare_account'  => sanitize_text_field( $p['cloudflare_account'] ?? '' ),
-				'cloudflare_token'    => sanitize_text_field( $p['cloudflare_token'] ?? '' ),
-				'cloudflare_llm_model'=> sanitize_text_field( $p['cloudflare_llm_model'] ?? '' ),
-				'ollama_base_url'     => esc_url_raw( $p['ollama_base_url'] ?? 'http://localhost:11434' ),
-				'ollama_model'        => sanitize_text_field( $p['ollama_model'] ?? '' ),
+				'llm_provider'         => sanitize_key( $p['llm_provider'] ?? 'openai' ),
+				'openai_api_key'       => sanitize_text_field( $p['openai_api_key'] ?? '' ),
+				'openai_base_url'      => esc_url_raw( $p['openai_base_url'] ?? 'https://api.openai.com/v1' ),
+				'openai_model'         => sanitize_text_field( $p['openai_model'] ?? '' ),
+				'groq_api_key'         => sanitize_text_field( $p['groq_api_key'] ?? '' ),
+				'groq_base_url'        => esc_url_raw( $p['groq_base_url'] ?? 'https://api.groq.com/openai/v1' ),
+				'groq_model'           => sanitize_text_field( $p['groq_model'] ?? '' ),
+				'compatible_api_key'   => sanitize_text_field( $p['compatible_api_key'] ?? '' ),
+				'compatible_base_url'  => esc_url_raw( $p['compatible_base_url'] ?? '' ),
+				'compatible_model'     => sanitize_text_field( $p['compatible_model'] ?? '' ),
+				'anthropic_api_key'    => sanitize_text_field( $p['anthropic_api_key'] ?? '' ),
+				'anthropic_base_url'   => esc_url_raw( $p['anthropic_base_url'] ?? 'https://api.anthropic.com/v1' ),
+				'anthropic_model'      => sanitize_text_field( $p['anthropic_model'] ?? '' ),
+				'cloudflare_account'   => sanitize_text_field( $p['cloudflare_account'] ?? '' ),
+				'cloudflare_token'     => sanitize_text_field( $p['cloudflare_token'] ?? '' ),
+				'cloudflare_llm_model' => sanitize_text_field( $p['cloudflare_llm_model'] ?? '' ),
+				'ollama_base_url'      => esc_url_raw( $p['ollama_base_url'] ?? 'http://localhost:11434' ),
+				'ollama_model'         => sanitize_text_field( $p['ollama_model'] ?? '' ),
 			)
 		);
 
@@ -102,23 +102,23 @@ class Settings_Page {
 		Settings::save_group(
 			'embeddings',
 			array(
-				'embedding_provider' => sanitize_key( $e['embedding_provider'] ?? 'openai' ),
-				'openai_api_key'     => sanitize_text_field( $e['openai_api_key'] ?? '' ),
-				'openai_base_url'    => esc_url_raw( $e['openai_base_url'] ?? 'https://api.openai.com/v1' ),
-				'openai_model'       => sanitize_text_field( $e['openai_model'] ?? 'text-embedding-3-small' ),
-				'compatible_api_key' => sanitize_text_field( $e['compatible_api_key'] ?? '' ),
-				'compatible_base_url'=> esc_url_raw( $e['compatible_base_url'] ?? '' ),
-				'compatible_model'   => sanitize_text_field( $e['compatible_model'] ?? '' ),
-				'cloudflare_account' => sanitize_text_field( $e['cloudflare_account'] ?? '' ),
-				'cloudflare_token'   => sanitize_text_field( $e['cloudflare_token'] ?? '' ),
-				'cloudflare_model'   => sanitize_text_field( $e['cloudflare_model'] ?? '@cf/baai/bge-base-en-v1.5' ),
-				'ollama_base_url'    => esc_url_raw( $e['ollama_base_url'] ?? 'http://localhost:11434' ),
-				'ollama_model'       => sanitize_text_field( $e['ollama_model'] ?? 'nomic-embed-text' ),
-				'dimensions'         => (string) max( 0, (int) ( $e['dimensions'] ?? 0 ) ),
+				'embedding_provider'  => sanitize_key( $e['embedding_provider'] ?? 'openai' ),
+				'openai_api_key'      => sanitize_text_field( $e['openai_api_key'] ?? '' ),
+				'openai_base_url'     => esc_url_raw( $e['openai_base_url'] ?? 'https://api.openai.com/v1' ),
+				'openai_model'        => sanitize_text_field( $e['openai_model'] ?? 'text-embedding-3-small' ),
+				'compatible_api_key'  => sanitize_text_field( $e['compatible_api_key'] ?? '' ),
+				'compatible_base_url' => esc_url_raw( $e['compatible_base_url'] ?? '' ),
+				'compatible_model'    => sanitize_text_field( $e['compatible_model'] ?? '' ),
+				'cloudflare_account'  => sanitize_text_field( $e['cloudflare_account'] ?? '' ),
+				'cloudflare_token'    => sanitize_text_field( $e['cloudflare_token'] ?? '' ),
+				'cloudflare_model'    => sanitize_text_field( $e['cloudflare_model'] ?? '@cf/baai/bge-base-en-v1.5' ),
+				'ollama_base_url'     => esc_url_raw( $e['ollama_base_url'] ?? 'http://localhost:11434' ),
+				'ollama_model'        => sanitize_text_field( $e['ollama_model'] ?? 'nomic-embed-text' ),
+				'dimensions'          => (string) max( 0, (int) ( $e['dimensions'] ?? 0 ) ),
 			)
 		);
 
-		$v = $form['vector_store'] ?? array();
+		$v    = $form['vector_store'] ?? array();
 		$prev = Settings::group( 'vector_store' );
 		Settings::save_group(
 			'vector_store',
@@ -143,11 +143,12 @@ class Settings_Page {
 			)
 		);
 
-		$a = $form['appearance'] ?? array();
-		$ap_colors = isset( $a['colors'] ) && is_array( $a['colors'] ) ? $a['colors'] : array();
+		$a           = $form['appearance'] ?? array();
+		$ap_colors   = isset( $a['colors'] ) && is_array( $a['colors'] ) ? $a['colors'] : array();
 		$safe_colors = array();
 		foreach ( $ap_colors as $ck => $cv ) {
-			$safe_colors[ sanitize_key( $ck ) ] = sanitize_hex_color( $cv ) ?: '#3b82f6';
+			$hex                                = sanitize_hex_color( $cv );
+			$safe_colors[ sanitize_key( $ck ) ] = $hex ? $hex : '#3b82f6';
 		}
 		Settings::save_group(
 			'appearance',
@@ -172,19 +173,19 @@ class Settings_Page {
 	}
 
 	public function render() {
-		$tab   = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general'; // phpcs:ignore WordPress.Security.NonceVerification
-		$tabs  = array(
-			'general'     => __( 'General', 'itih-ai-chatbot' ),
-			'providers'   => __( 'LLM Providers', 'itih-ai-chatbot' ),
-			'embeddings'  => __( 'Embeddings', 'itih-ai-chatbot' ),
-			'vector_store'=> __( 'Vector Database', 'itih-ai-chatbot' ),
-			'indexing'    => __( 'Indexing', 'itih-ai-chatbot' ),
-			'chat'        => __( 'Chat', 'itih-ai-chatbot' ),
-			'appearance'  => __( 'Appearance', 'itih-ai-chatbot' ),
-			'mcp'         => __( 'MCP', 'itih-ai-chatbot' ),
+		$tab  = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general'; // phpcs:ignore WordPress.Security.NonceVerification
+		$tabs = array(
+			'general'      => __( 'General', 'itih-ai-chatbot' ),
+			'providers'    => __( 'LLM Providers', 'itih-ai-chatbot' ),
+			'embeddings'   => __( 'Embeddings', 'itih-ai-chatbot' ),
+			'vector_store' => __( 'Vector Database', 'itih-ai-chatbot' ),
+			'indexing'     => __( 'Indexing', 'itih-ai-chatbot' ),
+			'chat'         => __( 'Chat', 'itih-ai-chatbot' ),
+			'appearance'   => __( 'Appearance', 'itih-ai-chatbot' ),
+			'mcp'          => __( 'MCP', 'itih-ai-chatbot' ),
 		);
-		$base  = admin_url( 'admin.php?page=' . Admin_Menu::SLUG . '-settings' );
-		$s     = Settings::all();
+		$base = admin_url( 'admin.php?page=' . Admin_Menu::SLUG . '-settings' );
+		$s    = Settings::all();
 		?>
 		<div class="wrap openrag-admin-wrap">
 			<h1><?php esc_html_e( 'ItihRag AI Chatbot Settings', 'itih-ai-chatbot' ); ?></h1>
@@ -284,7 +285,7 @@ class Settings_Page {
 	}
 
 	protected function tab_providers( $s ) {
-		$p = $s['providers'];
+		$p   = $s['providers'];
 		$llm = ( new LLM_Manager() )->providers();
 		?>
 		<h2><?php esc_html_e( 'LLM Provider', 'itih-ai-chatbot' ); ?></h2>
@@ -305,12 +306,65 @@ class Settings_Page {
 
 		<div class="openrag-provider-fields">
 			<?php
-			$this->provider_fieldset( 'openai', __( 'OpenAI', 'itih-ai-chatbot' ), $p, array( 'openai_api_key' => 'API Key', 'openai_base_url' => 'Base URL', 'openai_model' => 'Model' ) );
-			$this->provider_fieldset( 'groq', __( 'Groq', 'itih-ai-chatbot' ), $p, array( 'groq_api_key' => 'API Key', 'groq_base_url' => 'Base URL', 'groq_model' => 'Model' ) );
-			$this->provider_fieldset( 'openai-compatible', __( 'OpenAI-compatible', 'itih-ai-chatbot' ), $p, array( 'compatible_api_key' => 'API Key (optional)', 'compatible_base_url' => 'Base URL', 'compatible_model' => 'Model' ) );
-			$this->provider_fieldset( 'anthropic', __( 'Anthropic Claude', 'itih-ai-chatbot' ), $p, array( 'anthropic_api_key' => 'API Key', 'anthropic_base_url' => 'Base URL', 'anthropic_model' => 'Model' ) );
-			$this->provider_fieldset( 'cloudflare', __( 'Cloudflare Workers AI', 'itih-ai-chatbot' ), $p, array( 'cloudflare_account' => 'Account ID', 'cloudflare_token' => 'API Token', 'cloudflare_llm_model' => 'Model' ) );
-			$this->provider_fieldset( 'ollama', __( 'Ollama (local)', 'itih-ai-chatbot' ), $p, array( 'ollama_base_url' => 'Base URL', 'ollama_model' => 'Model' ) );
+			$this->provider_fieldset(
+				'openai',
+				__( 'OpenAI', 'itih-ai-chatbot' ),
+				$p,
+				array(
+					'openai_api_key'  => 'API Key',
+					'openai_base_url' => 'Base URL',
+					'openai_model'    => 'Model',
+				)
+			);
+			$this->provider_fieldset(
+				'groq',
+				__( 'Groq', 'itih-ai-chatbot' ),
+				$p,
+				array(
+					'groq_api_key'  => 'API Key',
+					'groq_base_url' => 'Base URL',
+					'groq_model'    => 'Model',
+				)
+			);
+			$this->provider_fieldset(
+				'openai-compatible',
+				__( 'OpenAI-compatible', 'itih-ai-chatbot' ),
+				$p,
+				array(
+					'compatible_api_key'  => 'API Key (optional)',
+					'compatible_base_url' => 'Base URL',
+					'compatible_model'    => 'Model',
+				)
+			);
+			$this->provider_fieldset(
+				'anthropic',
+				__( 'Anthropic Claude', 'itih-ai-chatbot' ),
+				$p,
+				array(
+					'anthropic_api_key'  => 'API Key',
+					'anthropic_base_url' => 'Base URL',
+					'anthropic_model'    => 'Model',
+				)
+			);
+			$this->provider_fieldset(
+				'cloudflare',
+				__( 'Cloudflare Workers AI', 'itih-ai-chatbot' ),
+				$p,
+				array(
+					'cloudflare_account'   => 'Account ID',
+					'cloudflare_token'     => 'API Token',
+					'cloudflare_llm_model' => 'Model',
+				)
+			);
+			$this->provider_fieldset(
+				'ollama',
+				__( 'Ollama (local)', 'itih-ai-chatbot' ),
+				$p,
+				array(
+					'ollama_base_url' => 'Base URL',
+					'ollama_model'    => 'Model',
+				)
+			);
 			?>
 		</div>
 		<?php
@@ -332,7 +386,7 @@ class Settings_Page {
 	}
 
 	protected function tab_embeddings( $s ) {
-		$e = $s['embeddings'];
+		$e   = $s['embeddings'];
 		$emb = ( new Embedding_Manager() )->providers();
 		?>
 		<h2><?php esc_html_e( 'Embedding Provider', 'itih-ai-chatbot' ); ?></h2>
@@ -405,11 +459,11 @@ class Settings_Page {
 	}
 
 	protected function tab_vector_store( $s ) {
-		$v        = $s['vector_store'];
-		$schema   = new Schema();
-		$native   = $schema->supports_native_vector();
-		$version  = $schema->mysql_version();
-		$engines  = ( new Vector_Store_Manager() )->stores();
+		$v       = $s['vector_store'];
+		$schema  = new Schema();
+		$native  = $schema->supports_native_vector();
+		$version = $schema->mysql_version();
+		$engines = ( new Vector_Store_Manager() )->stores();
 		?>
 		<h2><?php esc_html_e( 'Vector Database', 'itih-ai-chatbot' ); ?></h2>
 		<table class="form-table">
@@ -456,7 +510,7 @@ class Settings_Page {
 	}
 
 	protected function tab_indexing( $s ) {
-		$i = $s['indexing'];
+		$i     = $s['indexing'];
 		$types = get_post_types( array( 'public' => true ), 'objects' );
 		?>
 		<h2><?php esc_html_e( 'Indexing', 'itih-ai-chatbot' ); ?></h2>
@@ -532,7 +586,7 @@ class Settings_Page {
 	}
 
 	protected function tab_appearance( $s ) {
-		$a = $s['appearance'];
+		$a       = $s['appearance'];
 		$presets = Settings::theme_presets();
 		?>
 		<h2><?php esc_html_e( 'Appearance', 'itih-ai-chatbot' ); ?></h2>
@@ -568,17 +622,17 @@ class Settings_Page {
 		<table class="form-table openrag-colors">
 			<?php
 			$labels = array(
-				'primary'      => __( 'Primary', 'itih-ai-chatbot' ),
-				'header_bg'    => __( 'Header background', 'itih-ai-chatbot' ),
-				'header_text'  => __( 'Header text', 'itih-ai-chatbot' ),
-				'bg'           => __( 'Chat background', 'itih-ai-chatbot' ),
-				'text'         => __( 'Body text', 'itih-ai-chatbot' ),
-				'user_bubble'  => __( 'User bubble', 'itih-ai-chatbot' ),
-				'user_text'    => __( 'User text', 'itih-ai-chatbot' ),
-				'bot_bubble'   => __( 'Bot bubble', 'itih-ai-chatbot' ),
-				'bot_text'     => __( 'Bot text', 'itih-ai-chatbot' ),
-				'launcher'     => __( 'Launcher', 'itih-ai-chatbot' ),
-				'launcher_icon'=> __( 'Launcher icon', 'itih-ai-chatbot' ),
+				'primary'       => __( 'Primary', 'itih-ai-chatbot' ),
+				'header_bg'     => __( 'Header background', 'itih-ai-chatbot' ),
+				'header_text'   => __( 'Header text', 'itih-ai-chatbot' ),
+				'bg'            => __( 'Chat background', 'itih-ai-chatbot' ),
+				'text'          => __( 'Body text', 'itih-ai-chatbot' ),
+				'user_bubble'   => __( 'User bubble', 'itih-ai-chatbot' ),
+				'user_text'     => __( 'User text', 'itih-ai-chatbot' ),
+				'bot_bubble'    => __( 'Bot bubble', 'itih-ai-chatbot' ),
+				'bot_text'      => __( 'Bot text', 'itih-ai-chatbot' ),
+				'launcher'      => __( 'Launcher', 'itih-ai-chatbot' ),
+				'launcher_icon' => __( 'Launcher icon', 'itih-ai-chatbot' ),
 			);
 			foreach ( $labels as $key => $label ) {
 				$value = $a['colors'][ $key ] ?? '#3b82f6';
@@ -591,12 +645,12 @@ class Settings_Page {
 			<?php
 			// Theme presets are provided to admin.js via wp_localize_script( 'itih-admin' )
 			// as ItihRagAdmin.themePresets — no inline <script> needed.
-		}
+	}
 
 	protected function tab_mcp( $s ) {
 		$m = $s['mcp'];
 		global $wpdb;
-		$schema = new Schema();
+		$schema  = new Schema();
 		$servers = $wpdb->get_results( 'SELECT * FROM `' . $schema->table( 'mcp_servers' ) . '` ORDER BY id ASC' ); // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		?>
 		<h2><?php esc_html_e( 'MCP (Model Context Protocol)', 'itih-ai-chatbot' ); ?></h2>
@@ -615,7 +669,8 @@ class Settings_Page {
 				<tr><td colspan="6"><?php esc_html_e( 'No MCP servers configured.', 'itih-ai-chatbot' ); ?></td></tr>
 			<?php else : ?>
 				<?php foreach ( $servers as $srv ) : ?>
-					<?php $tools_count = ! empty( $srv->tools_cache ) ? count( json_decode( $srv->tools_cache, true ) ?: array() ) : 0; ?>
+					<?php $decoded_tools = json_decode( (string) $srv->tools_cache, true ); ?>
+					<?php $tools_count = is_array( $decoded_tools ) ? count( $decoded_tools ) : 0; ?>
 					<tr data-id="<?php echo esc_attr( $srv->id ); ?>">
 						<td><?php echo esc_html( $srv->name ); ?></td>
 						<td><code><?php echo esc_html( $srv->url ); ?></code></td>

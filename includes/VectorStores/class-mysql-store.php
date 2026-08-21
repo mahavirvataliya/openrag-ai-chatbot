@@ -68,8 +68,8 @@ class MySQL_Store implements Vector_Store {
 	public function upsert( $chunk_id, array $vector, array $metadata ) {
 		global $wpdb;
 
-		$table  = $this->chunks_table();
-		$native = $this->is_native();
+		$table      = $this->chunks_table();
+		$native     = $this->is_native();
 		$vector_str = $native
 			? '[' . implode( ',', array_map( 'floatval', $vector ) ) . ']'
 			: wp_json_encode( array_map( 'floatval', $vector ) );
@@ -129,10 +129,10 @@ class MySQL_Store implements Vector_Store {
 					if ( ! is_array( $vec ) || count( $vec ) !== count( $vector ) ) {
 						continue;
 					}
-					$dot = 0.0;
+					$dot   = 0.0;
 					$vnorm = 0.0;
 					for ( $i = 0, $n = count( $vec ); $i < $n; $i++ ) {
-						$bv = (float) $vec[ $i ];
+						$bv     = (float) $vec[ $i ];
 						$dot   += (float) $vector[ $i ] * $bv;
 						$vnorm += $bv * $bv;
 					}
@@ -165,11 +165,11 @@ class MySQL_Store implements Vector_Store {
 			$candidates = array_slice( $candidates, 0, $top_k );
 
 			// Hydrate content/source for just the top-k chunks.
-			$ids           = wp_list_pluck( $candidates, 'chunk_id' );
-			$placeholders  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+			$ids          = wp_list_pluck( $candidates, 'chunk_id' );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 			// phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
 			$hydrated = $wpdb->get_results( $wpdb->prepare( "SELECT c.id AS chunk_id, c.content, c.source_url, c.source_title FROM `{$table}` c WHERE c.id IN ( {$placeholders} )", $ids ) );
-			$by_id = array();
+			$by_id    = array();
 			foreach ( $hydrated as $h ) {
 				$by_id[ (int) $h->chunk_id ] = $h;
 			}

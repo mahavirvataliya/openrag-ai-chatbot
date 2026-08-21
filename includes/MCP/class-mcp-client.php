@@ -106,7 +106,13 @@ class MCP_Client {
 	 * @return array{content:array, isError?:bool}|array{error:string}
 	 */
 	public function call_tool( $name, array $args = array() ) {
-		return $this->request( 'tools/call', array( 'name' => $name, 'arguments' => (object) $args ) );
+		return $this->request(
+			'tools/call',
+			array(
+				'name'      => $name,
+				'arguments' => (object) $args,
+			)
+		);
 	}
 
 	/* --------------------------------------------------------------------
@@ -121,9 +127,9 @@ class MCP_Client {
 	 * @return array|object|string|null
 	 */
 	protected function request( $method, $params ) {
-		$this->req_id++;
-		$id    = $this->req_id;
-		$body  = array(
+		++$this->req_id;
+		$id   = $this->req_id;
+		$body = array(
 			'jsonrpc' => '2.0',
 			'id'      => $id,
 			'method'  => $method,

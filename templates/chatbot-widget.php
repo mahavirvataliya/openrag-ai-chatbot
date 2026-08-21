@@ -40,7 +40,7 @@ $itih_root_attr     = $itih_is_inline ? '' : 'data-position="' . esc_attr( $itih
 		<header class="openrag-header">
 			<div class="openrag-header-info">
 				<?php if ( $itih_avatar || $itih_logo ) : ?>
-					<img class="openrag-header-avatar" src="<?php echo $itih_avatar ?: $itih_logo; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" alt="" width="36" height="36" />
+					<img class="openrag-header-avatar" src="<?php echo $itih_avatar ? $itih_avatar : $itih_logo; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" alt="" width="36" height="36" />
 				<?php else : ?>
 					<div class="openrag-header-avatar openrag-avatar-fallback" aria-hidden="true">
 						<span><?php echo esc_html( mb_substr( $itih_bot_name, 0, 1 ) ); ?></span>

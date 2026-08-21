@@ -34,8 +34,8 @@ class Chats_Page {
 
 		$search = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		if ( '' !== $search ) {
-			$where .= ' AND (content LIKE %s OR session_id IN (SELECT session_id FROM `' . $schema->table( 'chats' ) . '` WHERE content LIKE %s)) ';
-			$like = '%' . $wpdb->esc_like( $search ) . '%';
+			$where   .= ' AND (content LIKE %s OR session_id IN (SELECT session_id FROM `' . $schema->table( 'chats' ) . '` WHERE content LIKE %s)) ';
+			$like     = '%' . $wpdb->esc_like( $search ) . '%';
 			$params[] = $like;
 			$params[] = $like;
 		}
@@ -43,11 +43,11 @@ class Chats_Page {
 		$from = isset( $_GET['from'] ) ? sanitize_text_field( wp_unslash( $_GET['from'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		$to   = isset( $_GET['to'] ) ? sanitize_text_field( wp_unslash( $_GET['to'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 		if ( '' !== $from ) {
-			$where .= ' AND created_at >= %s';
+			$where   .= ' AND created_at >= %s';
 			$params[] = $from . ' 00:00:00';
 		}
 		if ( '' !== $to ) {
-			$where .= ' AND created_at <= %s';
+			$where   .= ' AND created_at <= %s';
 			$params[] = $to . ' 23:59:59';
 		}
 
@@ -59,8 +59,8 @@ class Chats_Page {
 		// Rows (user turns + their assistant replies joined). The correlated
 		// MIN(a2.id) subquery picks exactly the NEXT assistant turn — the old
 		// open-ended self-join materialized every later reply per user turn.
-		$chats = $schema->table( 'chats' );
-		$sql = 'SELECT u.id, u.session_id, u.content AS user_message, u.created_at, u.device, u.user_ip,
+		$chats    = $schema->table( 'chats' );
+		$sql      = 'SELECT u.id, u.session_id, u.content AS user_message, u.created_at, u.device, u.user_ip,
 				a.id AS assistant_id, a.content AS reply, a.citations, a.reasoning, a.model, a.feedback, a.feedback_comment, a.response_time_ms, a.prompt_tokens, a.completion_tokens
 				FROM `' . $chats . '` u
 				LEFT JOIN `' . $chats . '` a ON a.id = (
@@ -75,8 +75,8 @@ class Chats_Page {
 		// phpcs:ignore WordPress.DB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ) );
 
-		$pages      = max( 1, (int) ceil( $total / $per_page ) );
-		$base_url   = admin_url( 'admin.php?page=' . Admin_Menu::SLUG . '-chats' );
+		$pages    = max( 1, (int) ceil( $total / $per_page ) );
+		$base_url = admin_url( 'admin.php?page=' . Admin_Menu::SLUG . '-chats' );
 		?>
 		<div class="wrap openrag-admin-wrap">
 			<h1><?php esc_html_e( 'Chats', 'itih-ai-chatbot' ); ?> <a class="page-title-action" href="<?php echo esc_url( add_query_arg( 'export', '1', $base_url ) ); ?>"><?php esc_html_e( 'Export CSV', 'itih-ai-chatbot' ); ?></a></h1>
@@ -117,7 +117,18 @@ class Chats_Page {
 								?>
 							</td>
 							<td>
-								<?php if ( 'up' === $row->feedback ) : ?>👍<?php elseif ( 'down' === $row->feedback ) : ?>👎<?php else : ?>—<?php endif; ?>
+								<?php
+								if ( 'up' === $row->feedback ) :
+									?>
+									👍
+									<?php
+elseif ( 'down' === $row->feedback ) :
+	?>
+									👎
+									<?php
+else :
+	?>
+	—<?php endif; ?>
 							</td>
 							<td>
 								<button type="button" class="button button-small openrag-view-chat"
@@ -191,7 +202,7 @@ class Chats_Page {
 		header( 'Content-Type: text/csv; charset=utf-8' );
 		header( 'Content-Disposition: attachment; filename="itih-chats.csv"' );
 
-		$out    = fopen( 'php://output', 'w' );
+		$out = fopen( 'php://output', 'w' );
 		fputcsv( $out, array( 'id', 'created_at', 'session_id', 'ip', 'device', 'user_message', 'reply', 'model', 'response_ms', 'prompt_tokens', 'completion_tokens', 'feedback', 'feedback_comment' ) );
 
 		$last_id = 0;

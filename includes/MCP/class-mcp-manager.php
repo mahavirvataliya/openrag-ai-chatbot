@@ -44,8 +44,8 @@ class MCP_Manager {
 	 * @return array<int,array{type:string, function:array{name, description, parameters}}>
 	 */
 	public function collect_tools() {
-		$out      = array();
-		$servers  = $this->enabled_servers();
+		$out     = array();
+		$servers = $this->enabled_servers();
 		foreach ( $servers as $server ) {
 			$tools = $this->server_tools( $server );
 			foreach ( $tools as $t ) {
@@ -70,8 +70,9 @@ class MCP_Manager {
 		}
 		// Try live discovery.
 		$this->discover( (int) $server->id );
-		$server = $this->get_server( (int) $server->id );
-		return ! empty( $server->tools_cache ) ? ( json_decode( $server->tools_cache, true ) ?: array() ) : array();
+		$server  = $this->get_server( (int) $server->id );
+		$decoded = json_decode( (string) $server->tools_cache, true );
+		return is_array( $decoded ) ? $decoded : array();
 	}
 
 	/**
@@ -88,7 +89,10 @@ class MCP_Manager {
 			'function' => array(
 				'name'        => $name,
 				'description' => (string) ( $tool['description'] ?? '' ),
-				'parameters'  => (array) ( $tool['inputSchema'] ?? ( $tool['input_schema'] ?? array( 'type' => 'object', 'properties' => new \stdClass() ) ) ),
+				'parameters'  => (array) ( $tool['inputSchema'] ?? ( $tool['input_schema'] ?? array(
+					'type'       => 'object',
+					'properties' => new \stdClass(),
+				) ) ),
 			),
 		);
 	}
@@ -153,14 +157,20 @@ class MCP_Manager {
 		global $wpdb;
 		$server = $this->get_server( $server_id );
 		if ( ! $server ) {
-			return array( 'tools' => 0, 'error' => 'Server not found.' );
+			return array(
+				'tools' => 0,
+				'error' => 'Server not found.',
+			);
 		}
 
 		try {
 			$client = new MCP_Client( $server->url, $server->transport, (string) ( $server->auth_header ?? '' ) );
 			$init   = $client->initialize();
 			if ( isset( $init['error'] ) ) {
-				return array( 'tools' => 0, 'error' => $init['error'] );
+				return array(
+					'tools' => 0,
+					'error' => $init['error'],
+				);
 			}
 			$tools = $client->list_tools();
 			// Strip input_schema/inputSchema to keep cache lean.
@@ -183,7 +193,10 @@ class MCP_Manager {
 			);
 			return array( 'tools' => count( $lean ) );
 		} catch ( \Throwable $e ) {
-			return array( 'tools' => 0, 'error' => $e->getMessage() );
+			return array(
+				'tools' => 0,
+				'error' => $e->getMessage(),
+			);
 		}
 	}
 
@@ -270,7 +283,7 @@ class MCP_Manager {
 			array(
 				'name'        => sanitize_text_field( (string) $request->get_param( 'name' ) ),
 				'url'         => esc_url_raw( (string) $request->get_param( 'url' ) ),
-				'transport'   => sanitize_key( (string) $request->get_param( 'transport' ) ?: 'http' ),
+				'transport'   => sanitize_key( (string) $request->get_param( 'transport' ) ? (string) $request->get_param( 'transport' ) : 'http' ),
 				'auth_header' => sanitize_text_field( (string) $request->get_param( 'auth_header' ) ),
 				'enabled'     => (int) ( ! empty( $request->get_param( 'enabled' ) ) ),
 				'created_at'  => current_time( 'mysql' ),
@@ -281,11 +294,11 @@ class MCP_Manager {
 
 	public function rest_update( \WP_REST_Request $request ) {
 		global $wpdb;
-		$id = (int) $request['id'];
+		$id     = (int) $request['id'];
 		$values = array(
 			'name'        => sanitize_text_field( (string) $request->get_param( 'name' ) ),
 			'url'         => esc_url_raw( (string) $request->get_param( 'url' ) ),
-			'transport'   => sanitize_key( (string) $request->get_param( 'transport' ) ?: 'http' ),
+			'transport'   => sanitize_key( (string) $request->get_param( 'transport' ) ? (string) $request->get_param( 'transport' ) : 'http' ),
 			'auth_header' => sanitize_text_field( (string) $request->get_param( 'auth_header' ) ),
 			'enabled'     => (int) ( ! empty( $request->get_param( 'enabled' ) ) ),
 		);

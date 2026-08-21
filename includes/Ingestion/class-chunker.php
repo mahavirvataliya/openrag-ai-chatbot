@@ -72,10 +72,10 @@ class Chunker {
 		}
 
 		// Greedily pack sentences into chunks of ~$size, with $overlap between them.
-		$chunks    = array();
-		$current   = '';
+		$chunks      = array();
+		$current     = '';
 		$current_len = 0;
-		$index     = 0;
+		$index       = 0;
 
 		foreach ( $sentences as $sentence ) {
 			$slen = mb_strlen( $sentence );
@@ -133,7 +133,7 @@ class Chunker {
 	 * @return array{text:string, index:int, tokens:int}
 	 */
 	protected function make_chunk( $text, $index ) {
-		$text  = trim( $text );
+		$text   = trim( $text );
 		$tokens = (int) ceil( mb_strlen( $text ) / 4 ); // ~4 chars per token heuristic.
 		return array(
 			'text'   => $text,

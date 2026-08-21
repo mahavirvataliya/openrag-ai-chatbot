@@ -75,7 +75,7 @@ class OpenAI_LLM implements LLM_Provider {
 	}
 
 	public function list_models() {
-		$args = array(
+		$args     = array(
 			'timeout' => 30,
 			'headers' => $this->auth_headers(),
 		);
@@ -162,12 +162,12 @@ class OpenAI_LLM implements LLM_Provider {
 		$msg    = $choice['message'] ?? array();
 
 		return array(
-			'content'            => (string) ( $msg['content'] ?? '' ),
-			'reasoning'          => (string) ( $msg['reasoning_content'] ?? $msg['reasoning'] ?? '' ),
-			'tool_calls'         => isset( $msg['tool_calls'] ) && is_array( $msg['tool_calls'] ) ? $msg['tool_calls'] : array(),
-			'prompt_tokens'      => (int) ( $json['usage']['prompt_tokens'] ?? 0 ),
-			'completion_tokens'  => (int) ( $json['usage']['completion_tokens'] ?? 0 ),
-			'model'              => (string) ( $json['model'] ?? $payload['model'] ),
+			'content'           => (string) ( $msg['content'] ?? '' ),
+			'reasoning'         => (string) ( $msg['reasoning_content'] ?? $msg['reasoning'] ?? '' ),
+			'tool_calls'        => isset( $msg['tool_calls'] ) && is_array( $msg['tool_calls'] ) ? $msg['tool_calls'] : array(),
+			'prompt_tokens'     => (int) ( $json['usage']['prompt_tokens'] ?? 0 ),
+			'completion_tokens' => (int) ( $json['usage']['completion_tokens'] ?? 0 ),
+			'model'             => (string) ( $json['model'] ?? $payload['model'] ),
 		);
 	}
 
@@ -203,10 +203,13 @@ class OpenAI_LLM implements LLM_Provider {
 	 * @return \Generator
 	 */
 	protected function parse_sse( $body, $model ) {
-		$lines           = preg_split( '/\r\n|\n|\r/', $body );
-		$usage           = array( 'prompt_tokens' => 0, 'completion_tokens' => 0 );
-		$pending_tools   = array();
-		$tool_index_map  = array();
+		$lines          = preg_split( '/\r\n|\n|\r/', $body );
+		$usage          = array(
+			'prompt_tokens'     => 0,
+			'completion_tokens' => 0,
+		);
+		$pending_tools  = array();
+		$tool_index_map = array();
 
 		foreach ( $lines as $line ) {
 			$line = trim( $line );
@@ -226,11 +229,17 @@ class OpenAI_LLM implements LLM_Provider {
 
 			// Reasoning content (DeepSeek / OpenAI reasoning models).
 			if ( isset( $delta['reasoning_content'] ) && '' !== $delta['reasoning_content'] ) {
-				yield array( 'type' => 'reasoning', 'content' => (string) $delta['reasoning_content'] );
+				yield array(
+					'type'    => 'reasoning',
+					'content' => (string) $delta['reasoning_content'],
+				);
 			}
 
 			if ( isset( $delta['content'] ) && '' !== $delta['content'] ) {
-				yield array( 'type' => 'delta', 'content' => (string) $delta['content'] );
+				yield array(
+					'type'    => 'delta',
+					'content' => (string) $delta['content'],
+				);
 			}
 
 			// Streaming tool calls (accumulate by index).
@@ -238,10 +247,10 @@ class OpenAI_LLM implements LLM_Provider {
 				foreach ( $delta['tool_calls'] as $tc ) {
 					$idx = $tc['index'] ?? 0;
 					if ( ! isset( $pending_tools[ $idx ] ) ) {
-						$pending_tools[ $idx ] = array(
-							'id'        => $tc['id'] ?? '',
-							'type'      => 'function',
-							'function'  => array(
+						$pending_tools[ $idx ]  = array(
+							'id'       => $tc['id'] ?? '',
+							'type'     => 'function',
+							'function' => array(
 								'name'      => '',
 								'arguments' => '',
 							),
@@ -266,7 +275,10 @@ class OpenAI_LLM implements LLM_Provider {
 		}
 
 		foreach ( $pending_tools as $tc ) {
-			yield array( 'type' => 'tool_call', 'tool_call' => $tc );
+			yield array(
+				'type'      => 'tool_call',
+				'tool_call' => $tc,
+			);
 		}
 
 		yield array(

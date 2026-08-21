@@ -47,11 +47,11 @@ class OpenAI_Embedding implements Embedding_Provider {
 	public function dimensions() {
 		// Known defaults; otherwise 0 means caller auto-detects.
 		$known = array(
-			'text-embedding-3-small'  => 1536,
-			'text-embedding-3-large'  => 3072,
-			'text-embedding-ada-002'  => 1536,
+			'text-embedding-3-small' => 1536,
+			'text-embedding-3-large' => 3072,
+			'text-embedding-ada-002' => 1536,
 		);
-		$m = $this->model();
+		$m     = $this->model();
 		return $known[ $m ] ?? (int) ( $this->settings['dimensions'] ?? 0 );
 	}
 
@@ -64,7 +64,7 @@ class OpenAI_Embedding implements Embedding_Provider {
 			'input' => array_map( 'strval', $list ),
 		);
 
-		$resp = $this->request( '/embeddings', $body );
+		$resp    = $this->request( '/embeddings', $body );
 		$vectors = array();
 		if ( isset( $resp['data'] ) && is_array( $resp['data'] ) ) {
 			foreach ( $resp['data'] as $item ) {
@@ -95,13 +95,13 @@ class OpenAI_Embedding implements Embedding_Provider {
 
 		$response = wp_remote_post( $url, $args );
 		if ( is_wp_error( $response ) ) {
-            throw new \RuntimeException( 'OpenAI embedding request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+			throw new \RuntimeException( 'OpenAI embedding request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		$json = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( $code < 200 || $code >= 300 ) {
 			$err = $json['error']['message'] ?? wp_remote_retrieve_body( $response );
-            throw new \RuntimeException( 'OpenAI embedding API error (' . $code . '): ' . $err ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+			throw new \RuntimeException( 'OpenAI embedding API error (' . $code . '): ' . $err ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		return is_array( $json ) ? $json : array();
 	}

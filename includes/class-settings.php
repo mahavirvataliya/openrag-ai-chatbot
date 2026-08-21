@@ -42,15 +42,15 @@ class Settings {
 
 		self::$defaults = array(
 
-			'general' => array(
-				'enabled'              => '1',
-				'default_chat_scope'   => 'auto',
-				'processing_mode'      => 'background',
-				'debug_logging'        => '0',
-				'wipe_on_uninstall'    => '0',
+			'general'      => array(
+				'enabled'            => '1',
+				'default_chat_scope' => 'auto',
+				'processing_mode'    => 'background',
+				'debug_logging'      => '0',
+				'wipe_on_uninstall'  => '0',
 			),
 
-			'chat' => array(
+			'chat'         => array(
 				'widget_enabled'    => '1',
 				'bot_name'          => __( 'Assistant', 'itih-ai-chatbot' ),
 				'welcome_message'   => __( "Hi! I'm an AI assistant. Ask me anything about the content on this site.", 'itih-ai-chatbot' ),
@@ -69,50 +69,50 @@ class Settings {
 				'min_similarity'    => '0.35',
 			),
 
-			'providers' => array(
-				'llm_provider'        => 'openai',
+			'providers'    => array(
+				'llm_provider'         => 'openai',
+				'openai_api_key'       => '',
+				'openai_base_url'      => 'https://api.openai.com/v1',
+				'openai_model'         => 'gpt-4o-mini',
+				'groq_api_key'         => '',
+				'groq_base_url'        => 'https://api.groq.com/openai/v1',
+				'groq_model'           => 'llama-3.3-70b-versatile',
+				'compatible_api_key'   => '',
+				'compatible_base_url'  => '',
+				'compatible_model'     => '',
+				'anthropic_api_key'    => '',
+				'anthropic_base_url'   => 'https://api.anthropic.com/v1',
+				'anthropic_model'      => 'claude-3-5-sonnet-latest',
+				'cloudflare_account'   => '',
+				'cloudflare_token'     => '',
+				'cloudflare_llm_model' => '@cf/meta/llama-3.1-8b-instruct',
+			),
+
+			'embeddings'   => array(
+				'embedding_provider'  => 'openai',
 				'openai_api_key'      => '',
+				'openai_model'        => 'text-embedding-3-small',
 				'openai_base_url'     => 'https://api.openai.com/v1',
-				'openai_model'        => 'gpt-4o-mini',
-				'groq_api_key'        => '',
-				'groq_base_url'       => 'https://api.groq.com/openai/v1',
-				'groq_model'          => 'llama-3.3-70b-versatile',
 				'compatible_api_key'  => '',
 				'compatible_base_url' => '',
 				'compatible_model'    => '',
-				'anthropic_api_key'   => '',
-				'anthropic_base_url'  => 'https://api.anthropic.com/v1',
-				'anthropic_model'     => 'claude-3-5-sonnet-latest',
 				'cloudflare_account'  => '',
 				'cloudflare_token'    => '',
-				'cloudflare_llm_model'=> '@cf/meta/llama-3.1-8b-instruct',
-			),
-
-			'embeddings' => array(
-				'embedding_provider' => 'openai',
-				'openai_api_key'     => '',
-				'openai_model'       => 'text-embedding-3-small',
-				'openai_base_url'    => 'https://api.openai.com/v1',
-				'compatible_api_key' => '',
-				'compatible_base_url'=> '',
-				'compatible_model'   => '',
-				'cloudflare_account' => '',
-				'cloudflare_token'   => '',
-				'cloudflare_model'   => '@cf/baai/bge-base-en-v1.5',
-				'ollama_base_url'    => 'http://localhost:11434',
-				'ollama_model'       => 'nomic-embed-text',
-				'dimensions'         => '0', // 0 = auto-detect.
+				'cloudflare_model'    => '@cf/baai/bge-base-en-v1.5',
+				'ollama_base_url'     => 'http://localhost:11434',
+				'ollama_model'        => 'nomic-embed-text',
+				'dimensions'          => '0', // 0 = auto-detect.
 			),
 
 			'vector_store' => array(
-				'engine'               => 'auto', // auto|mysql|cloudflare.
-				'mysql_native_vector'  => '',     // detected at runtime, '' until probed.
-				'cloudflare_account'   => '',
-				'cloudflare_token'     => '',
-				'cloudflare_index'     => 'itih-ai-chatbot',
+				'engine'              => 'auto', // auto|mysql|cloudflare.
+				'mysql_native_vector' => '',     // detected at runtime, '' until probed.
+				'cloudflare_account'  => '',
+				'cloudflare_token'    => '',
+				'cloudflare_index'    => 'itih-ai-chatbot',
 			),
 
-			'indexing' => array(
+			'indexing'     => array(
 				'chunk_size'      => '800',
 				'chunk_overlap'   => '100',
 				'min_chunk_chars' => '40',
@@ -122,26 +122,26 @@ class Settings {
 				'min_similarity'  => '0.35',
 			),
 
-			'appearance' => array(
-				'theme'        => 'light',
-				'logo'         => '',
-				'avatar'       => '',
-				'colors'       => array(
-					'primary'    => '#3b82f6',
-					'header_bg'  => '#1e293b',
-					'header_text'=> '#ffffff',
-					'bg'         => '#ffffff',
-					'text'       => '#0f172a',
-					'user_bubble'=> '#3b82f6',
-					'user_text'  => '#ffffff',
-					'bot_bubble' => '#f1f5f9',
-					'bot_text'   => '#0f172a',
-					'launcher'   => '#3b82f6',
+			'appearance'   => array(
+				'theme'  => 'light',
+				'logo'   => '',
+				'avatar' => '',
+				'colors' => array(
+					'primary'       => '#3b82f6',
+					'header_bg'     => '#1e293b',
+					'header_text'   => '#ffffff',
+					'bg'            => '#ffffff',
+					'text'          => '#0f172a',
+					'user_bubble'   => '#3b82f6',
+					'user_text'     => '#ffffff',
+					'bot_bubble'    => '#f1f5f9',
+					'bot_text'      => '#0f172a',
+					'launcher'      => '#3b82f6',
 					'launcher_icon' => '#ffffff',
 				),
 			),
 
-			'mcp' => array(
+			'mcp'          => array(
 				'enabled' => '0',
 			),
 		);
@@ -220,16 +220,16 @@ class Settings {
 	public static function render_css_vars( $appearance ) {
 		$colors = isset( $appearance['colors'] ) ? $appearance['colors'] : array();
 		$vars   = array(
-			'--openrag-primary'     => $colors['primary'] ?? '#3b82f6',
-			'--openrag-header-bg'   => $colors['header_bg'] ?? '#1e293b',
-			'--openrag-header-text' => $colors['header_text'] ?? '#ffffff',
-			'--openrag-bg'          => $colors['bg'] ?? '#ffffff',
-			'--openrag-text'        => $colors['text'] ?? '#0f172a',
-			'--openrag-user-bubble' => $colors['user_bubble'] ?? '#3b82f6',
-			'--openrag-user-text'   => $colors['user_text'] ?? '#ffffff',
-			'--openrag-bot-bubble'  => $colors['bot_bubble'] ?? '#f1f5f9',
-			'--openrag-bot-text'    => $colors['bot_text'] ?? '#0f172a',
-			'--openrag-launcher'    => $colors['launcher'] ?? '#3b82f6',
+			'--openrag-primary'       => $colors['primary'] ?? '#3b82f6',
+			'--openrag-header-bg'     => $colors['header_bg'] ?? '#1e293b',
+			'--openrag-header-text'   => $colors['header_text'] ?? '#ffffff',
+			'--openrag-bg'            => $colors['bg'] ?? '#ffffff',
+			'--openrag-text'          => $colors['text'] ?? '#0f172a',
+			'--openrag-user-bubble'   => $colors['user_bubble'] ?? '#3b82f6',
+			'--openrag-user-text'     => $colors['user_text'] ?? '#ffffff',
+			'--openrag-bot-bubble'    => $colors['bot_bubble'] ?? '#f1f5f9',
+			'--openrag-bot-text'      => $colors['bot_text'] ?? '#0f172a',
+			'--openrag-launcher'      => $colors['launcher'] ?? '#3b82f6',
 			'--openrag-launcher-icon' => $colors['launcher_icon'] ?? '#ffffff',
 		);
 
@@ -249,68 +249,68 @@ class Settings {
 	 */
 	public static function theme_presets() {
 		return array(
-			'light' => array(
-				'label'   => __( 'Light', 'itih-ai-chatbot' ),
-				'colors'  => array(
-					'primary'      => '#3b82f6',
-					'header_bg'    => '#1e293b',
-					'header_text'  => '#ffffff',
-					'bg'           => '#ffffff',
-					'text'         => '#0f172a',
-					'user_bubble'  => '#3b82f6',
-					'user_text'    => '#ffffff',
-					'bot_bubble'   => '#f1f5f9',
-					'bot_text'     => '#0f172a',
-					'launcher'     => '#3b82f6',
-					'launcher_icon'=> '#ffffff',
+			'light'  => array(
+				'label'  => __( 'Light', 'itih-ai-chatbot' ),
+				'colors' => array(
+					'primary'       => '#3b82f6',
+					'header_bg'     => '#1e293b',
+					'header_text'   => '#ffffff',
+					'bg'            => '#ffffff',
+					'text'          => '#0f172a',
+					'user_bubble'   => '#3b82f6',
+					'user_text'     => '#ffffff',
+					'bot_bubble'    => '#f1f5f9',
+					'bot_text'      => '#0f172a',
+					'launcher'      => '#3b82f6',
+					'launcher_icon' => '#ffffff',
 				),
 			),
-			'dark' => array(
-				'label'   => __( 'Dark', 'itih-ai-chatbot' ),
-				'colors'  => array(
-					'primary'      => '#60a5fa',
-					'header_bg'    => '#0f172a',
-					'header_text'  => '#f8fafc',
-					'bg'           => '#1e293b',
-					'text'         => '#e2e8f0',
-					'user_bubble'  => '#2563eb',
-					'user_text'    => '#ffffff',
-					'bot_bubble'   => '#334155',
-					'bot_text'     => '#f1f5f9',
-					'launcher'     => '#60a5fa',
-					'launcher_icon'=> '#0f172a',
+			'dark'   => array(
+				'label'  => __( 'Dark', 'itih-ai-chatbot' ),
+				'colors' => array(
+					'primary'       => '#60a5fa',
+					'header_bg'     => '#0f172a',
+					'header_text'   => '#f8fafc',
+					'bg'            => '#1e293b',
+					'text'          => '#e2e8f0',
+					'user_bubble'   => '#2563eb',
+					'user_text'     => '#ffffff',
+					'bot_bubble'    => '#334155',
+					'bot_text'      => '#f1f5f9',
+					'launcher'      => '#60a5fa',
+					'launcher_icon' => '#0f172a',
 				),
 			),
-			'ocean' => array(
-				'label'   => __( 'Ocean', 'itih-ai-chatbot' ),
-				'colors'  => array(
-					'primary'      => '#0891b2',
-					'header_bg'    => '#155e75',
-					'header_text'  => '#ecfeff',
-					'bg'           => '#f0fdfa',
-					'text'         => '#0f3d3e',
-					'user_bubble'  => '#0891b2',
-					'user_text'    => '#ffffff',
-					'bot_bubble'   => '#cffafe',
-					'bot_text'     => '#0f3d3e',
-					'launcher'     => '#0e7490',
-					'launcher_icon'=> '#ffffff',
+			'ocean'  => array(
+				'label'  => __( 'Ocean', 'itih-ai-chatbot' ),
+				'colors' => array(
+					'primary'       => '#0891b2',
+					'header_bg'     => '#155e75',
+					'header_text'   => '#ecfeff',
+					'bg'            => '#f0fdfa',
+					'text'          => '#0f3d3e',
+					'user_bubble'   => '#0891b2',
+					'user_text'     => '#ffffff',
+					'bot_bubble'    => '#cffafe',
+					'bot_text'      => '#0f3d3e',
+					'launcher'      => '#0e7490',
+					'launcher_icon' => '#ffffff',
 				),
 			),
 			'sunset' => array(
-				'label'   => __( 'Sunset', 'itih-ai-chatbot' ),
-				'colors'  => array(
-					'primary'      => '#ea580c',
-					'header_bg'    => '#7c2d12',
-					'header_text'  => '#fff7ed',
-					'bg'           => '#fffbeb',
-					'text'         => '#431407',
-					'user_bubble'  => '#ea580c',
-					'user_text'    => '#ffffff',
-					'bot_bubble'   => '#ffedd5',
-					'bot_text'     => '#431407',
-					'launcher'     => '#f97316',
-					'launcher_icon'=> '#ffffff',
+				'label'  => __( 'Sunset', 'itih-ai-chatbot' ),
+				'colors' => array(
+					'primary'       => '#ea580c',
+					'header_bg'     => '#7c2d12',
+					'header_text'   => '#fff7ed',
+					'bg'            => '#fffbeb',
+					'text'          => '#431407',
+					'user_bubble'   => '#ea580c',
+					'user_text'     => '#ffffff',
+					'bot_bubble'    => '#ffedd5',
+					'bot_text'      => '#431407',
+					'launcher'      => '#f97316',
+					'launcher_icon' => '#ffffff',
 				),
 			),
 		);

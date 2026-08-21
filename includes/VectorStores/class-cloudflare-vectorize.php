@@ -95,7 +95,10 @@ class Cloudflare_Vectorize implements Vector_Store {
 		// First check if it already exists.
 		$check = wp_remote_get(
 			$this->api_base() . '/' . $this->index(),
-			array( 'timeout' => 30, 'headers' => $this->headers() )
+			array(
+				'timeout' => 30,
+				'headers' => $this->headers(),
+			)
 		);
 		$code  = (int) wp_remote_retrieve_response_code( $check );
 		if ( $code >= 200 && $code < 300 ) {
@@ -109,10 +112,10 @@ class Cloudflare_Vectorize implements Vector_Store {
 				'headers' => $this->headers(),
 				'body'    => wp_json_encode(
 					array(
-						'name'         => $this->settings['cloudflare_index'],
-						'config'       => array(
-							'dimensions'    => (int) $dimensions,
-							'metric'        => $metric,
+						'name'   => $this->settings['cloudflare_index'],
+						'config' => array(
+							'dimensions' => (int) $dimensions,
+							'metric'     => $metric,
 						),
 					)
 				),
@@ -188,8 +191,8 @@ class Cloudflare_Vectorize implements Vector_Store {
 				'headers' => $this->headers(),
 				'body'    => wp_json_encode(
 					array(
-						'vector'      => array_map( 'floatval', $vector ),
-						'topK'        => $top_k,
+						'vector'         => array_map( 'floatval', $vector ),
+						'topK'           => $top_k,
 						'returnMetadata' => 'none',
 					)
 				),
@@ -210,13 +213,13 @@ class Cloudflare_Vectorize implements Vector_Store {
 			$matches = array();
 		}
 
-		$ids = array();
+		$ids          = array();
 		$scores_by_id = array();
 		foreach ( $matches as $match ) {
 			$vid = $match['id'] ?? '';
 			$cid = $this->chunk_id_from_vector_id( $vid );
 			if ( $cid > 0 ) {
-				$ids[ $cid ] = (float) ( $match['score'] ?? 0 );
+				$ids[ $cid ]          = (float) ( $match['score'] ?? 0 );
 				$scores_by_id[ $cid ] = (float) ( $match['score'] ?? 0 );
 			}
 		}

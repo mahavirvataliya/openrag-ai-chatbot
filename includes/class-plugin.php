@@ -160,11 +160,14 @@ class Plugin {
 	 * @return Background_Processor
 	 */
 	public function queue() {
-		return $this->service( Background_Processor::class, function () {
-			$processor = new Background_Processor( $this->ingestion() );
-			$processor->bootstrap();
-			return $processor;
-		} );
+		return $this->service(
+			Background_Processor::class,
+			function () {
+				$processor = new Background_Processor( $this->ingestion() );
+				$processor->bootstrap();
+				return $processor;
+			}
+		);
 	}
 
 	/**
@@ -182,15 +185,18 @@ class Plugin {
 	 * @return Chat_Controller
 	 */
 	public function chat() {
-		return $this->service( Chat_Controller::class, function () {
-			return new Chat_Controller(
-				$this->embeddings(),
-				$this->vector_store(),
-				$this->llm(),
-				$this->mcp(),
-				new Rate_Limiter()
-			);
-		} );
+		return $this->service(
+			Chat_Controller::class,
+			function () {
+				return new Chat_Controller(
+					$this->embeddings(),
+					$this->vector_store(),
+					$this->llm(),
+					$this->mcp(),
+					new Rate_Limiter()
+				);
+			}
+		);
 	}
 
 	/**
@@ -314,22 +320,22 @@ class Plugin {
 		wp_enqueue_script( 'itih-chatbot' );
 
 		$settings = Settings::all();
-		$cfg = array(
-			'restUrl'         => esc_url_raw( rest_url( ITIH_REST_NAMESPACE ) ),
-			'nonce'           => wp_create_nonce( 'wp_rest' ),
-			'botName'         => $settings['chat']['bot_name'],
-			'welcome'         => $settings['chat']['welcome_message'],
-			'placeholder'     => __( 'Type your message…', 'itih-ai-chatbot' ),
-			'position'        => $settings['chat']['launcher_position'],
-			'theme'           => $settings['appearance']['theme'],
-			'colors'          => $settings['appearance']['colors'],
-			'logo'            => $settings['appearance']['logo'],
-			'avatar'          => $settings['appearance']['avatar'],
-			'showReasoning'   => ! empty( $settings['chat']['reasoning'] ),
-			'showCitations'   => ! empty( $settings['chat']['citations'] ),
-			'showCredit'      => ! empty( $settings['chat']['show_credit'] ),
-			'inline'          => $inline,
-			'i18n'            => array(
+		$cfg      = array(
+			'restUrl'       => esc_url_raw( rest_url( ITIH_REST_NAMESPACE ) ),
+			'nonce'         => wp_create_nonce( 'wp_rest' ),
+			'botName'       => $settings['chat']['bot_name'],
+			'welcome'       => $settings['chat']['welcome_message'],
+			'placeholder'   => __( 'Type your message…', 'itih-ai-chatbot' ),
+			'position'      => $settings['chat']['launcher_position'],
+			'theme'         => $settings['appearance']['theme'],
+			'colors'        => $settings['appearance']['colors'],
+			'logo'          => $settings['appearance']['logo'],
+			'avatar'        => $settings['appearance']['avatar'],
+			'showReasoning' => ! empty( $settings['chat']['reasoning'] ),
+			'showCitations' => ! empty( $settings['chat']['citations'] ),
+			'showCredit'    => ! empty( $settings['chat']['show_credit'] ),
+			'inline'        => $inline,
+			'i18n'          => array(
 				'thinking'        => __( 'Thinking…', 'itih-ai-chatbot' ),
 				'sources'         => __( 'Sources', 'itih-ai-chatbot' ),
 				'reasoning'       => __( 'Reasoning', 'itih-ai-chatbot' ),

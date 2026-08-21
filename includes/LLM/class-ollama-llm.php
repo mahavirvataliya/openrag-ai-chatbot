@@ -74,10 +74,10 @@ class Ollama_LLM implements LLM_Provider {
 
 	protected function build_payload( array $messages, array $opts, $stream ) {
 		$payload = array(
-			'model'       => $this->model( $opts ),
-			'messages'    => $messages,
-			'stream'      => $stream,
-			'options'     => array(
+			'model'    => $this->model( $opts ),
+			'messages' => $messages,
+			'stream'   => $stream,
+			'options'  => array(
 				'temperature' => isset( $opts['temperature'] ) ? (float) $opts['temperature'] : 0.3,
 				'num_predict' => isset( $opts['max_tokens'] ) ? (int) $opts['max_tokens'] : 800,
 			),
@@ -92,8 +92,8 @@ class Ollama_LLM implements LLM_Provider {
 		$out = array();
 		foreach ( $tools as $t ) {
 			$out[] = array(
-				'type'       => 'function',
-				'function'   => array(
+				'type'     => 'function',
+				'function' => array(
 					'name'        => $t['function']['name'] ?? $t['name'] ?? '',
 					'description' => $t['function']['description'] ?? $t['description'] ?? '',
 					'parameters'  => $t['function']['parameters'] ?? $t['parameters'] ?? (object) array(),
@@ -107,7 +107,11 @@ class Ollama_LLM implements LLM_Provider {
 		$payload  = $this->build_payload( $messages, $opts, false );
 		$response = wp_remote_post(
 			$this->base_url() . '/api/chat',
-			array( 'timeout' => 120, 'headers' => array( 'Content-Type' => 'application/json' ), 'body' => wp_json_encode( $payload ) )
+			array(
+				'timeout' => 120,
+				'headers' => array( 'Content-Type' => 'application/json' ),
+				'body'    => wp_json_encode( $payload ),
+			)
 		);
 		if ( is_wp_error( $response ) ) {
 			throw new \RuntimeException( 'Ollama request failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
@@ -156,7 +160,11 @@ class Ollama_LLM implements LLM_Provider {
 		$payload  = $this->build_payload( $messages, $opts, true );
 		$response = wp_remote_post(
 			$this->base_url() . '/api/chat',
-			array( 'timeout' => 300, 'headers' => array( 'Content-Type' => 'application/json' ), 'body' => wp_json_encode( $payload ) )
+			array(
+				'timeout' => 300,
+				'headers' => array( 'Content-Type' => 'application/json' ),
+				'body'    => wp_json_encode( $payload ),
+			)
 		);
 		if ( is_wp_error( $response ) ) {
 			throw new \RuntimeException( 'Ollama stream failed: ' . $response->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
@@ -166,9 +174,12 @@ class Ollama_LLM implements LLM_Provider {
 			throw new \RuntimeException( 'Ollama stream error (' . $code . '): ' . wp_remote_retrieve_body( $response ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
-		$body  = wp_remote_retrieve_body( $response );
-		$lines = preg_split( '/\r\n|\n|\r/', $body );
-		$usage = array( 'prompt_tokens' => 0, 'completion_tokens' => 0 );
+		$body         = wp_remote_retrieve_body( $response );
+		$lines        = preg_split( '/\r\n|\n|\r/', $body );
+		$usage        = array(
+			'prompt_tokens'     => 0,
+			'completion_tokens' => 0,
+		);
 		$pending_tool = null;
 
 		foreach ( $lines as $line ) {
@@ -201,7 +212,10 @@ class Ollama_LLM implements LLM_Provider {
 
 			$chunk = (string) ( $json['message']['content'] ?? '' );
 			if ( '' !== $chunk ) {
-				yield array( 'type' => 'delta', 'content' => $chunk );
+				yield array(
+					'type'    => 'delta',
+					'content' => $chunk,
+				);
 			}
 
 			if ( isset( $json['prompt_eval_count'] ) ) {
@@ -215,6 +229,10 @@ class Ollama_LLM implements LLM_Provider {
 			}
 		}
 
-		yield array( 'type' => 'done', 'usage' => $usage, 'model' => $payload['model'] );
+		yield array(
+			'type'  => 'done',
+			'usage' => $usage,
+			'model' => $payload['model'],
+		);
 	}
 }

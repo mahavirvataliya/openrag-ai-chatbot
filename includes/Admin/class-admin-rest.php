@@ -81,7 +81,7 @@ class Admin_REST {
 
 	public function list_models( \WP_REST_Request $request ) {
 		$scope = sanitize_key( (string) $request->get_param( 'scope' ) );
-		$scope = $scope ?: 'llm';
+		$scope = $scope ? $scope : 'llm';
 
 		try {
 			if ( 'embedding' === $scope ) {
@@ -90,7 +90,12 @@ class Admin_REST {
 				$models = $this->plugin->llm()->list_models();
 			}
 		} catch ( \Throwable $e ) {
-			return rest_ensure_response( array( 'models' => array(), 'error' => $e->getMessage() ) );
+			return rest_ensure_response(
+				array(
+					'models' => array(),
+					'error'  => $e->getMessage(),
+				)
+			);
 		}
 
 		return rest_ensure_response( array( 'models' => array_values( $models ) ) );
@@ -98,24 +103,33 @@ class Admin_REST {
 
 	public function test_connection( \WP_REST_Request $request ) {
 		$scope = sanitize_key( (string) $request->get_param( 'scope' ) );
-		$scope = $scope ?: 'llm';
+		$scope = $scope ? $scope : 'llm';
 
 		try {
 			if ( 'embedding' === $scope ) {
 				$vec = $this->plugin->embeddings()->embed_one( 'ping' );
 				return rest_ensure_response(
 					array(
-						'ok'        => ! empty( $vec ),
+						'ok'         => ! empty( $vec ),
 						'dimensions' => count( $vec ),
 					)
 				);
 			}
 			$result = $this->plugin->llm()->chat(
 				array(
-					array( 'role' => 'system', 'content' => 'Reply with the single word: ok' ),
-					array( 'role' => 'user', 'content' => 'ping' ),
+					array(
+						'role'    => 'system',
+						'content' => 'Reply with the single word: ok',
+					),
+					array(
+						'role'    => 'user',
+						'content' => 'ping',
+					),
 				),
-				array( 'max_tokens' => 5, 'temperature' => 0 )
+				array(
+					'max_tokens'  => 5,
+					'temperature' => 0,
+				)
 			);
 			return rest_ensure_response(
 				array(
@@ -125,26 +139,52 @@ class Admin_REST {
 				)
 			);
 		} catch ( \Throwable $e ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => $e->getMessage() ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => $e->getMessage(),
+				)
+			);
 		}
 	}
 
 	public function create_index( \WP_REST_Request $request ) {
-		$dim = (int) ( $request->get_param( 'dimensions' ) ?: $this->plugin->embeddings()->dimensions() );
+		$param_dimensions = $request->get_param( 'dimensions' );
+		$dim              = (int) ( $param_dimensions ? $param_dimensions : $this->plugin->embeddings()->dimensions() );
 		if ( $dim <= 0 ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => __( 'Could not determine embedding dimensions. Configure an embedding provider first.', 'itih-ai-chatbot' ) ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => __( 'Could not determine embedding dimensions. Configure an embedding provider first.', 'itih-ai-chatbot' ),
+				)
+			);
 		}
 
 		$cf = new Cloudflare_Vectorize();
 		if ( ! $cf->is_configured() ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => __( 'Cloudflare Vectorize is not configured.', 'itih-ai-chatbot' ) ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => __( 'Cloudflare Vectorize is not configured.', 'itih-ai-chatbot' ),
+				)
+			);
 		}
 
 		try {
 			$cf->ensure_index( $dim );
-			return rest_ensure_response( array( 'ok' => true, 'dimensions' => $dim ) );
+			return rest_ensure_response(
+				array(
+					'ok'         => true,
+					'dimensions' => $dim,
+				)
+			);
 		} catch ( \Throwable $e ) {
-			return rest_ensure_response( array( 'ok' => false, 'error' => $e->getMessage() ) );
+			return rest_ensure_response(
+				array(
+					'ok'    => false,
+					'error' => $e->getMessage(),
+				)
+			);
 		}
 	}
 }

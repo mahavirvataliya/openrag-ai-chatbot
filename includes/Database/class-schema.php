@@ -41,7 +41,7 @@ class Schema {
 
 		$native_vector = $this->supports_native_vector();
 		// Force-safe: never create VECTOR columns unless MySQL 9 is detected.
-		$embedding_col = $native_vector ? "`embedding` VECTOR(0) NULL" : '`embedding` LONGTEXT NULL';
+		$embedding_col = $native_vector ? '`embedding` VECTOR(0) NULL' : '`embedding` LONGTEXT NULL';
 
 		// documents
 		dbDelta(
@@ -196,7 +196,7 @@ class Schema {
 			return $this->native_vector_capable;
 		}
 
-		$version = $this->mysql_version();
+		$version                     = $this->mysql_version();
 		$this->native_vector_capable = false;
 
 		// Quick heuristic: MySQL 9.0+ only (MariaDB returns "10.x.y-MariaDB").
@@ -204,20 +204,20 @@ class Schema {
 			$major = (int) $m[1];
 			$minor = (int) $m[2];
 			if ( false === stripos( $version, 'mariadb' ) && $major >= 9 ) {
-			// Confirm with a runtime probe (avoid 8.x false positives from version strings).
+				// Confirm with a runtime probe (avoid 8.x false positives from version strings).
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
-			$probe = $wpdb->get_var( "SHOW COLUMNS FROM information_schema.columns WHERE TABLE_SCHEMA IS NOT NULL LIMIT 0" );
-			// Safer probe: try a no-op CREATE TABLE that uses VECTOR. Wrapped in try.
-			$test_table = $wpdb->prefix . 'openrag_vec_probe';
-			$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
-			$wpdb->query( "CREATE TABLE `{$test_table}` (id INT PRIMARY KEY, v VECTOR(4)) ENGINE=InnoDB" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
-			$exists = ( null !== $wpdb->get_var( "SHOW TABLES LIKE '{$test_table}'" ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
-			$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+				$probe = $wpdb->get_var( 'SHOW COLUMNS FROM information_schema.columns WHERE TABLE_SCHEMA IS NOT NULL LIMIT 0' );
+				// Safer probe: try a no-op CREATE TABLE that uses VECTOR. Wrapped in try.
+				$test_table = $wpdb->prefix . 'openrag_vec_probe';
+				$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+				$wpdb->query( "CREATE TABLE `{$test_table}` (id INT PRIMARY KEY, v VECTOR(4)) ENGINE=InnoDB" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+				$exists = ( null !== $wpdb->get_var( "SHOW TABLES LIKE '{$test_table}'" ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+				$wpdb->query( "DROP TABLE IF EXISTS `{$test_table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
 				if ( $exists ) {
 					$this->native_vector_capable = true;
 				}
 				// Persist the probe result so future requests skip the DDL.
-				$vs_settings = is_array( $vs_settings ) ? $vs_settings : array();
+				$vs_settings                        = is_array( $vs_settings ) ? $vs_settings : array();
 				$vs_settings['mysql_native_vector'] = $this->native_vector_capable ? '1' : '0';
 				update_option( ITIH_OPTION_PREFIX . 'vector_store', $vs_settings );
 				// $major/$minor unused beyond gating; suppress.
@@ -267,7 +267,7 @@ class Schema {
 		if ( ! $col ) {
 			return;
 		}
-		$type = strtoupper( $col->Type );
+		$type = strtoupper( $col->Type ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- DOMDocument native property.
 		if ( 0 === strpos( $type, 'VECTOR' ) ) {
 			// Already VECTOR; optionally resize if dimension differs.
 			if ( preg_match( '/VECTOR\((\d+)\)/', $type, $m ) && (int) $m[1] === $dim ) {
