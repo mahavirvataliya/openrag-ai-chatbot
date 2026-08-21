@@ -2,10 +2,10 @@
 /**
  * Database schema: table creation + MySQL 9 VECTOR detection.
  *
- * @package OpenRag\Database
+ * @package ItihRag\Database
  */
 
-namespace OpenRag\Database;
+namespace ItihRag\Database;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -97,6 +97,7 @@ class Schema {
 			"CREATE TABLE {$prefix}chat_sessions (
 				id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 				session_hash CHAR(64) NOT NULL,
+				secret CHAR(64) NOT NULL DEFAULT '',
 				user_ip VARCHAR(45) NULL,
 				user_agent TEXT NULL,
 				device VARCHAR(50) DEFAULT 'web',
@@ -108,6 +109,10 @@ class Schema {
 				KEY created_at (created_at)
 			) {$charset_collate};"
 		);
+
+		// Ensure the per-session secret column exists on pre-1.1.0 installs
+		// (dbDelta adds it on fresh installs, but we belt-and-suspenders it here).
+		$this->ensure_column( $prefix . 'chat_sessions', 'secret', 'CHAR(64) NOT NULL DEFAULT ""' );
 
 		// chats
 		dbDelta(
@@ -130,6 +135,8 @@ class Schema {
 				created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (id),
 				KEY session_id (session_id),
+				KEY session_msg (session_id, id),
+				KEY role (role),
 				KEY created_at (created_at),
 				KEY feedback (feedback)
 			) {$charset_collate};"
@@ -158,12 +165,12 @@ class Schema {
 		}
 
 		// Store the detected capability in vector_store settings.
-		$vs_settings = get_option( OPENRAG_OPTION_PREFIX . 'vector_store', array() );
+		$vs_settings = get_option( ITIH_OPTION_PREFIX . 'vector_store', array() );
 		if ( ! is_array( $vs_settings ) ) {
 			$vs_settings = array();
 		}
 		$vs_settings['mysql_native_vector'] = $native_vector ? '1' : '0';
-		update_option( OPENRAG_OPTION_PREFIX . 'vector_store', $vs_settings );
+		update_option( ITIH_OPTION_PREFIX . 'vector_store', $vs_settings );
 	}
 
 	/**
@@ -180,6 +187,14 @@ class Schema {
 		}
 
 		global $wpdb;
+
+		// Read the persisted probe result first — the live DDL probe below runs
+		// CREATE/DROP TABLE (implicit commits) and must not run on every request.
+		$vs_settings = get_option( ITIH_OPTION_PREFIX . 'vector_store', array() );
+		if ( is_array( $vs_settings ) && isset( $vs_settings['mysql_native_vector'] ) ) {
+			$this->native_vector_capable = ( '1' === (string) $vs_settings['mysql_native_vector'] );
+			return $this->native_vector_capable;
+		}
 
 		$version = $this->mysql_version();
 		$this->native_vector_capable = false;
@@ -201,6 +216,10 @@ class Schema {
 				if ( $exists ) {
 					$this->native_vector_capable = true;
 				}
+				// Persist the probe result so future requests skip the DDL.
+				$vs_settings = is_array( $vs_settings ) ? $vs_settings : array();
+				$vs_settings['mysql_native_vector'] = $this->native_vector_capable ? '1' : '0';
+				update_option( ITIH_OPTION_PREFIX . 'vector_store', $vs_settings );
 				// $major/$minor unused beyond gating; suppress.
 				unset( $major, $minor, $probe );
 			}
@@ -244,7 +263,7 @@ class Schema {
 		$dim = (int) $dimension;
 
 		// Check the current column type.
-		$col = $wpdb->get_row( $wpdb->prepare( "SHOW COLUMNS FROM `%1s` LIKE 'embedding'", $table ) ); // phpcs:ignore WordPress.DB
+		$col = $wpdb->get_row( "SHOW COLUMNS FROM `{$table}` LIKE 'embedding'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB -- $table is sanitize_key()'d internal table name.
 		if ( ! $col ) {
 			return;
 		}
@@ -258,6 +277,29 @@ class Schema {
 
 		// Drop existing data (assume clean install or migration handled elsewhere).
 		$wpdb->query( "ALTER TABLE `{$table}` MODIFY COLUMN `embedding` VECTOR({$dim}) NULL" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+	}
+
+	/**
+	 * Ensure a column exists on a table, adding it via ALTER if missing.
+	 *
+	 * Used to add new columns to existing installs that dbDelta's CREATE TABLE
+	 * re-run does not always pick up across MySQL/MariaDB versions.
+	 *
+	 * @param string $table      Fully-qualified table name.
+	 * @param string $column     Column name.
+	 * @param string $definition Column definition (e.g. 'CHAR(64) NOT NULL DEFAULT ""').
+	 * @return void
+	 */
+	protected function ensure_column( $table, $column, $definition ) {
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+		$exists = $wpdb->get_var( "SHOW COLUMNS FROM `{$table}` LIKE '{$column}'" );
+		if ( $exists ) {
+			return;
+		}
+		// Definition is a hard-coded constant for our own column; not user input.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL, PluginCheck.Security.DirectDB
+		$wpdb->query( "ALTER TABLE `{$table}` ADD COLUMN `{$column}` {$definition}" );
 	}
 
 	/**
