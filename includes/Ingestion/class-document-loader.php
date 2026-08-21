@@ -2,10 +2,10 @@
 /**
  * Document loaders — extract clean text from PDF / DOCX / TXT / MD / HTML.
  *
- * @package OpenRag\Ingestion
+ * @package ItihRag\Ingestion
  */
 
-namespace OpenRag\Ingestion;
+namespace ItihRag\Ingestion;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -288,10 +288,16 @@ class Document_Loader {
 			}
 			return wp_remote_retrieve_body( $response );
 		}
+		// Restrict local reads to the uploads directory — the path originates
+		// from an admin-supplied parameter and must never escape wp-content/uploads.
+		$uploads = wp_get_upload_dir();
+		if ( 0 !== strpos( $source, $uploads['basedir'] ) ) {
+			return new \WP_Error( 'forbidden_path', 'File is outside the uploads directory: ' . $source );
+		}
 		if ( ! is_readable( $source ) ) {
 			return new \WP_Error( 'unreadable', 'File not readable: ' . $source );
 		}
-		return (string) file_get_contents( $source );
+		return (string) file_get_contents( $source ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents -- local uploads read; WP_Filesystem offers no advantage for read-only string loads.
 	}
 
 	/**

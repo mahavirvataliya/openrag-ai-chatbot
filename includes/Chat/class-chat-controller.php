@@ -2,24 +2,24 @@
 /**
  * Chat controller — REST routes including SSE streaming.
  *
- * Routes (namespace openrag/v1):
+ * Routes (namespace itih/v1):
  *   POST /chat          → streaming SSE response
  *   POST /chat/sync     → non-streaming response
  *   POST /feedback      → record 👍/👎 feedback
  *   GET  /history       → session-scoped history
  *   DELETE /history     → clear session history
  *
- * @package OpenRag\Chat
+ * @package ItihRag\Chat
  */
 
-namespace OpenRag\Chat;
+namespace ItihRag\Chat;
 
-use OpenRag\Database\Schema;
-use OpenRag\Embeddings\Embedding_Manager;
-use OpenRag\LLM\LLM_Manager;
-use OpenRag\Settings;
-use OpenRag\VectorStores\Vector_Store_Manager;
-use OpenRag\MCP\MCP_Manager;
+use ItihRag\Database\Schema;
+use ItihRag\Embeddings\Embedding_Manager;
+use ItihRag\LLM\LLM_Manager;
+use ItihRag\Settings;
+use ItihRag\VectorStores\Vector_Store_Manager;
+use ItihRag\MCP\MCP_Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -58,7 +58,7 @@ class Chat_Controller {
 		$perm = array( $this, 'permission_public' );
 
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/chat',
 			array(
 				'methods'             => 'POST',
@@ -73,7 +73,7 @@ class Chat_Controller {
 		);
 
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/chat/sync',
 			array(
 				'methods'             => 'POST',
@@ -88,7 +88,7 @@ class Chat_Controller {
 		);
 
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/feedback',
 			array(
 				'methods'             => 'POST',
@@ -96,6 +96,7 @@ class Chat_Controller {
 				'permission_callback' => $perm,
 				'args'                => array(
 					'message_id' => array( 'type' => 'integer', 'required' => true ),
+					'session_id' => array( 'type' => 'string', 'required' => true ),
 					'feedback'   => array(
 						'type'     => 'string',
 						'required' => true,
@@ -107,7 +108,7 @@ class Chat_Controller {
 		);
 
 		register_rest_route(
-			OPENRAG_REST_NAMESPACE,
+			ITIH_REST_NAMESPACE,
 			'/history',
 			array(
 				array(
@@ -115,7 +116,7 @@ class Chat_Controller {
 					'callback'            => array( $this, 'handle_get_history' ),
 					'permission_callback' => $perm,
 					'args'                => array(
-						'session_id' => array( 'type' => 'string', 'required' => false ),
+						'session_id' => array( 'type' => 'string', 'required' => true ),
 						'limit'      => array( 'type' => 'integer', 'default' => 50 ),
 					),
 				),
@@ -124,7 +125,7 @@ class Chat_Controller {
 					'callback'            => array( $this, 'handle_clear_history' ),
 					'permission_callback' => $perm,
 					'args'                => array(
-						'session_id' => array( 'type' => 'string', 'required' => false ),
+						'session_id' => array( 'type' => 'string', 'required' => true ),
 					),
 				),
 			)
@@ -141,19 +142,9 @@ class Chat_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function permission_public( \WP_REST_Request $request ) {
-		$nonce = (string) $request->get_header( 'x_wp_nonce' );
-		if ( '' === $nonce ) {
-			$nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
-		}
-		if ( '' !== $nonce && wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-			return true;
-		}
-		// Allow logged-in users with a valid session cookie.
-		if ( is_user_logged_in() ) {
-			return true;
-		}
-		// Without a nonce we still allow anonymous chat (chatbot is public-facing)
-		// but require a per-session identifier in the body to enforce rate limits.
+		// Public chatbot: anonymous access is by design. Session-scoped writes
+		// (/feedback, /history) are authorized per-session via the X-Itih-Secret
+		// header in verify_session(), not via cookie auth, so CSRF does not apply.
 		return true;
 	}
 
@@ -165,16 +156,18 @@ class Chat_Controller {
 	 */
 	public function handle_chat_sync( \WP_REST_Request $request ) {
 		if ( ! $this->rate->allow() ) {
-			return new \WP_Error( 'rate_limited', __( 'Too many requests. Please slow down.', 'openrag-ai-chatbot' ), array( 'status' => 429 ) );
+			return new \WP_Error( 'rate_limited', __( 'Too many requests. Please slow down.', 'itih-ai-chatbot' ), array( 'status' => 429 ) );
 		}
 
 		$message   = sanitize_textarea_field( (string) $request->get_param( 'message' ) );
-		$session   = (string) ( $request->get_param( 'session_id' ) ?: $this->new_session() );
 		$history   = (array) $request->get_param( 'history' );
 
 		if ( '' === $message ) {
-			return new \WP_Error( 'empty_message', __( 'Message is required.', 'openrag-ai-chatbot' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'empty_message', __( 'Message is required.', 'itih-ai-chatbot' ), array( 'status' => 400 ) );
 		}
+
+		// Resolve (or create) the session and its ownership secret.
+		list( $session, $secret ) = $this->resolve_session( $request->get_param( 'session_id' ) );
 
 		$start = microtime( true );
 		$answer = $this->rag->answer( $message, $history );
@@ -208,13 +201,14 @@ class Chat_Controller {
 
 		return rest_ensure_response(
 			array(
-				'reply'      => $answer['content'],
-				'reasoning'  => $answer['reasoning'],
-				'citations'  => $answer['citations'],
-				'tool_calls' => $answer['tool_calls'],
-				'message_id' => $message_id,
-				'session_id' => $session,
-				'usage'      => $answer['usage'],
+				'reply'          => $answer['content'],
+				'reasoning'      => $answer['reasoning'],
+				'citations'      => $answer['citations'],
+				'tool_calls'     => $answer['tool_calls'],
+				'message_id'     => $message_id,
+				'session_id'     => $session,
+				'session_secret' => $secret,
+				'usage'          => $answer['usage'],
 			)
 		);
 	}
@@ -228,17 +222,19 @@ class Chat_Controller {
 	public function handle_chat_stream( \WP_REST_Request $request ) {
 		if ( ! $this->rate->allow() ) {
 			status_header( 429 );
-			wp_die( esc_html__( 'Too many requests. Please slow down.', 'openrag-ai-chatbot' ) );
+			wp_die( esc_html__( 'Too many requests. Please slow down.', 'itih-ai-chatbot' ) );
 		}
 
 		$message = sanitize_textarea_field( (string) $request->get_param( 'message' ) );
-		$session = (string) ( $request->get_param( 'session_id' ) ?: $this->new_session() );
 		$history = (array) $request->get_param( 'history' );
 
 		if ( '' === $message ) {
 			status_header( 400 );
-			wp_die( esc_html__( 'Message is required.', 'openrag-ai-chatbot' ) );
+			wp_die( esc_html__( 'Message is required.', 'itih-ai-chatbot' ) );
 		}
+
+		// Resolve (or create) the session and its ownership secret.
+		list( $session, $secret ) = $this->resolve_session( $request->get_param( 'session_id' ) );
 
 		$settings = Settings::group( 'chat' );
 		$citations_enabled = ! empty( $settings['citations'] );
@@ -268,7 +264,7 @@ class Chat_Controller {
 			flush();
 		};
 
-		$emit( 'meta', array( 'session_id' => $session, 'message_id' => $message_id ) );
+		$emit( 'meta', array( 'session_id' => $session, 'session_secret' => $secret, 'message_id' => $message_id ) );
 
 		// Retrieve + build context.
 		$hits    = $this->rag->retrieve( $message );
@@ -348,7 +344,11 @@ class Chat_Controller {
 				}
 			}
 		} catch ( \Throwable $e ) {
-			$emit( 'error', array( 'message' => $e->getMessage() ) );
+			// Never leak provider error details to public visitors; log server-side only.
+			if ( ! empty( Settings::group( 'general' )['debug_logging'] ) ) {
+				error_log( '[itih-ai-chatbot] stream: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			}
+			$emit( 'error', array( 'message' => __( 'Something went wrong. Please try again.', 'itih-ai-chatbot' ) ) );
 		}
 
 		$ms = (int) ( ( microtime( true ) - $start ) * 1000 );
@@ -412,22 +412,34 @@ class Chat_Controller {
 	public function handle_feedback( \WP_REST_Request $request ) {
 		global $wpdb;
 		$message_id = (int) $request->get_param( 'message_id' );
+		$session    = (string) $request->get_param( 'session_id' );
 		$feedback   = sanitize_key( (string) $request->get_param( 'feedback' ) );
 		$comment    = sanitize_textarea_field( (string) $request->get_param( 'comment' ) );
 
 		if ( ! in_array( $feedback, array( 'up', 'down' ), true ) ) {
-			return new \WP_Error( 'invalid_feedback', __( 'Invalid feedback value.', 'openrag-ai-chatbot' ), array( 'status' => 400 ) );
+			return new \WP_Error( 'invalid_feedback', __( 'Invalid feedback value.', 'itih-ai-chatbot' ), array( 'status' => 400 ) );
 		}
 
+		// Verify the caller owns this session (per-session secret).
+		$owner = $this->verify_session( $request, $session );
+		if ( is_wp_error( $owner ) ) {
+			return $owner;
+		}
+
+		// Only update the row if it actually belongs to this caller's session,
+		// so a known message_id from another session cannot be modified.
 		$updated = $wpdb->update( // phpcs:ignore WordPress.DB
 			$this->schema->table( 'chats' ),
 			array(
 				'feedback'         => $feedback,
 				'feedback_comment' => $comment,
 			),
-			array( 'id' => $message_id ),
+			array(
+				'id'         => $message_id,
+				'session_id' => $session,
+			),
 			array( '%s', '%s' ),
-			array( '%d' )
+			array( '%d', '%s' )
 		);
 
 		return rest_ensure_response( array( 'updated' => (int) $updated ) );
@@ -441,17 +453,18 @@ class Chat_Controller {
 	 */
 	public function handle_get_history( \WP_REST_Request $request ) {
 		global $wpdb;
-		$session = (string) ( $request->get_param( 'session_id' ) ?: '' );
+		$session = (string) $request->get_param( 'session_id' );
 		$limit   = max( 1, min( 200, (int) $request->get_param( 'limit' ) ) );
 
-		$sql = 'SELECT id, session_id, role, content, citations, reasoning, model, feedback, created_at, prompt_tokens, completion_tokens, response_time_ms FROM `' . $this->schema->table( 'chats' ) . '`';
-		$params = array();
-		if ( '' !== $session ) {
-			$sql .= ' WHERE session_id = %s';
-			$params[] = $session;
+		// Verify the caller owns this session (per-session secret).
+		$owner = $this->verify_session( $request, $session );
+		if ( is_wp_error( $owner ) ) {
+			return $owner;
 		}
-		$sql .= ' ORDER BY id DESC LIMIT %d';
-		$params[] = $limit;
+
+		$sql = 'SELECT id, session_id, role, content, citations, reasoning, model, feedback, created_at, prompt_tokens, completion_tokens, response_time_ms FROM `' . $this->schema->table( 'chats' ) . '`';
+		$sql   .= ' WHERE session_id = %s ORDER BY id DESC LIMIT %d';
+		$params = array( $session, $limit );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ) );
@@ -484,10 +497,14 @@ class Chat_Controller {
 	 */
 	public function handle_clear_history( \WP_REST_Request $request ) {
 		global $wpdb;
-		$session = (string) ( $request->get_param( 'session_id' ) ?: '' );
-		if ( '' === $session ) {
-			return new \WP_Error( 'no_session', __( 'session_id is required.', 'openrag-ai-chatbot' ), array( 'status' => 400 ) );
+		$session = (string) $request->get_param( 'session_id' );
+
+		// Verify the caller owns this session (per-session secret).
+		$owner = $this->verify_session( $request, $session );
+		if ( is_wp_error( $owner ) ) {
+			return $owner;
 		}
+
 		$deleted = $wpdb->delete( $this->schema->table( 'chats' ), array( 'session_id' => $session ), array( '%s' ) ); // phpcs:ignore WordPress.DB
 		return rest_ensure_response( array( 'deleted' => (int) $deleted ) );
 	}
@@ -553,25 +570,87 @@ class Chat_Controller {
 	}
 
 	/**
-	 * Generate (and persist) a new session hash.
+	 * Generate (and persist) a new session hash plus a per-session secret.
 	 *
-	 * @return string
+	 * The secret is returned to the owning client only and must be presented
+	 * (via the X-Itih-Session / X-Itih-Secret headers) to mutate that session's
+	 * data (feedback, history). It is never disclosed to anyone else.
+	 *
+	 * @return array{0:string,1:string} [session_hash, session_secret]
 	 */
 	protected function new_session() {
 		global $wpdb;
-		$hash = hash( 'sha256', uniqid( 'openrag', true ) . random_int( 0, PHP_INT_MAX ) );
+		$hash   = hash( 'sha256', uniqid( 'itih', true ) . random_int( 0, PHP_INT_MAX ) );
+		$secret = bin2hex( random_bytes( 32 ) ); // 64-char cryptographically random token.
 
 		$wpdb->replace( // phpcs:ignore WordPress.DB, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
 			$this->schema->table( 'chat_sessions' ),
 			array(
 				'session_hash' => $hash,
+				'secret'       => $secret,
 				'user_ip'      => $this->rate->client_ip(),
-					'user_agent'   => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '',
+				'user_agent'   => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '',
 				'device'       => $this->rate->device(),
 				'created_at'   => current_time( 'mysql' ),
 			)
 		);
 
-		return $hash;
+		return array( $hash, $secret );
+	}
+
+	/**
+	 * Resolve the session id for a chat request, creating one if needed.
+	 *
+	 * Returns [session_hash, session_secret]. If the caller supplies a known
+	 * session_id, the stored secret is re-read so the client keeps a stable
+	 * secret across turns; otherwise a fresh session is generated.
+	 *
+	 * @param string $session_id Client-supplied session id (may be empty).
+	 * @return array{0:string,1:string}
+	 */
+	protected function resolve_session( $session_id ) {
+		global $wpdb;
+		$session_id = (string) $session_id;
+		if ( '' !== $session_id ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
+			$secret = $wpdb->get_var( $wpdb->prepare( 'SELECT secret FROM `' . $this->schema->table( 'chat_sessions' ) . '` WHERE session_hash = %s', $session_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB -- table name from Schema::table(), not user input.
+			if ( $secret ) {
+				return array( $session_id, $secret );
+			}
+		}
+		return $this->new_session();
+	}
+
+	/**
+	 * Verify that the caller owns the given session via the per-session secret.
+	 *
+	 * Expects the client to send both X-Itih-Session (the session id) and
+	 * X-Itih-Secret (the secret) headers. Comparison is constant-time.
+	 *
+	 * @param \WP_REST_Request $request   Request.
+	 * @param string           $session_id Session id being accessed.
+	 * @return true|\WP_Error True if owned; WP_Error otherwise.
+	 */
+	protected function verify_session( \WP_REST_Request $request, $session_id ) {
+		global $wpdb;
+		$session_id = (string) $session_id;
+		if ( '' === $session_id ) {
+			return new \WP_Error( 'no_session', __( 'session_id is required.', 'itih-ai-chatbot' ), array( 'status' => 400 ) );
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB
+		$stored = $wpdb->get_var( $wpdb->prepare( 'SELECT secret FROM `' . $this->schema->table( 'chat_sessions' ) . '` WHERE session_hash = %s', $session_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB -- table name from Schema::table(), not user input.
+
+		// Legacy sessions (or unknown ids) have an empty/missing secret → fail closed.
+		if ( ! $stored || '' === $stored ) {
+			return new \WP_Error( 'invalid_session', __( 'Session not found or not owned by you.', 'itih-ai-chatbot' ), array( 'status' => 403 ) );
+		}
+
+		$presented = sanitize_text_field( (string) ( $request->get_header( 'x_itih_secret' ) ) );
+		if ( '' === $presented || ! hash_equals( $stored, $presented ) ) {
+			return new \WP_Error( 'invalid_session', __( 'Session not found or not owned by you.', 'itih-ai-chatbot' ), array( 'status' => 403 ) );
+		}
+
+		return true;
 	}
 }
